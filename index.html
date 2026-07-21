@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>🚕 Такси Расходы • 2026</title>
+    <title>🚕 Такси Расходы • Полная статистика</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -18,7 +18,9 @@
     </script>
 
     <style>
-        /* ===== RESET & BASE ===== */
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
         *,
         *::before,
         *::after {
@@ -42,6 +44,7 @@
             --neon-orange: #fb923c;
             --neon-lime: #a3e635;
             --neon-blue: #3b82f6;
+            --neon-red: #ef4444;
 
             --shadow-glow: 0 0 40px rgba(168, 85, 247, 0.25);
             --radius-xl: 28px;
@@ -68,7 +71,126 @@
             transition: background 0.5s, color 0.5s;
         }
 
-        /* ===== SCROLLBAR ===== */
+        /* ============================================================
+           WELCOME SCREEN
+           ============================================================ */
+        #welcomeScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            background-image: radial-gradient(circle at 30% 40%, rgba(168, 85, 247, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 70% 60%, rgba(34, 211, 238, 0.05) 0%, transparent 60%);
+        }
+
+        #welcomeScreen.hidden {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            text-align: center;
+            padding: 40px 24px;
+            max-width: 500px;
+        }
+
+        .welcome-icon {
+            font-size: 80px;
+            color: var(--neon-purple);
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 40px rgba(168, 85, 247, 0.4));
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulseGlow 3s ease-in-out infinite;
+            text-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .welcome-btn {
+            padding: 16px 48px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            color: #fff;
+            font-family: var(--font);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 8px 40px rgba(168, 85, 247, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 60px rgba(168, 85, 247, 0.6);
+        }
+
+        .welcome-btn:active {
+            transform: scale(0.96);
+        }
+
+        .welcome-features {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .welcome-features span {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .welcome-features span i {
+            color: var(--neon-cyan);
+            font-size: 14px;
+        }
+
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.2));
+            }
+            50% {
+                filter: drop-shadow(0 0 60px rgba(168, 85, 247, 0.5));
+            }
+        }
+
+        /* ============================================================
+           SCROLLBAR
+           ============================================================ */
         ::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -82,7 +204,9 @@
             box-shadow: 0 0 20px var(--neon-purple);
         }
 
-        /* ===== ANIMATIONS ===== */
+        /* ============================================================
+           ANIMATIONS
+           ============================================================ */
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -135,7 +259,9 @@
             animation: fadeIn 0.5s ease forwards;
         }
 
-        /* ===== HEADER ===== */
+        /* ============================================================
+           HEADER
+           ============================================================ */
         .app-header {
             position: sticky;
             top: 0;
@@ -182,7 +308,6 @@
             flex-wrap: wrap;
         }
 
-        /* ===== QUARTER SELECTOR ===== */
         .quarter-selector {
             display: flex;
             align-items: center;
@@ -250,12 +375,6 @@
             border-color: var(--neon-purple);
             box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
         }
-        .btn-icon.active {
-            background: var(--neon-purple);
-            color: #fff;
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
-        }
 
         .export-btn {
             background: var(--bg-glass);
@@ -280,9 +399,6 @@
             box-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
             transform: translateY(-2px);
         }
-        .export-btn i {
-            font-size: 13px;
-        }
 
         .quarter-total-badge {
             font-size: 13px;
@@ -298,14 +414,18 @@
             transition: background 0.5s, border-color 0.5s, color 0.5s;
         }
 
-        /* ===== CONTAINER ===== */
+        /* ============================================================
+           CONTAINER
+           ============================================================ */
         .container {
             max-width: 820px;
             margin: 0 auto;
             padding: 20px 16px;
         }
 
-        /* ===== CAR CARD ===== */
+        /* ============================================================
+           CAR CARD
+           ============================================================ */
         .car-card {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -383,6 +503,7 @@
             display: flex;
             gap: 8px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
         .car-card .car-actions button {
             background: var(--bg-surface);
@@ -405,7 +526,37 @@
             border-color: var(--neon-purple);
         }
 
-        /* ===== CATEGORY GRID ===== */
+        .oil-reminder {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .oil-reminder.good {
+            background: rgba(163, 230, 53, 0.15);
+            color: var(--neon-lime);
+            border: 1px solid rgba(163, 230, 53, 0.3);
+        }
+        .oil-reminder.warning {
+            background: rgba(251, 146, 60, 0.15);
+            color: var(--neon-orange);
+            border: 1px solid rgba(251, 146, 60, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .oil-reminder.danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--neon-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ============================================================
+           CATEGORY GRID
+           ============================================================ */
         .category-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -526,7 +677,9 @@
             color: #facc15;
         }
 
-        /* ===== SUMMARY GRID ===== */
+        /* ============================================================
+           SUMMARY GRID
+           ============================================================ */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -589,7 +742,126 @@
             margin-top: 2px;
         }
 
-        /* ===== CHARTS ===== */
+        /* ============================================================
+           QUARTER STATS (новая секция)
+           ============================================================ */
+        .quarter-stats-section {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+        .quarter-stats-section:hover {
+            border-color: rgba(168, 85, 247, 0.15);
+        }
+        .quarter-stats-section .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quarter-stats-section .section-title i {
+            color: var(--neon-orange);
+        }
+
+        .quarter-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 600px) {
+            .quarter-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .quarter-stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .quarter-stat-card:hover {
+            background: var(--bg-glass);
+            transform: translateY(-2px);
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+        .quarter-stat-card .q-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .quarter-stat-card .q-total {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .quarter-stat-card .q-count {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .quarter-stat-card .q-top {
+            font-size: 11px;
+            color: var(--neon-cyan);
+            margin-top: 2px;
+        }
+        .quarter-stat-card.best {
+            border-color: var(--neon-lime);
+            background: rgba(163, 230, 53, 0.05);
+        }
+        .quarter-stat-card.best .q-total {
+            color: var(--neon-lime);
+        }
+        .quarter-stat-card.worst {
+            border-color: var(--neon-red);
+            background: rgba(239, 68, 68, 0.05);
+        }
+        .quarter-stat-card.worst .q-total {
+            color: var(--neon-red);
+        }
+
+        .quarter-chart-container {
+            margin-top: 12px;
+            height: 120px;
+        }
+        .quarter-chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .quarter-summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-glass);
+        }
+        .quarter-summary-row .stat-item {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .quarter-summary-row .stat-item strong {
+            color: var(--text-primary);
+        }
+        .quarter-summary-row .stat-item i {
+            color: var(--neon-cyan);
+            margin-right: 4px;
+        }
+
+        /* ============================================================
+           CHARTS
+           ============================================================ */
         .charts-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -633,7 +905,9 @@
             max-height: 200px;
         }
 
-        /* ===== EXPENSE LIST ===== */
+        /* ============================================================
+           EXPENSE LIST
+           ============================================================ */
         .expense-section {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -773,7 +1047,9 @@
             font-size: 14px;
         }
 
-        /* ===== INSIGHTS ===== */
+        /* ============================================================
+           INSIGHTS
+           ============================================================ */
         .insights-section {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -809,7 +1085,9 @@
             color: var(--text-primary);
         }
 
-        /* ===== FAB ===== */
+        /* ============================================================
+           FAB
+           ============================================================ */
         .fab {
             position: fixed;
             bottom: 28px;
@@ -838,7 +1116,9 @@
             transform: scale(0.92);
         }
 
-        /* ===== MODAL ===== */
+        /* ============================================================
+           MODAL
+           ============================================================ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -996,7 +1276,9 @@
             transform: scale(0.97);
         }
 
-        /* ===== TOAST ===== */
+        /* ============================================================
+           TOAST
+           ============================================================ */
         .toast-container {
             position: fixed;
             bottom: 100px;
@@ -1027,7 +1309,9 @@
             font-size: 18px;
         }
 
-        /* ===== LIGHT THEME ===== */
+        /* ============================================================
+           LIGHT THEME
+           ============================================================ */
         body.light-theme {
             --bg-deep: #f6f0ff;
             --bg-surface: rgba(255, 255, 255, 0.6);
@@ -1269,8 +1553,42 @@
         body.light-theme .insights-section .insight-item .text strong {
             color: #1a1a2e;
         }
+        body.light-theme .quarter-stats-section {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        body.light-theme .quarter-stat-card {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        body.light-theme .quarter-stat-card:hover {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(168, 85, 247, 0.15);
+        }
+        body.light-theme .quarter-stat-card .q-label {
+            color: #4a3a6a;
+        }
+        body.light-theme .quarter-stat-card .q-total {
+            color: #1a1a2e;
+        }
+        body.light-theme .quarter-stat-card.best {
+            border-color: var(--neon-lime);
+            background: rgba(163, 230, 53, 0.06);
+        }
+        body.light-theme .quarter-stat-card.worst {
+            border-color: var(--neon-red);
+            background: rgba(239, 68, 68, 0.06);
+        }
+        body.light-theme .quarter-summary-row .stat-item {
+            color: #4a3a6a;
+        }
+        body.light-theme .quarter-summary-row .stat-item strong {
+            color: #1a1a2e;
+        }
 
-        /* ===== RESPONSIVE ===== */
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media (max-width: 480px) {
             .app-header .brand {
                 font-size: 18px;
@@ -1328,12 +1646,44 @@
                 font-size: 11px;
                 padding: 4px 10px;
             }
+            .quarter-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .quarter-stat-card .q-total {
+                font-size: 17px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
+    <!-- ============================================================
+    WELCOME SCREEN
+    ============================================================ -->
+    <div id="welcomeScreen">
+        <div class="welcome-content">
+            <div class="welcome-icon">
+                <i class="fas fa-car"></i>
+            </div>
+            <div class="welcome-title">Обслуживание и расходы авто</div>
+            <div class="welcome-subtitle">
+                <i class="fas fa-chart-line"></i> Полная статистика по кварталам
+                <br /><i class="fas fa-oil-can"></i> Напоминалка о замене масла
+            </div>
+            <button class="welcome-btn" id="welcomeBtn">
+                <i class="fas fa-rocket"></i> Начать
+            </button>
+            <div class="welcome-features">
+                <span><i class="fas fa-check-circle"></i> 4 квартала</span>
+                <span><i class="fas fa-check-circle"></i> Графики</span>
+                <span><i class="fas fa-check-circle"></i> Аналитика</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
     <header class="app-header">
         <div class="brand">
             <i class="fas fa-car"></i>
@@ -1353,7 +1703,9 @@
         </div>
     </header>
 
-    <!-- ===== MAIN ===== -->
+    <!-- ============================================================
+    MAIN
+    ============================================================ -->
     <div class="container" id="app">
 
         <!-- Quarter total badge -->
@@ -1376,9 +1728,13 @@
                     <span><i class="fas fa-road"></i> Пробег за квартал: <strong id="carMileage">—</strong> км</span>
                     <span><i class="fas fa-gas-pump"></i> Топливо: <strong id="carFuelUsed">—</strong> л</span>
                 </div>
+                <div id="oilReminderContainer"></div>
             </div>
             <div class="car-actions">
                 <button id="editCarBtn"><i class="fas fa-edit"></i> Изменить</button>
+                <button id="resetOilBtn" style="border-color:rgba(255,61,138,0.3);color:var(--neon-pink);">
+                    <i class="fas fa-sync-alt"></i> Сброс масла
+                </button>
             </div>
         </div>
 
@@ -1407,6 +1763,20 @@
                 <div class="value" id="avgExpense">0,00</div>
                 <div class="sub">BYN / запись</div>
             </div>
+        </div>
+
+        <!-- ===== QUARTER STATS (новая секция) ===== -->
+        <div class="quarter-stats-section animate-fade-up" id="quarterStatsSection">
+            <div class="section-title">
+                <i class="fas fa-chart-simple"></i>
+                Статистика по кварталам
+                <span style="font-size:12px;font-weight:400;color:var(--text-muted);margin-left:4px;">(всего)</span>
+            </div>
+            <div class="quarter-stats-grid" id="quarterStatsGrid"></div>
+            <div class="quarter-chart-container">
+                <canvas id="quarterBarChart"></canvas>
+            </div>
+            <div class="quarter-summary-row" id="quarterSummaryRow"></div>
         </div>
 
         <!-- ===== CHARTS ===== -->
@@ -1457,12 +1827,16 @@
         </div>
     </div>
 
-    <!-- ===== FAB ===== -->
+    <!-- ============================================================
+    FAB
+    ============================================================ -->
     <button class="fab" id="fabAdd" aria-label="Добавить расход">
         <i class="fas fa-plus"></i>
     </button>
 
-    <!-- ===== MODAL ===== -->
+    <!-- ============================================================
+    MODAL (расходы)
+    ============================================================ -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal" id="modalContent">
             <div class="modal-header">
@@ -1500,7 +1874,9 @@
         </div>
     </div>
 
-    <!-- ===== CAR MODAL ===== -->
+    <!-- ============================================================
+    CAR MODAL
+    ============================================================ -->
     <div class="modal-overlay" id="carModalOverlay">
         <div class="modal" id="carModalContent">
             <div class="modal-header">
@@ -1520,6 +1896,10 @@
                     <label><i class="fas fa-tachometer-alt"></i> Средний расход (л/100 км)</label>
                     <input type="number" id="carFuelInput" placeholder="7.5" step="0.1" min="0" />
                 </div>
+                <div class="form-group">
+                    <label><i class="fas fa-oil-can"></i> Интервал замены масла (км)</label>
+                    <input type="number" id="carOilIntervalInput" placeholder="10000" step="100" min="1000" />
+                </div>
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-save"></i> Сохранить авто
                 </button>
@@ -1527,7 +1907,9 @@
         </div>
     </div>
 
-    <!-- ===== TOAST ===== -->
+    <!-- ============================================================
+    TOAST
+    ============================================================ -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
@@ -1550,6 +1932,7 @@
         let currentQuarter = '';
         let pieChartInstance = null;
         let barChartInstance = null;
+        let quarterChartInstance = null;
 
         // ============================================================
         //  CAR DATA
@@ -1557,7 +1940,9 @@
         let carData = {
             model: '',
             plate: '',
-            fuelConsumption: 0
+            fuelConsumption: 0,
+            oilInterval: 10000, // км
+            oilLastReset: null // дата сброса
         };
 
         function loadCarData() {
@@ -1609,15 +1994,15 @@
             const descs = ['Заправка', 'Оплата страховки', 'Мойка', 'ФСЗН отчисление', 'Медосмотр', 'Ремонт ходовой',
                 'Замена масла', 'Прочие расходы'
             ];
-            for (let i = 0; i < 14; i++) {
+            for (let i = 0; i < 20; i++) {
                 const d = new Date(now);
-                d.setDate(d.getDate() - i * 3 - Math.floor(Math.random() * 5));
+                d.setDate(d.getDate() - i * 4 - Math.floor(Math.random() * 6));
                 const cat = cats[Math.floor(Math.random() * cats.length)];
                 samples.push({
                     id: 's_' + Date.now() + '_' + i,
                     date: d.toISOString().split('T')[0],
                     category: cat,
-                    amount: +(Math.random() * 120 + 10).toFixed(2),
+                    amount: +(Math.random() * 130 + 10).toFixed(2),
                     description: descs[Math.floor(Math.random() * descs.length)] + ' #' + (i + 1)
                 });
             }
@@ -1634,6 +2019,12 @@
             const m = d.getMonth();
             const q = Math.floor(m / 3) + 1;
             return `${y}-Q${q}`;
+        }
+
+        function getQuarterLabel(q) {
+            const [year, qNum] = q.split('-Q');
+            const months = ['Янв-Мар', 'Апр-Июн', 'Июл-Сен', 'Окт-Дек'];
+            return `${year} ${months[parseInt(qNum)-1]}`;
         }
 
         function getQuarterRange(quarter) {
@@ -1668,6 +2059,57 @@
             });
         }
 
+        function getAllQuartersData() {
+            const qs = getAvailableQuarters();
+            return qs.map(q => {
+                const items = getExpensesForQuarter(q);
+                const total = items.reduce((s, e) => s + e.amount, 0);
+                const count = items.length;
+                // топ категория
+                const catMap = {};
+                items.forEach(e => {
+                    catMap[e.category] = (catMap[e.category] || 0) + e.amount;
+                });
+                let topCat = '—';
+                let topVal = 0;
+                for (const [k, v] of Object.entries(catMap)) {
+                    if (v > topVal) { topVal = v;
+                        topCat = CATEGORIES[k]?.label || k; }
+                }
+                return { quarter: q, total, count, topCat, items };
+            });
+        }
+
+        // ============================================================
+        //  OIL REMINDER
+        // ============================================================
+        function calculateMileage() {
+            // Считаем пробег на основе потраченного топлива за всё время
+            const fuelTotal = expenses
+                .filter(e => e.category === 'fuel')
+                .reduce((s, e) => s + e.amount, 0);
+
+            if (carData.fuelConsumption > 0 && fuelTotal > 0) {
+                const pricePerLiter = 2.5;
+                const liters = fuelTotal / pricePerLiter;
+                return (liters / carData.fuelConsumption) * 100;
+            }
+            return 0;
+        }
+
+        function getOilStatus() {
+            const mileage = calculateMileage();
+            const interval = carData.oilInterval || 10000;
+
+            if (mileage === 0 || interval === 0) return { status: 'unknown', mileage, remaining: interval };
+
+            const remaining = interval - (mileage % interval);
+            if (remaining <= 0) return { status: 'danger', mileage, remaining: 0 };
+            if (remaining <= 500) return { status: 'danger', mileage, remaining };
+            if (remaining <= 1000) return { status: 'warning', mileage, remaining };
+            return { status: 'good', mileage, remaining };
+        }
+
         // ============================================================
         //  RENDER
         // ============================================================
@@ -1677,22 +2119,58 @@
             document.getElementById('carFuelConsumption').textContent = carData.fuelConsumption ? carData.fuelConsumption
                 .toFixed(1) : '—';
 
-            // Расчёт топлива и пробега
             const items = getExpensesForQuarter(currentQuarter);
             const fuelTotal = items.filter(e => e.category === 'fuel').reduce((s, e) => s + e.amount, 0);
 
             if (carData.fuelConsumption > 0 && fuelTotal > 0) {
-                // Цена топлива ~2.5 BYN/л (можно заменить на реальную)
                 const pricePerLiter = 2.5;
                 const liters = fuelTotal / pricePerLiter;
                 const mileage = (liters / carData.fuelConsumption) * 100;
-
                 document.getElementById('carFuelUsed').textContent = liters.toFixed(1);
                 document.getElementById('carMileage').textContent = mileage.toFixed(0);
             } else {
                 document.getElementById('carFuelUsed').textContent = '—';
                 document.getElementById('carMileage').textContent = '—';
             }
+
+            // Oil reminder
+            const container = document.getElementById('oilReminderContainer');
+            const status = getOilStatus();
+            let html = '';
+            if (status.status === 'unknown' || !carData.oilInterval) {
+                html =
+                    `<span class="oil-reminder" style="background:rgba(255,255,255,0.05);color:var(--text-muted);border-color:var(--border-glass);">
+                        <i class="fas fa-oil-can"></i> Укажите интервал замены масла
+                    </span>`;
+            } else if (status.status === 'good') {
+                const nextChange = status.remaining;
+                html =
+                    `<span class="oil-reminder good">
+                        <i class="fas fa-check-circle"></i> Замена масла через ${nextChange.toFixed(0)} км
+                    </span>`;
+            } else if (status.status === 'warning') {
+                html =
+                    `<span class="oil-reminder warning">
+                        <i class="fas fa-exclamation-triangle"></i> Замена масла через ${status.remaining.toFixed(0)} км!
+                    </span>`;
+                showToastIfNeeded('⚠️ Замена масла через ' + status.remaining.toFixed(0) + ' км!', 'warning');
+            } else if (status.status === 'danger') {
+                html =
+                    `<span class="oil-reminder danger">
+                        <i class="fas fa-times-circle"></i> СРОЧНО! Замените масло! (пробег превышен)
+                    </span>`;
+                showToastIfNeeded('🚨 СРОЧНО замените масло! Пробег превышен!', 'danger');
+            }
+            container.innerHTML = html;
+        }
+
+        let lastToastMessage = '';
+
+        function showToastIfNeeded(message, type) {
+            if (message === lastToastMessage) return;
+            lastToastMessage = message;
+            showToast(message);
+            setTimeout(() => { lastToastMessage = ''; }, 5000);
         }
 
         function renderQuarterSelector() {
@@ -1702,7 +2180,7 @@
             qs.forEach(q => {
                 const opt = document.createElement('option');
                 opt.value = q;
-                opt.textContent = q.replace('-Q', ' Кв. ');
+                opt.textContent = getQuarterLabel(q);
                 sel.appendChild(opt);
             });
             if (currentQuarter && qs.includes(currentQuarter)) {
@@ -1712,7 +2190,7 @@
                 currentQuarter = sel.value;
             } else {
                 const now = getQuarter(new Date());
-                sel.innerHTML = `<option value="${now}">${now.replace('-Q', ' Кв. ')}</option>`;
+                sel.innerHTML = `<option value="${now}">${getQuarterLabel(now)}</option>`;
                 sel.value = now;
                 currentQuarter = now;
             }
@@ -1749,6 +2227,109 @@
             });
         }
 
+        function renderQuarterStats() {
+            const allData = getAllQuartersData();
+            const grid = document.getElementById('quarterStatsGrid');
+
+            if (allData.length === 0) {
+                grid.innerHTML =
+                    `<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:16px;">Нет данных за кварталы</div>`;
+                document.getElementById('quarterSummaryRow').innerHTML = '';
+                return;
+            }
+
+            // Находим лучший и худший квартал
+            let best = allData.reduce((a, b) => a.total > b.total ? a : b);
+            let worst = allData.reduce((a, b) => a.total < b.total ? a : b);
+
+            let html = '';
+            allData.forEach(d => {
+                const isBest = d.quarter === best.quarter;
+                const isWorst = d.quarter === worst.quarter && best.quarter !== worst.quarter;
+                let cls = '';
+                if (isBest) cls = 'best';
+                if (isWorst) cls = 'worst';
+                html += `
+                    <div class="quarter-stat-card ${cls}">
+                        <div class="q-label">${getQuarterLabel(d.quarter)}</div>
+                        <div class="q-total">${d.total.toFixed(2)} BYN</div>
+                        <div class="q-count">${d.count} записей</div>
+                        <div class="q-top">🏆 ${d.topCat}</div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+
+            // Сводка
+            const totalAll = allData.reduce((s, d) => s + d.total, 0);
+            const avgAll = totalAll / allData.length;
+            const summary = document.getElementById('quarterSummaryRow');
+            summary.innerHTML = `
+                <div class="stat-item"><i class="fas fa-coins"></i> Всего: <strong>${totalAll.toFixed(2)} BYN</strong></div>
+                <div class="stat-item"><i class="fas fa-calculator"></i> Среднее за квартал: <strong>${avgAll.toFixed(2)} BYN</strong></div>
+                <div class="stat-item"><i class="fas fa-arrow-up"></i> Лучший: <strong>${getQuarterLabel(best.quarter)}</strong> (${best.total.toFixed(2)} BYN)</div>
+                <div class="stat-item"><i class="fas fa-arrow-down"></i> Худший: <strong>${getQuarterLabel(worst.quarter)}</strong> (${worst.total.toFixed(2)} BYN)</div>
+            `;
+
+            // График по кварталам
+            renderQuarterChart(allData);
+        }
+
+        function renderQuarterChart(allData) {
+            const ctx = document.getElementById('quarterBarChart').getContext('2d');
+            if (quarterChartInstance) quarterChartInstance.destroy();
+
+            const labels = allData.map(d => getQuarterLabel(d.quarter));
+            const data = allData.map(d => d.total);
+            const colors = allData.map((d, i) => {
+                const hue = (i * 60 + 200) % 360;
+                return `hsl(${hue}, 70%, 60%)`;
+            });
+
+            quarterChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Расходы (BYN)',
+                        data: data,
+                        backgroundColor: colors.map(c => c + 'cc'),
+                        borderColor: colors,
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() ||
+                                    '#6a6090',
+                                font: { size: 10 },
+                                callback: v => v.toFixed(0),
+                            },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() ||
+                                    '#6a6090',
+                                font: { size: 10 },
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
         function renderAll() {
             const q = currentQuarter;
             if (!q) return;
@@ -1759,6 +2340,7 @@
             renderCategoryGrid();
             renderCarCard();
             renderInsights(items);
+            renderQuarterStats();
             document.getElementById('listBadge').textContent = items.length + ' записей';
             const total = items.reduce((s, e) => s + e.amount, 0);
             document.getElementById('quarterTotalBadge').innerHTML =
@@ -1986,6 +2568,19 @@
                             );
                     }
                 }
+
+                // Масло
+                const oilStatus = getOilStatus();
+                if (oilStatus.status === 'warning') {
+                    insights.push(
+                        `🛢️ <strong>Замена масла через ${oilStatus.remaining.toFixed(0)} км!</strong> Не забудьте запланировать визит на СТО.`
+                        );
+                } else if (oilStatus.status === 'danger') {
+                    insights.push(
+                        `🚨 <strong>СРОЧНО замените масло!</strong> Пробег превышен. Это может привести к поломке двигателя.`
+                        );
+                }
+
                 if (items.filter(e => e.category === 'insurance').length === 0) {
                     insights.push('🛡️ <strong>Страховка</strong> не учтена в этом квартале. Не забудьте внести, если уже оплатили.');
                 }
@@ -2109,6 +2704,7 @@
         const carModelInput = document.getElementById('carModelInput');
         const carPlateInput = document.getElementById('carPlateInput');
         const carFuelInput = document.getElementById('carFuelInput');
+        const carOilIntervalInput = document.getElementById('carOilIntervalInput');
 
         function openCarModal() {
             carModalOverlay.classList.add('open');
@@ -2116,6 +2712,7 @@
             carModelInput.value = carData.model || '';
             carPlateInput.value = carData.plate || '';
             carFuelInput.value = carData.fuelConsumption || '';
+            carOilIntervalInput.value = carData.oilInterval || 10000;
             setTimeout(() => carModelInput.focus(), 100);
         }
 
@@ -2140,10 +2737,29 @@
             carData.model = carModelInput.value.trim();
             carData.plate = carPlateInput.value.trim();
             carData.fuelConsumption = parseFloat(carFuelInput.value) || 0;
+            carData.oilInterval = parseFloat(carOilIntervalInput.value) || 10000;
             saveCarData();
             closeCarModal();
             renderAll();
             showToast('✅ Данные автомобиля сохранены');
+        });
+
+        // ============================================================
+        //  RESET OIL
+        // ============================================================
+        document.getElementById('resetOilBtn').addEventListener('click', function() {
+            if (confirm('Сбросить счётчик замены масла? (После замены масла)')) {
+                // Сохраняем текущий пробег как точку отсчёта
+                const currentMileage = calculateMileage();
+                const resetData = {
+                    mileage: currentMileage,
+                    date: new Date().toISOString()
+                };
+                carData.oilLastReset = resetData;
+                saveCarData();
+                renderAll();
+                showToast('🛢️ Счётчик масла сброшен!');
+            }
         });
 
         // ============================================================
@@ -2232,11 +2848,13 @@
                 body.classList.remove('light-theme');
                 this.innerHTML = '<i class="fas fa-moon"></i>';
                 renderCharts(getExpensesForQuarter(currentQuarter));
+                renderQuarterChart(getAllQuartersData());
                 showToast('🌙 Тёмная тема');
             } else {
                 body.classList.add('light-theme');
                 this.innerHTML = '<i class="fas fa-sun"></i>';
                 renderCharts(getExpensesForQuarter(currentQuarter));
+                renderQuarterChart(getAllQuartersData());
                 showToast('☀️ Яркая светлая тема');
             }
         });
@@ -2254,8 +2872,15 @@
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(20px)';
                 setTimeout(() => toast.remove(), 300);
-            }, 2200);
+            }, 3200);
         }
+
+        // ============================================================
+        //  WELCOME SCREEN
+        // ============================================================
+        document.getElementById('welcomeBtn').addEventListener('click', function() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+        });
 
         // ============================================================
         //  INIT
@@ -2284,9 +2909,10 @@
             }
         });
 
-        console.log('🚕 Такси Расходы 2026 — полный инструмент с автомобилем');
+        console.log('🚕 Такси Расходы 2026 — полная статистика по кварталам');
         console.log(`📊 ${expenses.length} записей, текущий квартал: ${currentQuarter}`);
         console.log(`🚗 Авто: ${carData.model || 'не указан'}`);
+        console.log(`🛢️ Интервал масла: ${carData.oilInterval || 10000} км`);
     </script>
 
 </body>
