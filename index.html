@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
 
-    <!-- Font Awesome 6 (free) -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <!-- Chart.js -->
@@ -101,15 +101,6 @@
                 opacity: 1;
             }
         }
-        @keyframes pulseGlow {
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(168, 85, 247, 0.2), 0 0 60px rgba(168, 85, 247, 0.05);
-            }
-            50% {
-                box-shadow: 0 0 40px rgba(168, 85, 247, 0.4), 0 0 80px rgba(168, 85, 247, 0.1);
-            }
-        }
         @keyframes float {
             0%,
             100% {
@@ -125,6 +116,15 @@
             }
             100% {
                 transform: rotate(360deg);
+            }
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
             }
         }
 
@@ -305,6 +305,106 @@
             padding: 20px 16px;
         }
 
+        /* ===== CAR CARD ===== */
+        .car-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .car-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink), var(--neon-cyan));
+            opacity: 0.5;
+        }
+        .car-card:hover {
+            border-color: rgba(168, 85, 247, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        .car-card .car-icon {
+            font-size: 40px;
+            color: var(--neon-purple);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+        }
+        .car-card .car-info {
+            flex: 1;
+            min-width: 120px;
+        }
+        .car-card .car-info .model {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .car-card .car-info .plate {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .car-card .car-info .fuel-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .car-card .car-info .fuel-stats span {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .car-card .car-info .fuel-stats span i {
+            color: var(--neon-cyan);
+        }
+        .car-card .car-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .car-card .car-actions button {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .car-card .car-actions button:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border-color: var(--neon-purple);
+        }
+
         /* ===== CATEGORY GRID ===== */
         .category-grid {
             display: grid;
@@ -368,7 +468,6 @@
         .cat-card:active {
             transform: scale(0.94);
         }
-
         .cat-card .icon {
             font-size: 28px;
             width: 52px;
@@ -402,7 +501,6 @@
             transition: background 0.5s, color 0.5s;
         }
 
-        /* цветные иконки для каждой категории */
         .cat-fuel .icon {
             color: #ff3d8a;
         }
@@ -548,7 +646,6 @@
         .expense-section:hover {
             border-color: rgba(168, 85, 247, 0.15);
         }
-
         .expense-section .section-header {
             display: flex;
             align-items: center;
@@ -595,7 +692,6 @@
             background: rgba(255, 255, 255, 0.02);
             border-radius: 8px;
         }
-
         .expense-item .left {
             display: flex;
             align-items: center;
@@ -675,6 +771,42 @@
         }
         .empty-state p {
             font-size: 14px;
+        }
+
+        /* ===== INSIGHTS ===== */
+        .insights-section {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        .insights-section:hover {
+            border-color: rgba(168, 85, 247, 0.15);
+        }
+        .insights-section .insight-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .insights-section .insight-item:last-child {
+            border-bottom: none;
+        }
+        .insights-section .insight-item i {
+            font-size: 20px;
+            width: 32px;
+            color: var(--neon-cyan);
+        }
+        .insights-section .insight-item .text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .insights-section .insight-item .text strong {
+            color: var(--text-primary);
         }
 
         /* ===== FAB ===== */
@@ -793,7 +925,6 @@
             margin-right: 6px;
             color: var(--neon-cyan);
         }
-
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -896,20 +1027,247 @@
             font-size: 18px;
         }
 
-        /* ===== UTILITIES ===== */
-        .text-center {
-            text-align: center;
+        /* ===== LIGHT THEME ===== */
+        body.light-theme {
+            --bg-deep: #f6f0ff;
+            --bg-surface: rgba(255, 255, 255, 0.6);
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --border-glass: rgba(0, 0, 0, 0.08);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a3a6a;
+            --text-muted: #7a6a9a;
+            background: var(--bg-deep);
+            background-image: radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.10) 0%, transparent 60%),
+                radial-gradient(circle at 80% 70%, rgba(34, 211, 238, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(255, 61, 138, 0.05) 0%, transparent 80%);
         }
-        .mt-8 {
-            margin-top: 8px;
+        body.light-theme .app-header {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px) saturate(1.8);
+            border-bottom-color: rgba(0, 0, 0, 0.06);
         }
-        .flex-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        body.light-theme .quarter-selector {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
-        .w-full {
-            width: 100%;
+        body.light-theme .quarter-selector select {
+            color: #1a1a2e;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a3a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        }
+        body.light-theme .quarter-selector select option {
+            background: #fff;
+            color: #1a1a2e;
+        }
+        body.light-theme .btn-icon {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #4a3a6a;
+        }
+        body.light-theme .btn-icon:hover {
+            background: rgba(168, 85, 247, 0.10);
+            border-color: var(--neon-purple);
+            color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+        }
+        body.light-theme .export-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #4a3a6a;
+        }
+        body.light-theme .export-btn:hover {
+            background: rgba(34, 211, 238, 0.10);
+            border-color: var(--neon-cyan);
+            color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+        }
+        body.light-theme .quarter-total-badge {
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.25);
+            color: var(--neon-purple);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.08);
+        }
+        body.light-theme .cat-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .cat-card:hover {
+            background: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 12px 40px rgba(168, 85, 247, 0.15), 0 0 30px rgba(168, 85, 247, 0.05);
+            transform: translateY(-6px) scale(1.02);
+        }
+        body.light-theme .cat-card .icon {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        body.light-theme .cat-card .name {
+            color: #4a3a6a;
+            font-weight: 700;
+        }
+        body.light-theme .cat-card .amount-badge {
+            background: rgba(0, 0, 0, 0.04);
+            color: #6a5a8a;
+            font-weight: 600;
+        }
+        body.light-theme .summary-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .summary-card:hover {
+            background: #ffffff;
+            border-color: rgba(168, 85, 247, 0.20);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.10);
+        }
+        body.light-theme .summary-card .value {
+            background: linear-gradient(135deg, #1a1a2e, #4a3a6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        body.light-theme .summary-card .label {
+            color: #6a5a8a;
+        }
+        body.light-theme .summary-card .label i {
+            color: var(--neon-purple);
+        }
+        body.light-theme .chart-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .chart-card:hover {
+            background: #ffffff;
+            border-color: rgba(168, 85, 247, 0.15);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.08);
+        }
+        body.light-theme .chart-card .chart-title {
+            color: #4a3a6a;
+        }
+        body.light-theme .chart-card .chart-title i {
+            color: var(--neon-pink);
+        }
+        body.light-theme .expense-section {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .expense-section:hover {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(168, 85, 247, 0.10);
+        }
+        body.light-theme .expense-item {
+            border-bottom-color: rgba(0, 0, 0, 0.04);
+        }
+        body.light-theme .expense-item:hover {
+            background: rgba(168, 85, 247, 0.03);
+        }
+        body.light-theme .expense-item .info .desc {
+            color: #6a5a8a;
+        }
+        body.light-theme .expense-item .info .date {
+            color: #8a7aaa;
+        }
+        body.light-theme .expense-item .delete-btn {
+            color: #8a7aaa;
+        }
+        body.light-theme .expense-item .delete-btn:hover {
+            color: var(--neon-pink);
+            background: rgba(255, 61, 138, 0.08);
+        }
+        body.light-theme .expense-section .section-header .badge {
+            background: rgba(0, 0, 0, 0.04);
+            color: #4a3a6a;
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        body.light-theme .modal {
+            background: #ffffff;
+            border-top-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.08);
+        }
+        body.light-theme .modal-close {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #4a3a6a;
+        }
+        body.light-theme .modal-close:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: #1a1a2e;
+            border-color: var(--neon-pink);
+        }
+        body.light-theme .form-group label {
+            color: #4a3a6a;
+        }
+        body.light-theme .form-group input,
+        body.light-theme .form-group select,
+        body.light-theme .form-group textarea {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #1a1a2e;
+        }
+        body.light-theme .form-group input:focus,
+        body.light-theme .form-group select:focus,
+        body.light-theme .form-group textarea:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12), 0 0 30px rgba(168, 85, 247, 0.03);
+        }
+        body.light-theme .toast {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-color: rgba(0, 0, 0, 0.04);
+            color: #1a1a2e;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .toast i {
+            color: var(--neon-purple);
+        }
+        body.light-theme .app-header .brand {
+            filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.15));
+        }
+        body.light-theme .app-header .brand i {
+            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.25));
+        }
+        body.light-theme .container>div:last-child {
+            border-top-color: rgba(0, 0, 0, 0.04);
+            color: #8a7aaa;
+        }
+        body.light-theme .car-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .car-card:hover {
+            background: #ffffff;
+            border-color: rgba(168, 85, 247, 0.20);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.10);
+        }
+        body.light-theme .car-card .car-info .plate {
+            color: #6a5a8a;
+        }
+        body.light-theme .car-card .car-actions button {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #4a3a6a;
+        }
+        body.light-theme .car-card .car-actions button:hover {
+            background: rgba(168, 85, 247, 0.08);
+            border-color: var(--neon-purple);
+            color: #1a1a2e;
+        }
+        body.light-theme .insights-section {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        body.light-theme .insights-section .insight-item {
+            border-bottom-color: rgba(0, 0, 0, 0.04);
+        }
+        body.light-theme .insights-section .insight-item .text {
+            color: #4a3a6a;
+        }
+        body.light-theme .insights-section .insight-item .text strong {
+            color: #1a1a2e;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -955,237 +1313,21 @@
             .cat-card .name {
                 font-size: 11px;
             }
-        }
-
-        /* ================================================================
-               LIGHT THEME — ЯРКАЯ, СОЧНАЯ, СОВРЕМЕННАЯ
-               ================================================================ */
-        body.light-theme {
-            --bg-deep: #f6f0ff;
-            --bg-surface: rgba(255, 255, 255, 0.6);
-            --bg-glass: rgba(255, 255, 255, 0.85);
-            --border-glass: rgba(0, 0, 0, 0.08);
-            --text-primary: #1a1a2e;
-            --text-secondary: #4a3a6a;
-            --text-muted: #7a6a9a;
-
-            background: var(--bg-deep);
-            background-image: radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.10) 0%, transparent 60%),
-                radial-gradient(circle at 80% 70%, rgba(34, 211, 238, 0.08) 0%, transparent 60%),
-                radial-gradient(circle at 50% 50%, rgba(255, 61, 138, 0.05) 0%, transparent 80%);
-        }
-
-        body.light-theme .app-header {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(24px) saturate(1.8);
-            border-bottom-color: rgba(0, 0, 0, 0.06);
-        }
-
-        body.light-theme .quarter-selector {
-            background: rgba(255, 255, 255, 0.6);
-            border-color: rgba(0, 0, 0, 0.06);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-        }
-        body.light-theme .quarter-selector select {
-            color: #1a1a2e;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a3a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-        }
-        body.light-theme .quarter-selector select option {
-            background: #fff;
-            color: #1a1a2e;
-        }
-
-        body.light-theme .btn-icon {
-            background: rgba(255, 255, 255, 0.6);
-            border-color: rgba(0, 0, 0, 0.06);
-            color: #4a3a6a;
-        }
-        body.light-theme .btn-icon:hover {
-            background: rgba(168, 85, 247, 0.10);
-            border-color: var(--neon-purple);
-            color: #1a1a2e;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
-        }
-
-        body.light-theme .export-btn {
-            background: rgba(255, 255, 255, 0.6);
-            border-color: rgba(0, 0, 0, 0.06);
-            color: #4a3a6a;
-        }
-        body.light-theme .export-btn:hover {
-            background: rgba(34, 211, 238, 0.10);
-            border-color: var(--neon-cyan);
-            color: #1a1a2e;
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
-        }
-
-        body.light-theme .quarter-total-badge {
-            background: rgba(168, 85, 247, 0.12);
-            border-color: rgba(168, 85, 247, 0.25);
-            color: var(--neon-purple);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.08);
-        }
-
-        /* Карточки категорий */
-        body.light-theme .cat-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border-color: rgba(0, 0, 0, 0.04);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        }
-        body.light-theme .cat-card:hover {
-            background: #ffffff;
-            border-color: transparent;
-            box-shadow: 0 12px 40px rgba(168, 85, 247, 0.15), 0 0 30px rgba(168, 85, 247, 0.05);
-            transform: translateY(-6px) scale(1.02);
-        }
-        body.light-theme .cat-card .icon {
-            background: rgba(0, 0, 0, 0.02);
-        }
-        body.light-theme .cat-card .name {
-            color: #4a3a6a;
-            font-weight: 700;
-        }
-        body.light-theme .cat-card .amount-badge {
-            background: rgba(0, 0, 0, 0.04);
-            color: #6a5a8a;
-            font-weight: 600;
-        }
-
-        /* Карточки сводки */
-        body.light-theme .summary-card {
-            background: rgba(255, 255, 255, 0.7);
-            border-color: rgba(0, 0, 0, 0.04);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        }
-        body.light-theme .summary-card:hover {
-            background: #ffffff;
-            border-color: rgba(168, 85, 247, 0.20);
-            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.10);
-        }
-        body.light-theme .summary-card .value {
-            background: linear-gradient(135deg, #1a1a2e, #4a3a6a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        body.light-theme .summary-card .label {
-            color: #6a5a8a;
-        }
-        body.light-theme .summary-card .label i {
-            color: var(--neon-purple);
-        }
-
-        /* Графики */
-        body.light-theme .chart-card {
-            background: rgba(255, 255, 255, 0.7);
-            border-color: rgba(0, 0, 0, 0.04);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        }
-        body.light-theme .chart-card:hover {
-            background: #ffffff;
-            border-color: rgba(168, 85, 247, 0.15);
-            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.08);
-        }
-        body.light-theme .chart-card .chart-title {
-            color: #4a3a6a;
-        }
-        body.light-theme .chart-card .chart-title i {
-            color: var(--neon-pink);
-        }
-
-        /* Список расходов */
-        body.light-theme .expense-section {
-            background: rgba(255, 255, 255, 0.7);
-            border-color: rgba(0, 0, 0, 0.04);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        }
-        body.light-theme .expense-section:hover {
-            background: rgba(255, 255, 255, 0.85);
-            border-color: rgba(168, 85, 247, 0.10);
-        }
-        body.light-theme .expense-item {
-            border-bottom-color: rgba(0, 0, 0, 0.04);
-        }
-        body.light-theme .expense-item:hover {
-            background: rgba(168, 85, 247, 0.03);
-        }
-        body.light-theme .expense-item .info .desc {
-            color: #6a5a8a;
-        }
-        body.light-theme .expense-item .info .date {
-            color: #8a7aaa;
-        }
-        body.light-theme .expense-item .delete-btn {
-            color: #8a7aaa;
-        }
-        body.light-theme .expense-item .delete-btn:hover {
-            color: var(--neon-pink);
-            background: rgba(255, 61, 138, 0.08);
-        }
-        body.light-theme .expense-section .section-header .badge {
-            background: rgba(0, 0, 0, 0.04);
-            color: #4a3a6a;
-            border-color: rgba(0, 0, 0, 0.04);
-        }
-
-        /* Модальное окно */
-        body.light-theme .modal {
-            background: #ffffff;
-            border-top-color: rgba(0, 0, 0, 0.04);
-            box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.08);
-        }
-        body.light-theme .modal-close {
-            background: rgba(0, 0, 0, 0.04);
-            border-color: rgba(0, 0, 0, 0.06);
-            color: #4a3a6a;
-        }
-        body.light-theme .modal-close:hover {
-            background: rgba(0, 0, 0, 0.08);
-            color: #1a1a2e;
-            border-color: var(--neon-pink);
-        }
-        body.light-theme .form-group label {
-            color: #4a3a6a;
-        }
-        body.light-theme .form-group input,
-        body.light-theme .form-group select,
-        body.light-theme .form-group textarea {
-            background: rgba(0, 0, 0, 0.02);
-            border-color: rgba(0, 0, 0, 0.06);
-            color: #1a1a2e;
-        }
-        body.light-theme .form-group input:focus,
-        body.light-theme .form-group select:focus,
-        body.light-theme .form-group textarea:focus {
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12), 0 0 30px rgba(168, 85, 247, 0.03);
-        }
-
-        /* Toast */
-        body.light-theme .toast {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(20px);
-            border-color: rgba(0, 0, 0, 0.04);
-            color: #1a1a2e;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
-        }
-        body.light-theme .toast i {
-            color: var(--neon-purple);
-        }
-
-        /* Бренд в хедере */
-        body.light-theme .app-header .brand {
-            filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.15));
-        }
-        body.light-theme .app-header .brand i {
-            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.25));
-        }
-
-        /* Футер */
-        body.light-theme .container>div:last-child {
-            border-top-color: rgba(0, 0, 0, 0.04);
-            color: #8a7aaa;
+            .car-card .car-icon {
+                font-size: 30px;
+                width: 48px;
+                height: 48px;
+            }
+            .car-card .car-info .model {
+                font-size: 16px;
+            }
+            .car-card .car-info .fuel-stats span {
+                font-size: 12px;
+            }
+            .car-card .car-actions button {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
         }
     </style>
 </head>
@@ -1221,7 +1363,26 @@
             </span>
         </div>
 
-        <!-- ===== CATEGORY GRID (быстрый выбор) ===== -->
+        <!-- ===== CAR CARD ===== -->
+        <div class="car-card animate-fade-up" id="carCard">
+            <div class="car-icon">
+                <i class="fas fa-car-side"></i>
+            </div>
+            <div class="car-info">
+                <div class="model" id="carModel">🚗 Мой автомобиль</div>
+                <div class="plate" id="carPlate">Нажмите, чтобы добавить</div>
+                <div class="fuel-stats">
+                    <span><i class="fas fa-tachometer-alt"></i> Расход: <strong id="carFuelConsumption">—</strong> л/100км</span>
+                    <span><i class="fas fa-road"></i> Пробег за квартал: <strong id="carMileage">—</strong> км</span>
+                    <span><i class="fas fa-gas-pump"></i> Топливо: <strong id="carFuelUsed">—</strong> л</span>
+                </div>
+            </div>
+            <div class="car-actions">
+                <button id="editCarBtn"><i class="fas fa-edit"></i> Изменить</button>
+            </div>
+        </div>
+
+        <!-- ===== CATEGORY GRID ===== -->
         <div class="category-grid" id="categoryGrid"></div>
 
         <!-- ===== SUMMARY ===== -->
@@ -1260,6 +1421,20 @@
             </div>
         </div>
 
+        <!-- ===== INSIGHTS ===== -->
+        <div class="insights-section animate-fade-up" id="insightsSection">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <i class="fas fa-lightbulb" style="color:var(--neon-orange); font-size:18px;"></i>
+                <span style="font-weight:600; font-size:15px;">Советы по оптимизации</span>
+            </div>
+            <div id="insightsContainer">
+                <div class="insight-item">
+                    <i class="fas fa-info-circle"></i>
+                    <div class="text">Добавьте свой автомобиль, чтобы получать персонализированные расчёты</div>
+                </div>
+            </div>
+        </div>
+
         <!-- ===== EXPENSE LIST ===== -->
         <div class="expense-section animate-fade-up" style="animation-delay:0.2s;">
             <div class="section-header">
@@ -1289,9 +1464,9 @@
 
     <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
+        <div class="modal" id="modalContent">
             <div class="modal-header">
-                <h2><i class="fas fa-plus-circle"></i> Новый расход</h2>
+                <h2 id="modalTitle"><i class="fas fa-plus-circle"></i> Новый расход</h2>
                 <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
             </div>
             <form id="expenseForm" autocomplete="off">
@@ -1325,6 +1500,33 @@
         </div>
     </div>
 
+    <!-- ===== CAR MODAL ===== -->
+    <div class="modal-overlay" id="carModalOverlay">
+        <div class="modal" id="carModalContent">
+            <div class="modal-header">
+                <h2><i class="fas fa-car"></i> Мой автомобиль</h2>
+                <button class="modal-close" id="carModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="carForm" autocomplete="off">
+                <div class="form-group">
+                    <label><i class="fas fa-car"></i> Модель</label>
+                    <input type="text" id="carModelInput" placeholder="Например: Toyota Camry" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-id-card"></i> Госномер</label>
+                    <input type="text" id="carPlateInput" placeholder="Например: АА 1234-7" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tachometer-alt"></i> Средний расход (л/100 км)</label>
+                    <input type="number" id="carFuelInput" placeholder="7.5" step="0.1" min="0" />
+                </div>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Сохранить авто
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -1335,7 +1537,7 @@
         const CATEGORIES = {
             fuel: { label: 'Бензин', icon: 'fa-gas-pump', color: '#ff3d8a' },
             insurance: { label: 'Страховка', icon: 'fa-shield', color: '#22d3ee' },
-            wash: { label: 'Мойка', icon: 'fa-spray-can', color: '#3b82f6' }, // ← исправлено!
+            wash: { label: 'Мойка', icon: 'fa-spray-can', color: '#3b82f6' },
             fszn: { label: 'ФСЗН', icon: 'fa-building', color: '#a3e635' },
             medic: { label: 'Медик/Механик', icon: 'fa-user-md', color: '#fb923c' },
             repair: { label: 'Ремонт на СТО', icon: 'fa-wrench', color: '#a855f7' },
@@ -1348,6 +1550,31 @@
         let currentQuarter = '';
         let pieChartInstance = null;
         let barChartInstance = null;
+
+        // ============================================================
+        //  CAR DATA
+        // ============================================================
+        let carData = {
+            model: '',
+            plate: '',
+            fuelConsumption: 0
+        };
+
+        function loadCarData() {
+            try {
+                const raw = localStorage.getItem('taxi_car');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && typeof parsed === 'object') {
+                        carData = parsed;
+                    }
+                }
+            } catch {}
+        }
+
+        function saveCarData() {
+            localStorage.setItem('taxi_car', JSON.stringify(carData));
+        }
 
         // ============================================================
         //  STORAGE
@@ -1444,6 +1671,30 @@
         // ============================================================
         //  RENDER
         // ============================================================
+        function renderCarCard() {
+            document.getElementById('carModel').textContent = carData.model || '🚗 Мой автомобиль';
+            document.getElementById('carPlate').textContent = carData.plate || 'Нажмите, чтобы добавить';
+            document.getElementById('carFuelConsumption').textContent = carData.fuelConsumption ? carData.fuelConsumption
+                .toFixed(1) : '—';
+
+            // Расчёт топлива и пробега
+            const items = getExpensesForQuarter(currentQuarter);
+            const fuelTotal = items.filter(e => e.category === 'fuel').reduce((s, e) => s + e.amount, 0);
+
+            if (carData.fuelConsumption > 0 && fuelTotal > 0) {
+                // Цена топлива ~2.5 BYN/л (можно заменить на реальную)
+                const pricePerLiter = 2.5;
+                const liters = fuelTotal / pricePerLiter;
+                const mileage = (liters / carData.fuelConsumption) * 100;
+
+                document.getElementById('carFuelUsed').textContent = liters.toFixed(1);
+                document.getElementById('carMileage').textContent = mileage.toFixed(0);
+            } else {
+                document.getElementById('carFuelUsed').textContent = '—';
+                document.getElementById('carMileage').textContent = '—';
+            }
+        }
+
         function renderQuarterSelector() {
             const sel = document.getElementById('quarterSelect');
             const qs = getAvailableQuarters();
@@ -1506,6 +1757,8 @@
             renderCharts(items);
             renderList(items);
             renderCategoryGrid();
+            renderCarCard();
+            renderInsights(items);
             document.getElementById('listBadge').textContent = items.length + ' записей';
             const total = items.reduce((s, e) => s + e.amount, 0);
             document.getElementById('quarterTotalBadge').innerHTML =
@@ -1691,6 +1944,65 @@
             });
         }
 
+        function renderInsights(items) {
+            const container = document.getElementById('insightsContainer');
+            const total = items.reduce((s, e) => s + e.amount, 0);
+            const fuelTotal = items.filter(e => e.category === 'fuel').reduce((s, e) => s + e.amount, 0);
+            const repairTotal = items.filter(e => e.category === 'repair' || e.category === 'parts').reduce((s, e) => s + e
+                .amount, 0);
+            const washTotal = items.filter(e => e.category === 'wash').reduce((s, e) => s + e.amount, 0);
+            const count = items.length;
+
+            let insights = [];
+
+            if (count === 0) {
+                insights.push('Добавьте расходы, чтобы получать умные советы');
+            } else {
+                if (fuelTotal > total * 0.5) {
+                    insights.push('⛽ <strong>Бензин</strong> составляет больше 50% всех расходов. Возможно, стоит пересмотреть маршруты или рассмотреть экономичный автомобиль.');
+                }
+                if (repairTotal > total * 0.2) {
+                    insights.push('🔧 <strong>Ремонт и запчасти</strong> — значительная статья расходов. Регулярное ТО может снизить затраты в будущем.');
+                }
+                if (washTotal < total * 0.02 && washTotal > 0) {
+                    insights.push('🧼 <strong>Мойка</strong> — небольшая статья. Но чистая машина — это уважение к клиентам и сохранность кузова.');
+                }
+                if (carData.fuelConsumption > 0 && fuelTotal > 0) {
+                    const pricePerLiter = 2.5;
+                    const liters = fuelTotal / pricePerLiter;
+                    const mileage = (liters / carData.fuelConsumption) * 100;
+                    if (carData.fuelConsumption > 10) {
+                        insights.push(
+                            `🚗 <strong>Расход ${carData.fuelConsumption.toFixed(1)} л/100км</strong> — выше среднего. Попробуйте плавный стиль вождения для экономии.`
+                            );
+                    } else if (carData.fuelConsumption < 7) {
+                        insights.push(
+                            `✅ <strong>Расход ${carData.fuelConsumption.toFixed(1)} л/100км</strong> — отличный показатель! Так держать.`
+                            );
+                    }
+                    if (mileage > 0) {
+                        insights.push(
+                            `📊 <strong>Пробег за квартал: ~${mileage.toFixed(0)} км</strong>. Средний доход на 1 км: ${(total / mileage).toFixed(2)} BYN.`
+                            );
+                    }
+                }
+                if (items.filter(e => e.category === 'insurance').length === 0) {
+                    insights.push('🛡️ <strong>Страховка</strong> не учтена в этом квартале. Не забудьте внести, если уже оплатили.');
+                }
+                if (items.filter(e => e.category === 'fszn').length === 0) {
+                    insights.push('🏛️ <strong>ФСЗН</strong> — важный платёж. Убедитесь, что все взносы учтены.');
+                }
+            }
+
+            if (insights.length === 0) {
+                insights.push('📈 Все показатели в норме. Продолжайте в том же духе!');
+            }
+
+            container.innerHTML = insights.map(text =>
+                `<div class="insight-item"><i class="fas fa-chevron-right"></i><div class="text">${text}</div></div>`
+            ).join('');
+        }
+
         function formatDate(dateStr) {
             if (!dateStr) return '';
             const d = new Date(dateStr);
@@ -1762,7 +2074,7 @@
                 populateCategorySelect(editData.category);
                 formAmount.value = editData.amount;
                 formDesc.value = editData.description || '';
-                document.querySelector('.modal-header h2').innerHTML = '<i class="fas fa-edit"></i> Редактировать';
+                document.querySelector('#modalTitle').innerHTML = '<i class="fas fa-edit"></i> Редактировать';
                 document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-sync-alt"></i> Обновить';
             } else {
                 editId.value = '';
@@ -1770,7 +2082,7 @@
                 populateCategorySelect(presetCategory || 'fuel');
                 formAmount.value = '';
                 formDesc.value = '';
-                document.querySelector('.modal-header h2').innerHTML = '<i class="fas fa-plus-circle"></i> Новый расход';
+                document.querySelector('#modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Новый расход';
                 document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Сохранить';
             }
             setTimeout(() => formDate.focus(), 100);
@@ -1788,6 +2100,51 @@
         });
         document.getElementById('modalClose').addEventListener('click', closeModal);
         document.getElementById('fabAdd').addEventListener('click', () => openModal());
+
+        // ============================================================
+        //  CAR MODAL
+        // ============================================================
+        const carModalOverlay = document.getElementById('carModalOverlay');
+        const carForm = document.getElementById('carForm');
+        const carModelInput = document.getElementById('carModelInput');
+        const carPlateInput = document.getElementById('carPlateInput');
+        const carFuelInput = document.getElementById('carFuelInput');
+
+        function openCarModal() {
+            carModalOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            carModelInput.value = carData.model || '';
+            carPlateInput.value = carData.plate || '';
+            carFuelInput.value = carData.fuelConsumption || '';
+            setTimeout(() => carModelInput.focus(), 100);
+        }
+
+        function closeCarModal() {
+            carModalOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+            carForm.reset();
+        }
+
+        carModalOverlay.addEventListener('click', (e) => {
+            if (e.target === carModalOverlay) closeCarModal();
+        });
+        document.getElementById('carModalClose').addEventListener('click', closeCarModal);
+        document.getElementById('editCarBtn').addEventListener('click', openCarModal);
+        document.getElementById('carCard').addEventListener('click', (e) => {
+            if (e.target.closest('.car-actions')) return;
+            openCarModal();
+        });
+
+        carForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            carData.model = carModelInput.value.trim();
+            carData.plate = carPlateInput.value.trim();
+            carData.fuelConsumption = parseFloat(carFuelInput.value) || 0;
+            saveCarData();
+            closeCarModal();
+            renderAll();
+            showToast('✅ Данные автомобиля сохранены');
+        });
 
         // ============================================================
         //  FORM SUBMIT
@@ -1842,9 +2199,17 @@
                 return;
             }
             const headers = ['Дата', 'Категория', 'Сумма (BYN)', 'Описание'];
+            if (carData.model || carData.plate) {
+                headers.push('Автомобиль', 'Госномер', 'Расход л/100км');
+            }
             const rows = items.map(e => {
                 const cat = CATEGORIES[e.category]?.label || e.category;
-                return [e.date, cat, e.amount.toFixed(2), e.description || ''];
+                const row = [e.date, cat, e.amount.toFixed(2), e.description || ''];
+                if (carData.model || carData.plate) {
+                    row.push(carData.model || '', carData.plate || '', carData.fuelConsumption ? carData
+                        .fuelConsumption.toFixed(1) : '');
+                }
+                return row;
             });
             const csv = [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n');
             const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -1857,7 +2222,7 @@
         });
 
         // ============================================================
-        //  THEME TOGGLE — теперь светлая тема яркая и сочная
+        //  THEME TOGGLE
         // ============================================================
         let isDark = true;
         document.getElementById('themeToggle').addEventListener('click', function() {
@@ -1895,6 +2260,7 @@
         // ============================================================
         //  INIT
         // ============================================================
+        loadCarData();
         loadExpenses();
         currentQuarter = getAvailableQuarters().pop() || getQuarter(new Date());
         renderQuarterSelector();
@@ -1905,14 +2271,22 @@
                 loadExpenses();
                 renderAll();
             }
+            if (e.key === 'taxi_car') {
+                loadCarData();
+                renderAll();
+            }
         });
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closeCarModal();
+            }
         });
 
-        console.log('🚕 Такси Расходы 2026 — светлая тема улучшена, иконка мойки исправлена');
+        console.log('🚕 Такси Расходы 2026 — полный инструмент с автомобилем');
         console.log(`📊 ${expenses.length} записей, текущий квартал: ${currentQuarter}`);
+        console.log(`🚗 Авто: ${carData.model || 'не указан'}`);
     </script>
 
 </body>
