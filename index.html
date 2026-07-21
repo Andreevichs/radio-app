@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silk Breath · Кислотное дыхание</title>
+    <title>Silk Life · Мульти-трекер</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -18,21 +18,16 @@
         :root {
             --bg-primary: #0a0a0a;
             --bg-secondary: #141414;
-            --bg-card: rgba(20, 20, 20, 0.8);
-            --bg-glass: rgba(255, 255, 255, 0.03);
-            --border-glass: rgba(255, 255, 255, 0.06);
-            
-            /* Кислотные цвета */
-            --acid-primary: #00ff88;
-            --acid-secondary: #00ffcc;
-            --acid-glow: rgba(0, 255, 136, 0.3);
-            --acid-dim: rgba(0, 255, 136, 0.1);
-            
+            --bg-card: rgba(20, 20, 20, 0.85);
             --text-primary: #f0f0f0;
             --text-secondary: rgba(255, 255, 255, 0.5);
             --text-muted: rgba(255, 255, 255, 0.3);
-            
             --ease-silk: cubic-bezier(0.45, 0, 0.55, 1);
+            
+            --accent-primary: #00ff88;
+            --accent-secondary: #00ffcc;
+            --accent-glow: rgba(0, 255, 136, 0.3);
+            --accent-dim: rgba(0, 255, 136, 0.1);
         }
 
         body {
@@ -46,18 +41,18 @@
             overflow: hidden;
             position: relative;
             padding: 16px;
+            transition: background 0.6s var(--ease-silk);
         }
 
-        /* Фоновый градиент с кислотным свечением */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background: 
-                radial-gradient(ellipse at 20% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 60%);
+            background: radial-gradient(ellipse at 20% 50%, var(--accent-dim) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 60%);
             pointer-events: none;
             z-index: 0;
+            transition: background 0.8s var(--ease-silk);
         }
 
         /* Анимированные линии фона */
@@ -72,12 +67,14 @@
             position: absolute;
             width: 1px;
             height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(0, 255, 136, 0.05), transparent);
-            animation: lineFloat 15s ease-in-out infinite;
+            background: linear-gradient(to bottom, transparent, var(--accent-primary), transparent);
+            opacity: 0.05;
+            animation: lineFloat 20s ease-in-out infinite;
+            transition: background 0.8s var(--ease-silk);
         }
         @keyframes lineFloat {
-            0%, 100% { transform: translateY(-100%); opacity: 0; }
-            50% { transform: translateY(100%); opacity: 1; }
+            0%, 100% { transform: translateY(-100%); }
+            50% { transform: translateY(100%); }
         }
 
         #particles {
@@ -89,10 +86,8 @@
         .particle {
             position: absolute;
             border-radius: 50%;
-            background: var(--acid-primary);
             opacity: 0;
             transition: all 1.5s var(--ease-silk);
-            box-shadow: 0 0 10px var(--acid-glow);
         }
 
         .app-container {
@@ -103,30 +98,329 @@
             background: var(--bg-card);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
-            border: 1px solid var(--border-glass);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 32px;
-            padding: 28px 20px 24px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 
-                0 30px 80px rgba(0, 0, 0, 0.8),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                0 0 60px rgba(0, 255, 136, 0.05);
+            gap: 16px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 60px var(--accent-glow);
             max-height: 98vh;
             overflow-y: auto;
+            transition: box-shadow 0.6s var(--ease-silk), border-color 0.6s var(--ease-silk);
         }
 
         .app-container::-webkit-scrollbar { width: 3px; }
         .app-container::-webkit-scrollbar-track { background: transparent; }
         .app-container::-webkit-scrollbar-thumb { 
-            background: var(--acid-primary); 
+            background: var(--accent-primary); 
             border-radius: 10px;
-            box-shadow: 0 0 10px var(--acid-glow);
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: background 0.6s var(--ease-silk);
         }
 
-        /* ===== ВИЗУАЛИЗАТОР ===== */
+        /* ===== ВКЛАДКИ ===== */
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .tab-btn {
+            padding: 10px 4px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            position: relative;
+        }
+        .tab-btn .tab-icon { font-size: 18px; transition: transform 0.3s ease; }
+        .tab-btn.active .tab-icon { transform: scale(1.1); }
+        .tab-btn.active {
+            background: var(--accent-dim);
+            color: var(--accent-primary);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .tab-btn:not(.active):hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* ===== КОНТЕНТ ВКЛАДОК ===== */
+        .tab-content {
+            display: none;
+            animation: tabFade 0.5s var(--ease-silk);
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        @keyframes tabFade {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== ГЛАВНАЯ СТРАНИЦА (НОВЫЙ ДИЗАЙН) ===== */
+        .dashboard-header {
+            text-align: center;
+            padding: 6px 0 4px;
+        }
+        .dashboard-header .greeting {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+        .dashboard-header .sub-greeting {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            font-weight: 300;
+        }
+        .dashboard-header .accent-text {
+            color: var(--accent-primary);
+            text-shadow: 0 0 30px var(--accent-glow);
+            transition: color 0.6s var(--ease-silk);
+        }
+
+        /* Прогресс-кольцо на главной */
+        .dashboard-ring {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 4px 0;
+        }
+        .ring-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+        }
+        .ring-container svg {
+            transform: rotate(-90deg);
+            width: 140px;
+            height: 140px;
+        }
+        .ring-container .bg-ring {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 6;
+        }
+        .ring-container .progress-ring-main {
+            fill: none;
+            stroke: var(--accent-primary);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 377;
+            stroke-dashoffset: 377;
+            transition: stroke-dashoffset 0.8s var(--ease-silk), stroke 0.6s var(--ease-silk);
+            filter: drop-shadow(0 0 15px var(--accent-glow));
+        }
+        .ring-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .ring-center .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-shadow: 0 0 30px var(--accent-glow);
+            transition: color 0.6s var(--ease-silk);
+        }
+        .ring-center .label {
+            font-size: 9px;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+
+        /* Карточки активностей */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .dash-card {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .dash-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent-dim);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .dash-card:hover::before { opacity: 1; }
+        .dash-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        .dash-card .card-content {
+            position: relative;
+            z-index: 1;
+        }
+        .dash-icon { 
+            font-size: 28px; 
+            margin-bottom: 4px;
+            display: block;
+        }
+        .dash-label { 
+            font-size: 9px; 
+            color: var(--text-secondary); 
+            letter-spacing: 1px;
+            font-weight: 300;
+            text-transform: uppercase;
+        }
+        .dash-value { 
+            font-size: 22px; 
+            font-weight: 700; 
+            color: var(--accent-primary);
+            text-shadow: 0 0 20px var(--accent-glow);
+            transition: color 0.6s var(--ease-silk);
+            line-height: 1.2;
+        }
+        .dash-sub { 
+            font-size: 10px; 
+            color: var(--text-muted); 
+            margin-top: 2px; 
+            font-weight: 300;
+        }
+        .dash-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .dash-progress .bar {
+            height: 100%;
+            background: var(--accent-primary);
+            border-radius: 4px;
+            transition: width 0.8s var(--ease-silk), background 0.6s var(--ease-silk);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* Мотивационная строка */
+        .motivation-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .motivation-bar .icon { font-size: 20px; }
+        .motivation-bar .text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 300;
+            flex: 1;
+        }
+        .motivation-bar .text strong {
+            color: var(--accent-primary);
+            font-weight: 600;
+            transition: color 0.6s var(--ease-silk);
+        }
+
+        /* ===== ОБЩИЕ СТИЛИ ДЛЯ ВКЛАДОК ===== */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: 18px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #0a0a0a;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 8px 30px var(--accent-glow);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary.running {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 300;
+        }
+        .btn-secondary:hover {
+            background: var(--accent-dim);
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-item {
+            font-size: 10px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            text-align: center;
+            font-weight: 300;
+        }
+        .stat-value { 
+            color: var(--accent-primary); 
+            font-weight: 700; 
+            font-size: 14px;
+            text-shadow: 0 0 20px var(--accent-glow);
+            transition: color 0.6s var(--ease-silk);
+        }
+
+        /* ===== ДЫХАНИЕ ===== */
         .breath-visualizer {
             width: 180px;
             height: 180px;
@@ -135,6 +429,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            margin: 0 auto;
         }
 
         .silk-blob {
@@ -142,8 +437,8 @@
             inset: 0;
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 0 40px var(--acid-glow));
-            transition: transform 0.8s var(--ease-silk);
+            filter: drop-shadow(0 0 40px var(--accent-glow));
+            transition: transform 0.8s var(--ease-silk), filter 0.6s var(--ease-silk);
         }
 
         .silk-path {
@@ -159,10 +454,11 @@
             font-size: 26px;
             font-weight: 600;
             letter-spacing: 2px;
-            color: var(--acid-primary);
+            color: var(--accent-primary);
             text-align: center;
             min-height: 38px;
-            text-shadow: 0 0 30px var(--acid-glow);
+            text-shadow: 0 0 30px var(--accent-glow);
+            transition: color 0.6s var(--ease-silk);
         }
 
         .progress-ring {
@@ -171,43 +467,19 @@
             width: calc(100% + 36px);
             height: calc(100% + 36px);
             transform: rotate(-90deg);
-            filter: drop-shadow(0 0 15px var(--acid-glow));
         }
         .progress-circle {
             fill: none;
-            stroke: var(--acid-primary);
+            stroke: var(--accent-primary);
             stroke-width: 2.5;
             stroke-linecap: round;
             stroke-dasharray: 680;
             stroke-dashoffset: 680;
             opacity: 0.4;
-            transition: stroke-dashoffset 0.1s linear;
+            transition: stroke 0.6s var(--ease-silk), stroke-dashoffset 0.1s linear;
         }
 
-        /* ===== ИНФО ===== */
-        .info-section { 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 4px; 
-        }
-        .timer-display { 
-            font-size: 14px; 
-            color: var(--text-secondary); 
-            letter-spacing: 4px; 
-            font-weight: 300; 
-        }
-        .mood-prompt { 
-            font-size: 12px; 
-            color: var(--acid-primary); 
-            opacity: 0.5; 
-            font-style: italic; 
-            font-weight: 300;
-        }
-
-        /* ===== МИКШЕР ЗВУКОВ ===== */
         .sound-mixer {
-            width: 100%;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 6px;
@@ -227,32 +499,16 @@
             padding: 6px 4px;
             border-radius: 14px;
             transition: all 0.3s ease;
-            position: relative;
+            color: var(--text-muted);
         }
         .mixer-btn.active { 
-            background: var(--acid-dim);
-            box-shadow: 0 0 20px var(--acid-glow);
+            background: var(--accent-dim);
+            box-shadow: 0 0 20px var(--accent-glow);
+            color: var(--accent-primary);
         }
-        .mixer-icon { 
-            font-size: 20px; 
-            filter: grayscale(1) brightness(0.3); 
-            transition: all 0.3s; 
-        }
-        .mixer-btn.active .mixer-icon { 
-            filter: grayscale(0) brightness(1); 
-            transform: scale(1.15);
-        }
-        .mixer-label { 
-            font-size: 9px; 
-            color: var(--text-muted); 
-            letter-spacing: 0.5px;
-            font-weight: 300;
-        }
-        .mixer-btn.active .mixer-label { 
-            color: var(--acid-primary); 
-        }
+        .mixer-btn .mixer-icon { font-size: 20px; }
+        .mixer-btn .mixer-label { font-size: 9px; }
 
-        /* ===== ТЕХНИКИ ===== */
         .techniques {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -266,181 +522,133 @@
             border-radius: 14px;
             font-size: 10px;
             font-weight: 600;
-            letter-spacing: 0.5px;
             color: var(--text-muted);
-            cursor: pointer;
             text-align: center;
+            cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Space Grotesk', sans-serif;
         }
         .tech-pill.active {
-            background: var(--acid-dim);
-            border-color: var(--acid-primary);
-            color: var(--acid-primary);
-            box-shadow: 0 0 30px var(--acid-glow);
+            background: var(--accent-dim);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
-        /* ===== КНОПКА ===== */
-        .main-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, var(--acid-primary), var(--acid-secondary));
-            border: none;
-            border-radius: 20px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: #0a0a0a;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 8px 30px var(--acid-glow);
-            transition: all 0.3s ease;
+        /* ===== ВОДА ===== */
+        .water-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .water-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             position: relative;
             overflow: hidden;
+            transition: border-color 0.6s var(--ease-silk);
+            box-shadow: 0 0 40px var(--accent-glow);
         }
-        .main-btn::after {
-            content: '';
+        .water-fill {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, var(--accent-primary), var(--accent-secondary));
+            opacity: 0.3;
+            transition: height 0.8s var(--ease-silk);
         }
-        .main-btn:hover::after { transform: translateX(100%); }
-        .main-btn:active { transform: scale(0.97); }
-        .main-btn.running {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            box-shadow: none;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .main-btn.running::after { display: none; }
-
-        /* ===== СТАТИСТИКА ===== */
-        .stats-bar {
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding-top: 6px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .stat-item {
-            font-size: 10px;
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
+        .water-text {
+            position: relative;
+            z-index: 1;
             text-align: center;
-            font-weight: 300;
         }
-        .stat-value { 
-            color: var(--acid-primary); 
-            font-weight: 700; 
-            font-size: 14px;
-            text-shadow: 0 0 20px var(--acid-glow);
+        .water-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-shadow: 0 0 30px var(--accent-glow);
+            transition: color 0.6s var(--ease-silk);
         }
+        .water-goal { font-size: 12px; color: var(--text-secondary); }
+        .water-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .water-btn {
+            padding: 10px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--accent-primary);
+            background: transparent;
+            color: var(--accent-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+        .water-btn:hover {
+            background: var(--accent-dim);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+        .water-btn:active { transform: scale(0.95); }
 
-        /* ===== ОТЧЕТЫ ===== */
-        .reports-section {
+        /* ===== МЕДИТАЦИЯ ===== */
+        .meditation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .meditation-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .meditation-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+        .meditation-card .icon { font-size: 32px; display: block; margin-bottom: 6px; }
+        .meditation-card .title { font-size: 11px; font-weight: 600; color: var(--text-primary); }
+        .meditation-card .duration { font-size: 9px; color: var(--text-muted); margin-top: 4px; }
+
+        .gratitude-area {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .gratitude-area textarea {
             width: 100%;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 18px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            resize: vertical;
+            min-height: 60px;
+            transition: border-color 0.3s ease;
         }
-
-        .reports-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
-            font-weight: 300;
+        .gratitude-area textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
         }
-
-        .report-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-        }
-
-        .day-cell {
-            aspect-ratio: 1;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
+        .gratitude-area textarea::placeholder {
             color: var(--text-muted);
-            transition: all 0.3s ease;
-            position: relative;
-            cursor: default;
-            font-weight: 300;
-        }
-        .day-cell.has-session {
-            background: var(--acid-dim);
-            border-color: var(--acid-primary);
-            box-shadow: 0 0 20px var(--acid-glow);
-        }
-        .day-cell.today {
-            border-color: var(--acid-primary);
-            box-shadow: 0 0 30px var(--acid-glow);
-        }
-        .day-cell .tooltip {
-            display: none;
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: var(--acid-primary);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 8px;
-            white-space: nowrap;
-            margin-bottom: 4px;
-            border: 1px solid rgba(0, 255, 136, 0.1);
-        }
-        .day-cell:hover .tooltip { display: block; }
-
-        /* ===== ДОСТИЖЕНИЯ ===== */
-        .achievements {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 4px 0;
-        }
-        .achievement {
-            font-size: 22px;
-            opacity: 0.15;
-            transition: all 0.5s ease;
-            filter: grayscale(1) brightness(0.3);
-            cursor: default;
-            position: relative;
-        }
-        .achievement.unlocked {
-            opacity: 1;
-            filter: grayscale(0) brightness(1);
-            animation: achievementPop 0.5s var(--ease-silk);
-            text-shadow: 0 0 30px var(--acid-glow);
-        }
-        @keyframes achievementPop {
-            0% { transform: scale(0) rotate(-30deg); }
-            50% { transform: scale(1.4) rotate(5deg); }
-            100% { transform: scale(1) rotate(0deg); }
         }
 
-        /* ===== МОДАЛЬНОЕ ОКНО ===== */
+        /* ===== МОДАЛ ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -459,14 +667,11 @@
             padding: 32px 24px;
             max-width: 400px;
             width: 100%;
-            border: 1px solid rgba(0, 255, 136, 0.1);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 60px var(--acid-glow);
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 60px var(--accent-glow);
             max-height: 80vh;
             overflow-y: auto;
         }
-        .modal-content::-webkit-scrollbar { width: 3px; }
-        .modal-content::-webkit-scrollbar-thumb { background: var(--acid-primary); border-radius: 10px; }
-        
         .modal-close {
             float: right;
             background: none;
@@ -476,15 +681,16 @@
             cursor: pointer;
             transition: 0.3s;
         }
-        .modal-close:hover { color: var(--acid-primary); }
+        .modal-close:hover { color: var(--accent-primary); }
         .modal-title {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 22px;
             font-weight: 600;
-            color: var(--acid-primary);
+            color: var(--accent-primary);
             margin-bottom: 16px;
             letter-spacing: 1px;
-            text-shadow: 0 0 30px var(--acid-glow);
+            text-shadow: 0 0 30px var(--accent-glow);
+            transition: color 0.6s var(--ease-silk);
         }
         .modal-stat {
             display: flex;
@@ -493,42 +699,24 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 13px;
         }
-        .modal-stat-label { color: var(--text-secondary); font-weight: 300; }
-        .modal-stat-value { color: var(--text-primary); font-weight: 600; }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            padding: 8px 16px;
-            border-radius: 14px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-        .btn-secondary:hover {
-            background: var(--acid-dim);
-            color: var(--acid-primary);
-            border-color: var(--acid-primary);
-            box-shadow: 0 0 20px var(--acid-glow);
-        }
-
-        /* ===== СКРОЛЛБАР ===== */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--acid-primary); border-radius: 10px; }
-
+        /* ===== АДАПТИВ ===== */
         @media (max-width: 400px) {
-            .app-container { padding: 20px 16px; gap: 16px; }
+            .app-container { padding: 16px; gap: 12px; }
+            .ring-container { width: 120px; height: 120px; }
+            .ring-container svg { width: 120px; height: 120px; }
+            .ring-center .number { font-size: 28px; }
+            .dashboard-grid { gap: 6px; }
+            .dash-card { padding: 10px; }
+            .dash-value { font-size: 18px; }
+            .tab-btn { font-size: 9px; padding: 8px 2px; }
+            .tab-btn .tab-icon { font-size: 16px; }
             .breath-visualizer { width: 150px; height: 150px; }
             .phase-text { font-size: 22px; }
-            .tech-pill { font-size: 9px; padding: 8px 2px; }
-            .reports-section { padding: 12px; }
-            .report-grid { gap: 3px; }
-            .day-cell { font-size: 8px; }
+            .water-circle { width: 120px; height: 120px; }
+            .water-amount { font-size: 26px; }
+            .meditation-grid { gap: 6px; }
+            .meditation-card { padding: 12px; }
         }
     </style>
 </head>
@@ -541,80 +729,225 @@
     <div id="particles"></div>
 
     <div class="app-container">
-        <!-- Визуализатор -->
-        <div class="breath-visualizer">
-            <svg class="progress-ring">
-                <circle class="progress-circle" r="108" cx="116" cy="116"/>
-            </svg>
-            <svg class="silk-blob" viewBox="0 0 200 200">
-                <defs>
-                    <radialGradient id="silkGradient" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#00ff88" stop-opacity="0.4"/>
-                        <stop offset="60%" stop-color="#00ffcc" stop-opacity="0.1"/>
-                        <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
-                    </radialGradient>
-                </defs>
-                <path class="silk-path" d="M100,100 m-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0"/>
-            </svg>
-            <div class="phase-text" id="phaseText">Готовность</div>
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="dashboard">
+                <span class="tab-icon">🏠</span>
+                <span>Главная</span>
+            </button>
+            <button class="tab-btn" data-tab="breath">
+                <span class="tab-icon">🧘</span>
+                <span>Дыхание</span>
+            </button>
+            <button class="tab-btn" data-tab="water">
+                <span class="tab-icon">💧</span>
+                <span>Вода</span>
+            </button>
+            <button class="tab-btn" data-tab="meditation">
+                <span class="tab-icon">🧠</span>
+                <span>Медитация</span>
+            </button>
         </div>
 
-        <!-- Инфо -->
-        <div class="info-section">
-            <div class="timer-display" id="timerDisplay">ВЫБЕРИТЕ РИТМ</div>
-            <div class="mood-prompt" id="moodPrompt">Подарите себе минуту тишины</div>
-        </div>
-
-        <!-- Звуки -->
-        <div class="sound-mixer">
-            <button class="mixer-btn" data-sound="rain"><span class="mixer-icon">🌧️</span><span class="mixer-label">Дождь</span></button>
-            <button class="mixer-btn" data-sound="ocean"><span class="mixer-icon">🌊</span><span class="mixer-label">Океан</span></button>
-            <button class="mixer-btn" data-sound="bowls"><span class="mixer-icon">🔔</span><span class="mixer-label">Чаши</span></button>
-            <button class="mixer-btn" data-sound="pink"><span class="mixer-icon">🌸</span><span class="mixer-label">Шум</span></button>
-        </div>
-
-        <!-- Техники -->
-        <div class="techniques">
-            <div class="tech-pill active" data-tech="478">4-7-8</div>
-            <div class="tech-pill" data-tech="box">Квадрат</div>
-            <div class="tech-pill" data-tech="coherent">Когерент</div>
-            <div class="tech-pill" data-tech="sos">SOS</div>
-        </div>
-
-        <!-- Кнопка -->
-        <button class="main-btn" id="toggleBtn">Начать практику</button>
-
-        <!-- Достижения -->
-        <div class="achievements" id="achievements">
-            <span class="achievement" data-achievement="first" title="Первая практика">🌱</span>
-            <span class="achievement" data-achievement="7days" title="7 дней подряд">🌟</span>
-            <span class="achievement" data-achievement="30days" title="30 дней подряд">🏆</span>
-            <span class="achievement" data-achievement="100sessions" title="100 сессий">💎</span>
-            <span class="achievement" data-achievement="10min" title="10+ минут практики">🔥</span>
-        </div>
-
-        <!-- Отчеты -->
-        <div class="reports-section">
-            <div class="reports-header">
-                <span>◈ АКТИВНОСТЬ</span>
-                <button class="btn-secondary" id="showFullReport">Детально</button>
+        <!-- ===== ГЛАВНАЯ СТРАНИЦА (НОВЫЙ ДИЗАЙН) ===== -->
+        <div class="tab-content active" id="tab-dashboard">
+            <!-- Приветствие -->
+            <div class="dashboard-header">
+                <div class="greeting">
+                    Привет, <span class="accent-text" id="userName">исследователь</span> ✨
+                </div>
+                <div class="sub-greeting">
+                    Твой день — <span class="accent-text" id="dayProgress">0%</span> завершён
+                </div>
             </div>
-            <div class="report-grid" id="reportGrid"></div>
+
+            <!-- Прогресс-кольцо -->
+            <div class="dashboard-ring">
+                <div class="ring-container">
+                    <svg viewBox="0 0 140 140">
+                        <circle class="bg-ring" cx="70" cy="70" r="60"/>
+                        <circle class="progress-ring-main" cx="70" cy="70" r="60" id="mainRing"/>
+                    </svg>
+                    <div class="ring-center">
+                        <span class="number" id="ringNumber">0</span>
+                        <span class="label">% готовности</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Карточки активностей -->
+            <div class="dashboard-grid">
+                <div class="dash-card" data-tab="breath">
+                    <div class="card-content">
+                        <span class="dash-icon">🧘</span>
+                        <div class="dash-label">Дыхание</div>
+                        <div class="dash-value" id="dashBreath">0</div>
+                        <div class="dash-sub">сессий сегодня</div>
+                        <div class="dash-progress">
+                            <div class="bar" id="breathProgress" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dash-card" data-tab="water">
+                    <div class="card-content">
+                        <span class="dash-icon">💧</span>
+                        <div class="dash-label">Вода</div>
+                        <div class="dash-value" id="dashWater">0.0</div>
+                        <div class="dash-sub">из 2.0 л</div>
+                        <div class="dash-progress">
+                            <div class="bar" id="waterProgress" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dash-card" data-tab="meditation">
+                    <div class="card-content">
+                        <span class="dash-icon">🧠</span>
+                        <div class="dash-label">Медитация</div>
+                        <div class="dash-value" id="dashMeditation">0</div>
+                        <div class="dash-sub">минут сегодня</div>
+                        <div class="dash-progress">
+                            <div class="bar" id="meditationProgress" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dash-card" data-tab="dashboard">
+                    <div class="card-content">
+                        <span class="dash-icon">🔥</span>
+                        <div class="dash-label">Серия</div>
+                        <div class="dash-value" id="dashStreak">0</div>
+                        <div class="dash-sub">дней подряд</div>
+                        <div class="dash-progress">
+                            <div class="bar" id="streakProgress" style="width:0%;background:linear-gradient(90deg,#ff6b6b,#ffd93d);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Мотивационная строка -->
+            <div class="motivation-bar">
+                <span class="icon">💫</span>
+                <div class="text">
+                    <strong id="motivationText">Ты делаешь это невероятно!</strong>
+                    <span id="motivationSub">Продолжай в том же духе</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="quickStart">✨ Начать утренний ритуал</button>
         </div>
 
-        <!-- Статистика -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <span>Сегодня</span>
-                <span class="stat-value" id="todayMin">0</span>
+        <!-- ===== ДЫХАНИЕ ===== -->
+        <div class="tab-content" id="tab-breath">
+            <div class="breath-visualizer">
+                <svg class="progress-ring">
+                    <circle class="progress-circle" r="108" cx="116" cy="116"/>
+                </svg>
+                <svg class="silk-blob" viewBox="0 0 200 200">
+                    <defs>
+                        <radialGradient id="silkGradient" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.4"/>
+                            <stop offset="60%" stop-color="var(--accent-secondary)" stop-opacity="0.1"/>
+                            <stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <path class="silk-path" d="M100,100 m-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0"/>
+                </svg>
+                <div class="phase-text" id="phaseText">Готовность</div>
             </div>
-            <div class="stat-item">
-                <span>Серия</span>
-                <span class="stat-value" id="streakDays">0</span>
+
+            <div style="text-align:center;">
+                <div id="timerDisplay" style="font-size:14px;color:var(--text-secondary);letter-spacing:4px;font-weight:300;">ВЫБЕРИТЕ РИТМ</div>
+                <div id="moodPrompt" style="font-size:12px;color:var(--accent-primary);opacity:0.5;font-style:italic;margin-top:2px;">Подарите себе минуту тишины</div>
             </div>
-            <div class="stat-item">
-                <span>Всего</span>
-                <span class="stat-value" id="totalSessions">0</span>
+
+            <div class="sound-mixer">
+                <button class="mixer-btn" data-sound="rain"><span class="mixer-icon">🌧️</span><span class="mixer-label">Дождь</span></button>
+                <button class="mixer-btn" data-sound="ocean"><span class="mixer-icon">🌊</span><span class="mixer-label">Океан</span></button>
+                <button class="mixer-btn" data-sound="bowls"><span class="mixer-icon">🔔</span><span class="mixer-label">Чаши</span></button>
+                <button class="mixer-btn" data-sound="pink"><span class="mixer-icon">🌸</span><span class="mixer-label">Шум</span></button>
+            </div>
+
+            <div class="techniques">
+                <div class="tech-pill active" data-tech="478">4-7-8</div>
+                <div class="tech-pill" data-tech="box">Квадрат</div>
+                <div class="tech-pill" data-tech="coherent">Когерент</div>
+                <div class="tech-pill" data-tech="sos">SOS</div>
+            </div>
+
+            <button class="btn-primary" id="toggleBtn">Начать практику</button>
+
+            <div class="stats-bar">
+                <div class="stat-item">🌱 Сегодня <span class="stat-value" id="todayMin">0</span></div>
+                <div class="stat-item">✨ Серия <span class="stat-value" id="streakDays">0</span></div>
+                <div class="stat-item">🧘 Всего <span class="stat-value" id="totalSessions">0</span></div>
+            </div>
+        </div>
+
+        <!-- ===== ВОДА ===== -->
+        <div class="tab-content" id="tab-water">
+            <div class="water-display">
+                <div class="water-circle">
+                    <div class="water-fill" id="waterFill" style="height:0%;"></div>
+                    <div class="water-text">
+                        <div class="water-amount" id="waterAmount">0.0</div>
+                        <div class="water-goal">из 2.0 л</div>
+                    </div>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);">
+                    Осталось: <span id="waterLeft" style="color:var(--accent-primary);font-weight:600;">2.0</span> л
+                </div>
+                <div class="water-buttons">
+                    <button class="water-btn" data-amount="200">💧 200 мл</button>
+                    <button class="water-btn" data-amount="250">💧 250 мл</button>
+                    <button class="water-btn" data-amount="500">💧 500 мл</button>
+                </div>
+                <button class="btn-secondary" id="resetWater" style="width:auto;padding:6px 16px;">Сбросить сегодня</button>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">💧 Сегодня <span class="stat-value" id="waterToday">0</span> мл</div>
+                <div class="stat-item">📊 Среднее <span class="stat-value" id="waterAvg">0</span> мл</div>
+                <div class="stat-item">🏆 Рекорд <span class="stat-value" id="waterRecord">0</span> мл</div>
+            </div>
+        </div>
+
+        <!-- ===== МЕДИТАЦИЯ ===== -->
+        <div class="tab-content" id="tab-meditation">
+            <div class="meditation-grid">
+                <div class="meditation-card" data-minutes="3">
+                    <span class="icon">🌅</span>
+                    <div class="title">Осознанное утро</div>
+                    <div class="duration">3 минуты</div>
+                </div>
+                <div class="meditation-card" data-minutes="5">
+                    <span class="icon">🧘</span>
+                    <div class="title">Сканирование тела</div>
+                    <div class="duration">5 минут</div>
+                </div>
+                <div class="meditation-card" data-minutes="2">
+                    <span class="icon">🙏</span>
+                    <div class="title">Благодарность</div>
+                    <div class="duration">2 минуты</div>
+                </div>
+                <div class="meditation-card" data-minutes="10">
+                    <span class="icon">🌟</span>
+                    <div class="title">Глубокая практика</div>
+                    <div class="duration">10 минут</div>
+                </div>
+            </div>
+
+            <div class="gratitude-area">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="font-size:11px;color:var(--text-secondary);">📝 Дневник благодарности</span>
+                    <span style="font-size:9px;color:var(--text-muted);" id="gratitudeCount">0 записей</span>
+                </div>
+                <textarea id="gratitudeInput" placeholder="Напишите 3 вещи, за которые вы благодарны сегодня..."></textarea>
+                <button class="btn-secondary" id="saveGratitude" style="width:100%;margin-top:8px;padding:10px;">Сохранить</button>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">🧠 Сегодня <span class="stat-value" id="meditationToday">0</span> мин</div>
+                <div class="stat-item">📊 Всего <span class="stat-value" id="meditationTotal">0</span> мин</div>
+                <div class="stat-item">🔥 Серия <span class="stat-value" id="meditationStreak">0</span> дн</div>
             </div>
         </div>
     </div>
@@ -623,7 +956,7 @@
     <div class="modal-overlay" id="reportModal">
         <div class="modal-content">
             <button class="modal-close" id="closeModal">✕</button>
-            <div class="modal-title">◈ ДЕТАЛЬНЫЙ ОТЧЕТ</div>
+            <div class="modal-title" id="modalTitle">📊 Отчет</div>
             <div id="reportContent"></div>
         </div>
     </div>
@@ -632,20 +965,62 @@
         (function() {
             const tg = window.Telegram.WebApp;
             tg.expand();
-            
+
             // Фоновые линии
             (function createBgLines() {
                 const container = document.getElementById('bgLines');
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < 6; i++) {
                     const line = document.createElement('div');
                     line.className = 'bg-line';
-                    line.style.left = (10 + i * 12) + '%';
-                    line.style.animationDelay = (i * 2) + 's';
-                    line.style.height = (50 + Math.random() * 50) + '%';
+                    line.style.left = (10 + i * 16) + '%';
+                    line.style.animationDelay = (i * 2.5) + 's';
+                    line.style.height = (40 + Math.random() * 40) + '%';
                     container.appendChild(line);
                 }
             })();
 
+            // ===== ЦВЕТОВЫЕ СХЕМЫ =====
+            const COLOR_SCHEMES = {
+                dashboard: {
+                    primary: '#00ff88',
+                    secondary: '#00ffcc',
+                    glow: 'rgba(0, 255, 136, 0.3)',
+                    dim: 'rgba(0, 255, 136, 0.1)'
+                },
+                breath: {
+                    primary: '#00ff88',
+                    secondary: '#00ffcc',
+                    glow: 'rgba(0, 255, 136, 0.3)',
+                    dim: 'rgba(0, 255, 136, 0.1)'
+                },
+                water: {
+                    primary: '#4fc3f7',
+                    secondary: '#00bcd4',
+                    glow: 'rgba(79, 195, 247, 0.3)',
+                    dim: 'rgba(79, 195, 247, 0.1)'
+                },
+                meditation: {
+                    primary: '#b388ff',
+                    secondary: '#7c4dff',
+                    glow: 'rgba(179, 136, 255, 0.3)',
+                    dim: 'rgba(179, 136, 255, 0.1)'
+                }
+            };
+
+            function applyColorScheme(scheme) {
+                const root = document.documentElement;
+                root.style.setProperty('--accent-primary', scheme.primary);
+                root.style.setProperty('--accent-secondary', scheme.secondary);
+                root.style.setProperty('--accent-glow', scheme.glow);
+                root.style.setProperty('--accent-dim', scheme.dim);
+                
+                // Обновляем линии
+                document.querySelectorAll('.bg-line').forEach(line => {
+                    line.style.background = `linear-gradient(to bottom, transparent, ${scheme.primary}, transparent)`;
+                });
+            }
+
+            // ===== ТЕХНИКИ ДЫХАНИЯ =====
             const TECHNIQUES = {
                 '478': [
                     { name: "Вдох", duration: 4000, scale: 1.4, haptic: "medium" },
@@ -668,19 +1043,24 @@
                 ]
             };
 
+            // ===== СОСТОЯНИЕ =====
             const state = {
                 tech: '478',
                 isRunning: false,
                 phaseIdx: 0,
-                sounds: { rain: false, ocean: false, bowls: false, pink: false },
                 sessionStart: 0,
+                sounds: { rain: false, ocean: false, bowls: false, pink: false },
+                currentTab: 'dashboard',
             };
 
             let timers = { phase: null, progress: null };
             let audioCtx = null;
             let soundNodes = {};
 
+            // ===== DOM =====
             const el = {
+                tabs: document.querySelectorAll('.tab-btn'),
+                contents: document.querySelectorAll('.tab-content'),
                 blob: document.querySelector('.silk-blob'),
                 path: document.querySelector('.silk-path'),
                 phase: document.getElementById('phaseText'),
@@ -693,18 +1073,45 @@
                 todayMin: document.getElementById('todayMin'),
                 streakDays: document.getElementById('streakDays'),
                 totalSessions: document.getElementById('totalSessions'),
-                reportGrid: document.getElementById('reportGrid'),
-                achievements: document.getElementById('achievements'),
-                modal: document.getElementById('reportModal'),
-                reportContent: document.getElementById('reportContent'),
+                // Главная
+                dashBreath: document.getElementById('dashBreath'),
+                dashWater: document.getElementById('dashWater'),
+                dashMeditation: document.getElementById('dashMeditation'),
+                dashStreak: document.getElementById('dashStreak'),
+                breathProgress: document.getElementById('breathProgress'),
+                waterProgress: document.getElementById('waterProgress'),
+                meditationProgress: document.getElementById('meditationProgress'),
+                streakProgress: document.getElementById('streakProgress'),
+                ringNumber: document.getElementById('ringNumber'),
+                mainRing: document.getElementById('mainRing'),
+                dayProgress: document.getElementById('dayProgress'),
+                motivationText: document.getElementById('motivationText'),
+                motivationSub: document.getElementById('motivationSub'),
+                quickStart: document.getElementById('quickStart'),
+                // Вода
+                waterFill: document.getElementById('waterFill'),
+                waterAmount: document.getElementById('waterAmount'),
+                waterLeft: document.getElementById('waterLeft'),
+                waterToday: document.getElementById('waterToday'),
+                waterAvg: document.getElementById('waterAvg'),
+                waterRecord: document.getElementById('waterRecord'),
+                resetWater: document.getElementById('resetWater'),
+                // Медитация
+                meditationToday: document.getElementById('meditationToday'),
+                meditationTotal: document.getElementById('meditationTotal'),
+                meditationStreak: document.getElementById('meditationStreak'),
+                gratitudeInput: document.getElementById('gratitudeInput'),
+                gratitudeCount: document.getElementById('gratitudeCount'),
+                saveGratitude: document.getElementById('saveGratitude'),
             };
 
             const CIRCUMFERENCE = 2 * Math.PI * 108;
-            el.circle.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
+            if (el.circle) el.circle.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
 
             // ===== ЧАСТИЦЫ =====
             function initParticles() {
                 const container = document.getElementById('particles');
+                const colors = ['#00ff88', '#00ffcc', '#4fc3f7', '#b388ff'];
                 for (let i = 0; i < 40; i++) {
                     const p = document.createElement('div');
                     p.className = 'particle';
@@ -713,8 +1120,8 @@
                     p.style.height = size + 'px';
                     p.style.left = Math.random() * 100 + '%';
                     p.style.top = Math.random() * 100 + '%';
-                    p.style.background = Math.random() > 0.5 ? '#00ff88' : '#00ffcc';
-                    p.style.boxShadow = `0 0 ${size*3}px rgba(0, 255, 136, 0.3)`;
+                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    p.style.boxShadow = `0 0 ${size*3}px rgba(0, 255, 136, 0.2)`;
                     container.appendChild(p);
                 }
             }
@@ -792,16 +1199,12 @@
                 filter.type = 'lowpass';
                 filter.frequency.value = 1500;
                 
-                const panner = audioCtx.createStereoPanner();
-                panner.pan.value = (Math.random() - 0.5) * 0.3;
-                
                 src.connect(filter);
                 filter.connect(gain);
-                gain.connect(panner);
-                panner.connect(audioCtx.destination);
+                gain.connect(audioCtx.destination);
                 src.start();
                 
-                return { src, gain, filter, panner };
+                return { src, gain, filter };
             }
 
             function toggleSound(type, active) {
@@ -816,7 +1219,7 @@
                 }
             }
 
-            // ===== ЛОГИКА ДЫХАНИЯ =====
+            // ===== ДЫХАНИЕ =====
             function startSession() {
                 state.isRunning = true;
                 state.phaseIdx = 0;
@@ -834,7 +1237,7 @@
                 cancelAnimationFrame(timers.progress);
 
                 const sessionMs = Date.now() - state.sessionStart;
-                saveStats(sessionMs);
+                saveBreathStats(sessionMs);
 
                 el.btn.textContent = "Начать практику";
                 el.btn.classList.remove('running');
@@ -842,7 +1245,7 @@
                 el.timer.textContent = "ВЫБЕРИТЕ РИТМ";
                 el.mood.textContent = getGratitude();
                 el.blob.style.transform = 'scale(1)';
-                el.circle.style.strokeDashoffset = CIRCUMFERENCE;
+                if (el.circle) el.circle.style.strokeDashoffset = CIRCUMFERENCE;
                 tg.HapticFeedback?.notificationOccurred('success');
                 
                 document.querySelectorAll('.particle').forEach(p => {
@@ -850,8 +1253,7 @@
                     p.style.opacity = 0.1;
                 });
 
-                updateReports();
-                checkAchievements();
+                updateDashboard();
             }
 
             function runPhase() {
@@ -859,9 +1261,11 @@
                 const phases = TECHNIQUES[state.tech];
                 const phase = phases[state.phaseIdx];
 
-                el.phase.textContent = phase.name;
-                el.blob.style.transition = `transform ${phase.duration}ms var(--ease-silk)`;
-                el.blob.style.transform = `scale(${phase.scale})`;
+                if (el.phase) el.phase.textContent = phase.name;
+                if (el.blob) {
+                    el.blob.style.transition = `transform ${phase.duration}ms var(--ease-silk)`;
+                    el.blob.style.transform = `scale(${phase.scale})`;
+                }
 
                 animateParticles(phase.name.includes('дох'));
 
@@ -877,13 +1281,13 @@
 
             function animateProgress(duration) {
                 const start = performance.now();
-                el.circle.style.transition = 'none';
+                if (el.circle) el.circle.style.transition = 'none';
                 function frame(now) {
                     if (!state.isRunning) return;
                     const p = Math.min((now - start) / duration, 1);
-                    el.circle.style.strokeDashoffset = CIRCUMFERENCE * (1 - p);
+                    if (el.circle) el.circle.style.strokeDashoffset = CIRCUMFERENCE * (1 - p);
                     const left = Math.ceil((duration - (now - start)) / 1000);
-                    el.timer.textContent = `${Math.max(0, left)} сек`;
+                    if (el.timer) el.timer.textContent = `${Math.max(0, left)} сек`;
                     if (p < 1) timers.progress = requestAnimationFrame(frame);
                 }
                 timers.progress = requestAnimationFrame(frame);
@@ -891,157 +1295,272 @@
 
             // ===== СТАТИСТИКА =====
             function getStats() {
-                return JSON.parse(localStorage.getItem('silkBreath') || '{}');
+                return JSON.parse(localStorage.getItem('silkLife') || '{}');
             }
 
-            function saveStats(ms) {
+            function saveBreathStats(ms) {
                 const today = new Date().toDateString();
                 const data = getStats();
-                data.todayMs = (data.todayMs || 0) + ms;
-                data.date = today;
-                data.totalSessions = (data.totalSessions || 0) + 1;
-                data.totalMinutes = (data.totalMinutes || 0) + Math.round(ms / 60000);
+                if (!data.breath) data.breath = {};
+                data.breath.todayMs = (data.breath.todayMs || 0) + ms;
+                data.breath.date = today;
+                data.breath.totalSessions = (data.breath.totalSessions || 0) + 1;
+                data.breath.totalMinutes = (data.breath.totalMinutes || 0) + Math.round(ms / 60000);
                 
-                if (!data.history) data.history = {};
-                data.history[today] = (data.history[today] || 0) + ms;
+                if (!data.breath.history) data.breath.history = {};
+                data.breath.history[today] = (data.breath.history[today] || 0) + ms;
                 
-                const dates = Object.keys(data.history).sort();
-                if (dates.length > 30) {
-                    const toRemove = dates.slice(0, dates.length - 30);
-                    toRemove.forEach(d => delete data.history[d]);
+                if (data.breath.lastDate !== today) {
+                    data.breath.streak = (data.breath.streak || 0) + 1;
+                }
+                data.breath.lastDate = today;
+                
+                localStorage.setItem('silkLife', JSON.stringify(data));
+                loadBreathStats();
+                updateDashboard();
+            }
+
+            function loadBreathStats() {
+                const data = getStats();
+                const breath = data.breath || {};
+                const today = new Date().toDateString();
+                
+                if (breath.date !== today) {
+                    breath.todayMs = 0;
+                    breath.date = today;
                 }
                 
-                if (data.lastDate !== today) data.streak = (data.streak || 0) + 1;
-                data.lastDate = today;
-                
-                localStorage.setItem('silkBreath', JSON.stringify(data));
-                loadStats();
+                if (el.todayMin) el.todayMin.textContent = Math.round((breath.todayMs || 0) / 60000);
+                if (el.streakDays) el.streakDays.textContent = breath.streak || 0;
+                if (el.totalSessions) el.totalSessions.textContent = breath.totalSessions || 0;
             }
 
-            function loadStats() {
+            // ===== ВОДА =====
+            function loadWaterStats() {
                 const data = getStats();
+                const water = data.water || {};
                 const today = new Date().toDateString();
                 
-                if (data.date !== today) {
-                    data.todayMs = 0;
-                    data.date = today;
+                if (water.date !== today) {
+                    water.today = 0;
+                    water.date = today;
+                }
+                
+                const goal = 2000;
+                const current = water.today || 0;
+                const percent = Math.min((current / goal) * 100, 100);
+                
+                if (el.waterFill) el.waterFill.style.height = percent + '%';
+                if (el.waterAmount) el.waterAmount.textContent = (current / 1000).toFixed(1);
+                if (el.waterLeft) el.waterLeft.textContent = Math.max(0, (goal - current) / 1000).toFixed(1);
+                if (el.waterToday) el.waterToday.textContent = current;
+                
+                if (water.history) {
+                    const dates = Object.keys(water.history).slice(-7);
+                    const avg = dates.reduce((sum, d) => sum + water.history[d], 0) / dates.length || 0;
+                    if (el.waterAvg) el.waterAvg.textContent = Math.round(avg);
+                    
+                    const record = Math.max(...Object.values(water.history)) || 0;
+                    if (el.waterRecord) el.waterRecord.textContent = record;
+                }
+                
+                updateDashboard();
+            }
+
+            function addWater(amount) {
+                const data = getStats();
+                if (!data.water) data.water = {};
+                const today = new Date().toDateString();
+                
+                if (data.water.date !== today) {
+                    data.water.today = 0;
+                    data.water.date = today;
+                }
+                if (!data.water.history) data.water.history = {};
+                
+                data.water.today = (data.water.today || 0) + amount;
+                data.water.history[today] = (data.water.history[today] || 0) + amount;
+                
+                localStorage.setItem('silkLife', JSON.stringify(data));
+                loadWaterStats();
+                tg.HapticFeedback?.impactOccurred('soft');
+            }
+
+            function resetWater() {
+                const data = getStats();
+                if (data.water) {
+                    const today = new Date().toDateString();
+                    data.water.today = 0;
+                    data.water.history[today] = 0;
+                    localStorage.setItem('silkLife', JSON.stringify(data));
+                    loadWaterStats();
+                    tg.HapticFeedback?.notificationOccurred('warning');
+                }
+            }
+
+            // ===== МЕДИТАЦИЯ =====
+            function loadMeditationStats() {
+                const data = getStats();
+                const med = data.meditation || {};
+                const today = new Date().toDateString();
+                
+                if (med.date !== today) {
+                    med.today = 0;
+                    med.date = today;
                     const yesterday = new Date(Date.now() - 86400000).toDateString();
-                    if (data.lastDate !== yesterday && data.lastDate !== today) data.streak = 0;
-                }
-                
-                el.todayMin.textContent = Math.round((data.todayMs || 0) / 60000);
-                el.streakDays.textContent = data.streak || 0;
-                el.totalSessions.textContent = data.totalSessions || 0;
-                
-                updateReports();
-                checkAchievements();
-            }
-
-            function updateReports() {
-                const data = getStats();
-                const grid = el.reportGrid;
-                grid.innerHTML = '';
-                
-                const today = new Date();
-                for (let i = 6; i >= 0; i--) {
-                    const date = new Date(today);
-                    date.setDate(date.getDate() - i);
-                    const dateStr = date.toDateString();
-                    const day = date.getDate();
-                    const isToday = i === 0;
-                    const hasSession = data.history && data.history[dateStr] && data.history[dateStr] > 0;
-                    
-                    const cell = document.createElement('div');
-                    cell.className = 'day-cell';
-                    if (hasSession) cell.classList.add('has-session');
-                    if (isToday) cell.classList.add('today');
-                    
-                    const minutes = hasSession ? Math.round(data.history[dateStr] / 60000) : 0;
-                    cell.textContent = day;
-                    
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = hasSession ? `${minutes} мин` : '—';
-                    cell.appendChild(tooltip);
-                    
-                    grid.appendChild(cell);
-                }
-            }
-
-            // ===== ДОСТИЖЕНИЯ =====
-            function checkAchievements() {
-                const data = getStats();
-                const achievements = {
-                    'first': data.totalSessions >= 1,
-                    '7days': data.streak >= 7,
-                    '30days': data.streak >= 30,
-                    '100sessions': data.totalSessions >= 100,
-                    '10min': data.totalMinutes >= 10,
-                };
-                
-                document.querySelectorAll('.achievement').forEach(el => {
-                    const key = el.dataset.achievement;
-                    if (achievements[key]) {
-                        el.classList.add('unlocked');
-                    } else {
-                        el.classList.remove('unlocked');
+                    if (med.lastDate !== yesterday && med.lastDate !== today) {
+                        med.streak = 0;
                     }
-                });
-            }
-
-            // ===== ОТЧЕТ =====
-            function showFullReport() {
-                const data = getStats();
-                const content = el.reportContent;
-                
-                let html = `
-                    <div class="modal-stat">
-                        <span class="modal-stat-label">Всего сессий</span>
-                        <span class="modal-stat-value">${data.totalSessions || 0}</span>
-                    </div>
-                    <div class="modal-stat">
-                        <span class="modal-stat-label">Всего минут</span>
-                        <span class="modal-stat-value">${data.totalMinutes || 0}</span>
-                    </div>
-                    <div class="modal-stat">
-                        <span class="modal-stat-label">Текущая серия</span>
-                        <span class="modal-stat-value">${data.streak || 0} дней</span>
-                    </div>
-                    <div class="modal-stat">
-                        <span class="modal-stat-label">Сегодня</span>
-                        <span class="modal-stat-value">${Math.round((data.todayMs || 0) / 60000)} мин</span>
-                    </div>
-                    <div style="margin-top:16px;font-size:11px;color:var(--text-secondary);font-weight:300;">
-                        ◈ ПОСЛЕДНИЕ 7 ДНЕЙ
-                    </div>
-                `;
-                
-                const today = new Date();
-                for (let i = 6; i >= 0; i--) {
-                    const date = new Date(today);
-                    date.setDate(date.getDate() - i);
-                    const dateStr = date.toDateString();
-                    const minutes = data.history && data.history[dateStr] ? Math.round(data.history[dateStr] / 60000) : 0;
-                    const dayName = date.toLocaleDateString('ru', { weekday: 'short' });
-                    html += `
-                        <div class="modal-stat" style="font-size:12px;">
-                            <span class="modal-stat-label">${dayName} ${date.getDate()}</span>
-                            <span class="modal-stat-value">${minutes > 0 ? minutes + ' мин' : '—'}</span>
-                        </div>
-                    `;
                 }
                 
-                content.innerHTML = html;
-                el.modal.classList.add('active');
+                if (el.meditationToday) el.meditationToday.textContent = med.today || 0;
+                if (el.meditationTotal) el.meditationTotal.textContent = med.total || 0;
+                if (el.meditationStreak) el.meditationStreak.textContent = med.streak || 0;
+                
+                if (med.gratitude) {
+                    if (el.gratitudeCount) el.gratitudeCount.textContent = Object.keys(med.gratitude).length + ' записей';
+                }
+                
+                updateDashboard();
             }
 
+            function addMeditation(minutes) {
+                const data = getStats();
+                if (!data.meditation) data.meditation = {};
+                const today = new Date().toDateString();
+                
+                if (data.meditation.date !== today) {
+                    data.meditation.today = 0;
+                    data.meditation.date = today;
+                }
+                
+                data.meditation.today = (data.meditation.today || 0) + minutes;
+                data.meditation.total = (data.meditation.total || 0) + minutes;
+                
+                if (data.meditation.lastDate !== today) {
+                    data.meditation.streak = (data.meditation.streak || 0) + 1;
+                }
+                data.meditation.lastDate = today;
+                
+                localStorage.setItem('silkLife', JSON.stringify(data));
+                loadMeditationStats();
+                tg.HapticFeedback?.impactOccurred('medium');
+            }
+
+            function saveGratitude() {
+                const text = el.gratitudeInput.value.trim();
+                if (!text) return;
+                
+                const data = getStats();
+                if (!data.meditation) data.meditation = {};
+                if (!data.meditation.gratitude) data.meditation.gratitude = {};
+                
+                const now = new Date().toISOString();
+                data.meditation.gratitude[now] = text;
+                
+                localStorage.setItem('silkLife', JSON.stringify(data));
+                el.gratitudeInput.value = '';
+                loadMeditationStats();
+                tg.HapticFeedback?.notificationOccurred('success');
+                
+                showModal('💝 Благодарность сохранена!', 'Ваша запись добавлена в дневник.');
+            }
+
+            // ===== ГЛАВНАЯ СТРАНИЦА =====
+            function updateDashboard() {
+                const data = getStats();
+                const breath = data.breath || {};
+                const water = data.water || {};
+                const med = data.meditation || {};
+                
+                const breathSessions = breath.totalSessions || 0;
+                const waterLiters = ((water.today || 0) / 1000);
+                const medMinutes = med.today || 0;
+                const streak = Math.max(breath.streak || 0, med.streak || 0);
+                
+                // Обновляем цифры
+                if (el.dashBreath) el.dashBreath.textContent = breathSessions;
+                if (el.dashWater) el.dashWater.textContent = waterLiters.toFixed(1);
+                if (el.dashMeditation) el.dashMeditation.textContent = medMinutes;
+                if (el.dashStreak) el.dashStreak.textContent = streak;
+                
+                // Прогресс-бары
+                const breathGoal = 5;
+                const waterGoal = 2.0;
+                const medGoal = 10;
+                const streakGoal = 30;
+                
+                if (el.breathProgress) el.breathProgress.style.width = Math.min((breathSessions / breathGoal) * 100, 100) + '%';
+                if (el.waterProgress) el.waterProgress.style.width = Math.min((waterLiters / waterGoal) * 100, 100) + '%';
+                if (el.meditationProgress) el.meditationProgress.style.width = Math.min((medMinutes / medGoal) * 100, 100) + '%';
+                if (el.streakProgress) el.streakProgress.style.width = Math.min((streak / streakGoal) * 100, 100) + '%';
+                
+                // Прогресс-кольцо
+                const totalProgress = (breathSessions / breathGoal + waterLiters / waterGoal + medMinutes / medGoal) / 3;
+                const ringPercent = Math.min(totalProgress * 100, 100);
+                if (el.ringNumber) el.ringNumber.textContent = Math.round(ringPercent);
+                if (el.mainRing) {
+                    const circumference = 2 * Math.PI * 60;
+                    const offset = circumference - (ringPercent / 100) * circumference;
+                    el.mainRing.style.strokeDasharray = circumference;
+                    el.mainRing.style.strokeDashoffset = offset;
+                }
+                if (el.dayProgress) el.dayProgress.textContent = Math.round(ringPercent) + '%';
+                
+                // Мотивация
+                const motivationMessages = [
+                    { text: 'Ты делаешь это невероятно!', sub: 'Продолжай в том же духе' },
+                    { text: 'Каждый день — новый шанс!', sub: 'Ты уже на пути к успеху' },
+                    { text: 'Ты становишься лучше!', sub: 'С каждым днём сильнее' },
+                    { text: 'Вдохновение внутри тебя!', sub: 'Продолжай двигаться вперёд' },
+                    { text: 'Ты — лучшая версия себя!', sub: 'Расти каждый день' },
+                ];
+                const msg = motivationMessages[Math.floor(Math.random() * motivationMessages.length)];
+                if (el.motivationText) el.motivationText.textContent = msg.text;
+                if (el.motivationSub) el.motivationSub.textContent = msg.sub;
+            }
+
+            // ===== ВКЛАДКИ =====
+            function switchTab(tabName) {
+                el.tabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.tab === tabName);
+                });
+                
+                el.contents.forEach(content => {
+                    content.classList.toggle('active', content.id === 'tab-' + tabName);
+                });
+                
+                state.currentTab = tabName;
+                
+                const scheme = COLOR_SCHEMES[tabName] || COLOR_SCHEMES.dashboard;
+                applyColorScheme(scheme);
+                
+                if (tabName === 'breath') loadBreathStats();
+                if (tabName === 'water') loadWaterStats();
+                if (tabName === 'meditation') loadMeditationStats();
+                if (tabName === 'dashboard') updateDashboard();
+                
+                tg.HapticFeedback?.selectionChanged();
+            }
+
+            // ===== МОДАЛЬНОЕ ОКНО =====
+            function showModal(title, content) {
+                const modal = document.getElementById('reportModal');
+                const titleEl = document.getElementById('modalTitle');
+                const contentEl = document.getElementById('reportContent');
+                
+                if (titleEl) titleEl.textContent = title;
+                if (contentEl) contentEl.innerHTML = `<div style="padding:10px 0;color:var(--text-secondary);">${content}</div>`;
+                if (modal) modal.classList.add('active');
+            }
+
+            // ===== ВСПОМОГАТЕЛЬНЫЕ =====
             function getGratitude() {
                 const phrases = [
                     "Кислород — это жизнь ⚡",
                     "Вы — свет в темноте 🌟",
                     "Дышите глубже 🌊",
                     "Сила в тишине 💪",
-                    "Высшая точка спокойствия 🎯",
                     "Энергия течёт сквозь вас ⚡",
                     "Вы — мастер дыхания 🧘"
                 ];
@@ -1051,7 +1570,7 @@
             // ===== ИДЛЕ-АНИМАЦИЯ =====
             let idleAngle = 0;
             function idleAnimation() {
-                if (!state.isRunning) {
+                if (!state.isRunning && el.path) {
                     const r = 50 + Math.sin(idleAngle) * 3;
                     el.path.setAttribute('d', 
                         `M100,100 m-${r},0 a${r},${r} 0 1,0 ${r*2},0 a${r},${r} 0 1,0 -${r*2},0`
@@ -1063,62 +1582,118 @@
             idleAnimation();
 
             // ===== ОБРАБОТЧИКИ =====
-            el.btn.onclick = () => state.isRunning ? stopSession() : startSession();
+            // Вкладки
+            el.tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    switchTab(tab.dataset.tab);
+                });
+            });
+
+            // Карточки на главной
+            document.querySelectorAll('.dash-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const tab = card.dataset.tab;
+                    if (tab) switchTab(tab);
+                });
+            });
+
+            // Дыхание
+            if (el.btn) {
+                el.btn.addEventListener('click', () => {
+                    if (state.isRunning) {
+                        stopSession();
+                    } else {
+                        startSession();
+                    }
+                });
+            }
 
             el.pills.forEach(pill => {
-                pill.onclick = () => {
+                pill.addEventListener('click', () => {
                     if (state.isRunning) stopSession();
                     el.pills.forEach(p => p.classList.remove('active'));
                     pill.classList.add('active');
                     state.tech = pill.dataset.tech;
                     const phases = TECHNIQUES[state.tech];
-                    el.timer.textContent = phases.map(p => Math.round(p.duration / 1000)).join(' — ');
+                    if (el.timer) el.timer.textContent = phases.map(p => Math.round(p.duration / 1000)).join(' — ');
                     tg.HapticFeedback?.selectionChanged();
-                };
+                });
             });
 
             el.mixers.forEach(btn => {
-                btn.onclick = () => {
+                btn.addEventListener('click', () => {
                     btn.classList.toggle('active');
                     const type = btn.dataset.sound;
                     state.sounds[type] = btn.classList.contains('active');
                     toggleSound(type, state.sounds[type]);
                     tg.HapticFeedback?.impactOccurred('light');
-                };
+                });
             });
 
-            document.getElementById('showFullReport').onclick = showFullReport;
-            document.getElementById('closeModal').onclick = () => el.modal.classList.remove('active');
-            el.modal.onclick = (e) => {
-                if (e.target === el.modal) el.modal.classList.remove('active');
-            };
+            // Вода
+            document.querySelectorAll('.water-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    addWater(parseInt(btn.dataset.amount));
+                });
+            });
 
-            // Двойной тап
-            let lastTap = 0;
-            document.querySelector('.app-container').addEventListener('dblclick', () => {
-                if (!state.isRunning) {
-                    const now = Date.now();
-                    if (now - lastTap < 500) return;
-                    lastTap = now;
-                    el.mood.textContent = "⚡ Кислород обновлён ⚡";
-                    document.querySelectorAll('.particle').forEach(p => {
-                        p.style.transform = 'translate(0,0) scale(1)';
-                        p.style.opacity = 0.8;
-                        setTimeout(() => p.style.opacity = 0.1, 1500);
-                    });
-                    tg.HapticFeedback?.impactOccurred('soft');
+            if (el.resetWater) {
+                el.resetWater.addEventListener('click', resetWater);
+            }
+
+            // Медитация
+            document.querySelectorAll('.meditation-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const minutes = parseInt(card.dataset.minutes);
+                    addMeditation(minutes);
+                    showModal('🧘 Медитация завершена!', 
+                        `Вы практиковали ${minutes} минут. Отличная работа! 🌟`);
+                });
+            });
+
+            if (el.saveGratitude) {
+                el.saveGratitude.addEventListener('click', saveGratitude);
+            }
+
+            // Модалка
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('reportModal').classList.remove('active');
+            });
+            document.getElementById('reportModal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    document.getElementById('reportModal').classList.remove('active');
                 }
             });
 
+            // Быстрый старт
+            if (el.quickStart) {
+                el.quickStart.addEventListener('click', () => {
+                    switchTab('breath');
+                    setTimeout(() => {
+                        if (!state.isRunning) startSession();
+                    }, 300);
+                });
+            }
+
             // ===== ИНИЦИАЛИЗАЦИЯ =====
-            loadStats();
+            loadBreathStats();
+            loadWaterStats();
+            loadMeditationStats();
+            updateDashboard();
+
             const initialPhases = TECHNIQUES['478'];
-            el.timer.textContent = initialPhases.map(p => Math.round(p.duration / 1000)).join(' — ');
+            if (el.timer) el.timer.textContent = initialPhases.map(p => Math.round(p.duration / 1000)).join(' — ');
+
+            applyColorScheme(COLOR_SCHEMES.dashboard);
+
+            // Обновляем дашборд каждые 30 секунд
+            setInterval(updateDashboard, 30000);
+
             tg.ready();
 
-            console.log('⚡ Silk Breath · Кислотный стиль');
-            console.log('🌿 Дизайн: чёрный + кислотный неон');
-            console.log('✨ Шрифт: Space Grotesk');
+            console.log('🌿 Silk Life · Мульти-трекер с новым дизайном');
+            console.log('✨ Главная страница обновлена: кольцо прогресса, мотивация, карточки');
+            console.log('🎨 Плавная смена цветов при переключении вкладок');
         })();
     </script>
 </body>
