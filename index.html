@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>🚗 Такси Расходы • Black & Green</title>
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>🚗 Такси Расходы • Premium</title>
 
     <!-- Google Fonts — Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -40,7 +43,6 @@
             --green: #D5FF40;
             --green-dim: rgba(213, 255, 64, 0.08);
             --green-glow: 0 0 40px rgba(213, 255, 64, 0.08);
-            --green-glow-strong: 0 0 60px rgba(213, 255, 64, 0.15);
 
             --text-primary: #FFFFFF;
             --text-secondary: #A0A0A0;
@@ -120,17 +122,6 @@
                 box-shadow: 0 0 50px rgba(213, 255, 64, 0.12);
             }
         }
-        @keyframes shimmerBorder {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
 
         .animate-fade-up {
             animation: fadeUp 0.5s ease forwards;
@@ -140,7 +131,7 @@
         }
 
         /* ============================================================
-           WELCOME SCREEN — Black & Green
+           WELCOME SCREEN
            ============================================================ */
         #welcomeScreen {
             position: fixed;
@@ -1141,6 +1132,17 @@
             margin-left: 8px;
         }
 
+        .expense-item .liters-badge {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: rgba(213, 255, 64, 0.04);
+            padding: 2px 10px;
+            border-radius: var(--radius-pill);
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
         .expense-item .delete-btn {
             background: none;
             border: none;
@@ -1223,7 +1225,7 @@
         }
 
         /* ============================================================
-           NOTES SECTION
+           NOTES SECTION (расширенный журнал ТО)
            ============================================================ */
         .notes-section {
             background: rgba(255, 255, 255, 0.02);
@@ -1259,6 +1261,38 @@
 
         .notes-section .section-header h3 i {
             color: var(--green);
+        }
+
+        .notes-filter {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .notes-filter button {
+            padding: 4px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-secondary);
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .notes-filter button:hover {
+            background: rgba(213, 255, 64, 0.04);
+            color: #fff;
+            border-color: rgba(213, 255, 64, 0.04);
+        }
+
+        .notes-filter button.active {
+            background: rgba(213, 255, 64, 0.04);
+            color: var(--green);
+            border-color: rgba(213, 255, 64, 0.04);
         }
 
         .note-item {
@@ -1336,6 +1370,15 @@
             font-size: 11px;
         }
 
+        .note-item .note-content .note-meta .note-type {
+            background: rgba(213, 255, 64, 0.04);
+            color: var(--green);
+            padding: 0 10px;
+            border-radius: var(--radius-pill);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
         .note-item .note-amount {
             font-size: 15px;
             font-weight: 700;
@@ -1376,6 +1419,7 @@
         }
 
         .note-form input,
+        .note-form select,
         .note-form textarea {
             width: 100%;
             padding: 10px 14px;
@@ -1391,6 +1435,7 @@
         }
 
         .note-form input:focus,
+        .note-form select:focus,
         .note-form textarea:focus {
             border-color: var(--green);
             box-shadow: 0 0 0 4px rgba(213, 255, 64, 0.02);
@@ -1428,6 +1473,51 @@
 
         .note-form .btn-add-note:active {
             transform: scale(0.97);
+        }
+
+        /* ============================================================
+           BACKUP BUTTONS
+           ============================================================ */
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .backup-buttons button {
+            padding: 8px 20px;
+            border: 1px solid rgba(213, 255, 64, 0.06);
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-secondary);
+            font-family: var(--font);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .backup-buttons button:hover {
+            background: rgba(213, 255, 64, 0.04);
+            color: #fff;
+            border-color: rgba(213, 255, 64, 0.04);
+        }
+
+        /* ============================================================
+           FUEL CHART
+           ============================================================ */
+        .fuel-chart-container {
+            margin-top: 12px;
+            height: 150px;
+        }
+
+        .fuel-chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
 
         /* ============================================================
@@ -1601,8 +1691,17 @@
             gap: 14px;
         }
 
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
         @media (max-width: 480px) {
             .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-row-3 {
                 grid-template-columns: 1fr;
             }
         }
@@ -1773,7 +1872,7 @@
             <div class="welcome-subtitle">
                 <i class="fas fa-chart-line"></i> Полная статистика по 4 кварталам
                 <br /><i class="fas fa-oil-can"></i> Умная напоминалка о замене масла
-                <br /><i class="fas fa-sticky-note"></i> Журнал работ и заметок
+                <br /><i class="fas fa-sticky-note"></i> Расширенный журнал ТО
             </div>
             <button class="welcome-btn" id="welcomeBtn">
                 <i class="fas fa-rocket"></i> Начать
@@ -1781,7 +1880,7 @@
             <div class="welcome-features">
                 <span><i class="fas fa-circle"></i> 4 квартала</span>
                 <span><i class="fas fa-circle"></i> Графики</span>
-                <span><i class="fas fa-circle"></i> Заметки</span>
+                <span><i class="fas fa-circle"></i> ТО</span>
             </div>
         </div>
     </div>
@@ -1802,8 +1901,11 @@
             <button class="btn-icon" id="themeToggle" title="Сменить тему">
                 <i class="fas fa-moon"></i>
             </button>
-            <button class="export-btn" id="exportBtn">
-                <i class="fas fa-file-export"></i> CSV
+            <button class="export-btn" id="backupExportBtn">
+                <i class="fas fa-file-export"></i> JSON
+            </button>
+            <button class="export-btn" id="backupImportBtn">
+                <i class="fas fa-file-import"></i> JSON
             </button>
         </div>
     </header>
@@ -1851,7 +1953,10 @@
                 <i class="fas fa-chart-pie"></i> Дашборд
             </button>
             <button class="tab-btn" data-tab="notes">
-                <i class="fas fa-sticky-note"></i> Заметки
+                <i class="fas fa-sticky-note"></i> Журнал ТО
+            </button>
+            <button class="tab-btn" data-tab="fuel">
+                <i class="fas fa-gas-pump"></i> Топливо
             </button>
         </div>
 
@@ -1945,18 +2050,29 @@
         </div>
 
         <!-- ============================================================
-        TAB: NOTES
+        TAB: NOTES (Журнал ТО)
         ============================================================ -->
         <div class="tab-content" id="tab-notes">
             <div class="notes-section animate-fade-up">
                 <div class="section-header">
-                    <h3><i class="fas fa-sticky-note"></i> Журнал работ и заметок</h3>
+                    <h3><i class="fas fa-sticky-note"></i> Журнал ТО</h3>
                     <span class="badge" id="notesBadge">0 записей</span>
                 </div>
+
+                <!-- Фильтр -->
+                <div class="notes-filter" id="notesFilter">
+                    <button class="active" data-filter="all">Все</button>
+                    <button data-filter="oil">Замена масла</button>
+                    <button data-filter="filters">Замена фильтров</button>
+                    <button data-filter="suspension">Ремонт подвески</button>
+                    <button data-filter="maintenance">ТО</button>
+                    <button data-filter="parts">Запчасти</button>
+                </div>
+
                 <div id="notesList">
                     <div class="empty-state">
                         <i class="fas fa-sticky-note"></i>
-                        <p>Нет заметок</p>
+                        <p>Нет записей в журнале ТО</p>
                         <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Добавьте запись о работе, ремонте или замене деталей</p>
                     </div>
                 </div>
@@ -1964,28 +2080,73 @@
                 <!-- Форма добавления заметки -->
                 <div class="note-form" id="noteForm">
                     <input type="hidden" id="editNoteId" value="" />
+
+                    <div class="full-width">
+                        <select id="noteType">
+                            <option value="maintenance">ТО</option>
+                            <option value="oil">Замена масла</option>
+                            <option value="filters">Замена фильтров</option>
+                            <option value="suspension">Ремонт подвески</option>
+                            <option value="parts">Запчасти</option>
+                        </select>
+                    </div>
+
                     <div class="full-width">
                         <input type="text" id="noteTitle" placeholder="Заголовок (например: Замена масла)" />
                     </div>
+
                     <div class="full-width">
-                        <textarea id="noteDesc" placeholder="Описание работы, что сделано, какие детали заменены..." rows="3"></textarea>
+                        <textarea id="noteDesc" placeholder="Описание работы, что сделано..." rows="2"></textarea>
                     </div>
+
+                    <!-- Поля для запчастей -->
+                    <div class="full-width" id="partsFields" style="display:none;">
+                        <div class="form-row-3">
+                            <input type="text" id="partName" placeholder="Название детали" />
+                            <input type="text" id="partArticle" placeholder="Артикул" />
+                            <input type="number" id="partMileage" placeholder="Пробег установки (км)" step="1" min="0" />
+                        </div>
+                    </div>
+
                     <div>
                         <input type="date" id="noteDate" />
                     </div>
                     <div>
                         <input type="number" id="noteAmount" placeholder="Стоимость (BYN)" step="0.01" min="0" />
                     </div>
+
                     <button class="btn-add-note" id="addNoteBtn">
-                        <i class="fas fa-plus"></i> Добавить заметку
+                        <i class="fas fa-plus"></i> Добавить запись
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TAB: FUEL (Топливо)
+        ============================================================ -->
+        <div class="tab-content" id="tab-fuel">
+            <div class="expense-section animate-fade-up">
+                <div class="section-header">
+                    <h3><i class="fas fa-gas-pump"></i> Динамика расхода топлива</h3>
+                    <span class="badge" id="fuelBadge">0 записей</span>
+                </div>
+                <div id="fuelList">
+                    <div class="empty-state">
+                        <i class="fas fa-gas-pump"></i>
+                        <p>Нет записей о заправках</p>
+                        <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Добавьте расход в категории "Бензин" с указанием литров</p>
+                    </div>
+                </div>
+                <div class="fuel-chart-container">
+                    <canvas id="fuelChart"></canvas>
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
         <div style="text-align:center;padding:16px 0 8px;color:var(--text-muted);font-size:12px;font-weight:500;border-top:1px solid rgba(255,255,255,0.02);">
-            <i class="fas fa-database" style="margin-right:4px;color:var(--green);"></i> Данные локально
+            <i class="fas fa-database" style="margin-right:4px;color:var(--green);"></i> Данные в IndexedDB
             <span style="margin:0 8px;">·</span>
             <i class="fas fa-car" style="color:var(--green);"></i> Такси расходы BYN
         </div>
@@ -2013,11 +2174,20 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label><i class="fas fa-tag"></i> Категория</label>
-                        <select id="formCategory" required></select>
+                        <select id="formCategory" required>
+                            <option value="fuel">⛽ Бензин</option>
+                            <option value="insurance">🛡️ Страховка</option>
+                            <option value="wash">🧼 Мойка</option>
+                            <option value="fszn">🏛️ ФСЗН</option>
+                            <option value="medic">🩺 Медик/Механик</option>
+                            <option value="repair">🔧 Ремонт на СТО</option>
+                            <option value="parts">⚙️ Запчасти</option>
+                            <option value="other">📌 Прочие</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-calendar-day"></i> Дата</label>
-                        <input type="date" id="formDate" required />
+                        <input type="date" id="formDate" required max="" />
                     </div>
                 </div>
 
@@ -2026,12 +2196,24 @@
                     <input type="number" id="formAmount" placeholder="0.00" step="0.01" min="0" required />
                 </div>
 
+                <!-- Поле для литров (только для бензина) -->
+                <div class="form-group" id="litersGroup" style="display:none;">
+                    <label><i class="fas fa-tint"></i> Количество литров</label>
+                    <input type="number" id="formLiters" placeholder="0.00" step="0.01" min="0" />
+                </div>
+
+                <!-- Поле для пробега при заправке -->
+                <div class="form-group" id="mileageGroup" style="display:none;">
+                    <label><i class="fas fa-road"></i> Текущий пробег (км) <span style="color:var(--text-muted);font-weight:400;font-size:12px;">(для расчёта расхода)</span></label>
+                    <input type="number" id="formMileage" placeholder="0" step="1" min="0" />
+                </div>
+
                 <div class="form-group">
                     <label><i class="fas fa-pen"></i> Описание (необязательно)</label>
                     <input type="text" id="formDesc" placeholder="Например: заправка, ТО, страховка..." />
                 </div>
 
-                <button type="submit" class="btn-submit">
+                <button type="submit" class="btn-submit" id="submitBtn">
                     <i class="fas fa-save"></i> Сохранить
                 </button>
             </form>
@@ -2076,7 +2258,104 @@
     ============================================================ -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- ============================================================
+    Скрытый input для импорта JSON
+    ============================================================ -->
+    <input type="file" id="importFileInput" accept=".json" style="display:none;" />
+
     <script>
+        // ============================================================
+        //  TELEGRAM WEBAPP INTEGRATION
+        // ============================================================
+        let tg = null;
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                tg.expand();
+                tg.enableClosingConfirmation();
+            }
+        } catch (e) {}
+
+        // ============================================================
+        //  INDEXEDDB — вместо localStorage
+        // ============================================================
+        const DB_NAME = 'TaxiExpensesDB';
+        const DB_VERSION = 2;
+        const STORE_EXPENSES = 'expenses';
+        const STORE_NOTES = 'notes';
+        const STORE_CAR = 'car';
+
+        let db = null;
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_EXPENSES)) {
+                        const store = db.createObjectStore(STORE_EXPENSES, { keyPath: 'id' });
+                        store.createIndex('date', 'date');
+                        store.createIndex('category', 'category');
+                    }
+                    if (!db.objectStoreNames.contains(STORE_NOTES)) {
+                        const store = db.createObjectStore(STORE_NOTES, { keyPath: 'id' });
+                        store.createIndex('date', 'date');
+                        store.createIndex('type', 'type');
+                    }
+                    if (!db.objectStoreNames.contains(STORE_CAR)) {
+                        db.createObjectStore(STORE_CAR, { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    resolve(db);
+                };
+                request.onerror = (event) => {
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        function getAllFromStore(storeName) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function putToStore(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const request = store.put(data);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function deleteFromStore(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function clearStore(storeName) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const request = store.clear();
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
         // ============================================================
         //  DATA LAYER
         // ============================================================
@@ -2092,88 +2371,80 @@
         };
 
         const CAT_KEYS = Object.keys(CATEGORIES);
+        const NOTE_TYPES = {
+            maintenance: { label: 'ТО', icon: 'fa-tools' },
+            oil: { label: 'Замена масла', icon: 'fa-oil-can' },
+            filters: { label: 'Замена фильтров', icon: 'fa-filter' },
+            suspension: { label: 'Ремонт подвески', icon: 'fa-car-crash' },
+            parts: { label: 'Запчасти', icon: 'fa-cogs' }
+        };
+
         let expenses = [];
         let notes = [];
+        let carData = null;
         let currentQuarter = '';
+        let currentNoteFilter = 'all';
         let pieChartInstance = null;
         let barChartInstance = null;
         let quarterChartInstance = null;
+        let fuelChartInstance = null;
 
         // ============================================================
         //  CAR DATA
         // ============================================================
-        let carData = {
-            model: '',
-            plate: '',
-            fuelConsumption: 0,
-            oilInterval: 10000,
-            oilLastReset: null
-        };
-
         function loadCarData() {
-            try {
-                const raw = localStorage.getItem('taxi_car');
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    if (parsed && typeof parsed === 'object') {
-                        carData = parsed;
-                    }
+            return getAllFromStore(STORE_CAR).then(data => {
+                carData = data.length ? data[0] : null;
+                if (!carData) {
+                    carData = {
+                        id: 'car',
+                        model: '',
+                        plate: '',
+                        fuelConsumption: 0,
+                        oilInterval: 10000,
+                        oilLastReset: null
+                    };
+                    return putToStore(STORE_CAR, carData);
                 }
-            } catch {}
+                return carData;
+            });
         }
 
         function saveCarData() {
-            localStorage.setItem('taxi_car', JSON.stringify(carData));
+            return putToStore(STORE_CAR, carData);
         }
 
         // ============================================================
         //  STORAGE
         // ============================================================
         function loadExpenses() {
-            try {
-                const raw = localStorage.getItem('taxi_expenses');
-                if (raw) {
-                    expenses = JSON.parse(raw);
-                    if (!Array.isArray(expenses)) expenses = [];
-                } else {
-                    expenses = [];
-                }
-            } catch {
-                expenses = [];
-            }
-            expenses = expenses.filter(e => e && typeof e === 'object').map(e => ({
-                ...e,
-                id: e.id || 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
-            }));
+            return getAllFromStore(STORE_EXPENSES).then(data => {
+                expenses = data || [];
+                return expenses;
+            });
         }
 
-        function saveExpenses() {
-            localStorage.setItem('taxi_expenses', JSON.stringify(expenses));
+        function saveExpense(expense) {
+            return putToStore(STORE_EXPENSES, expense);
         }
 
-        // ============================================================
-        //  NOTES STORAGE
-        // ============================================================
+        function deleteExpenseFromDB(id) {
+            return deleteFromStore(STORE_EXPENSES, id);
+        }
+
         function loadNotes() {
-            try {
-                const raw = localStorage.getItem('taxi_notes');
-                if (raw) {
-                    notes = JSON.parse(raw);
-                    if (!Array.isArray(notes)) notes = [];
-                } else {
-                    notes = [];
-                }
-            } catch {
-                notes = [];
-            }
-            notes = notes.filter(n => n && typeof n === 'object').map(n => ({
-                ...n,
-                id: n.id || 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
-            }));
+            return getAllFromStore(STORE_NOTES).then(data => {
+                notes = data || [];
+                return notes;
+            });
         }
 
-        function saveNotes() {
-            localStorage.setItem('taxi_notes', JSON.stringify(notes));
+        function saveNote(note) {
+            return putToStore(STORE_NOTES, note);
+        }
+
+        function deleteNoteFromDB(id) {
+            return deleteFromStore(STORE_NOTES, id);
         }
 
         // ============================================================
@@ -2258,21 +2529,19 @@
         //  OIL REMINDER
         // ============================================================
         function calculateMileage() {
-            const fuelTotal = expenses
-                .filter(e => e.category === 'fuel')
-                .reduce((s, e) => s + e.amount, 0);
+            // Считаем пробег через литры
+            const fuelEntries = expenses.filter(e => e.category === 'fuel' && e.liters);
+            const totalLiters = fuelEntries.reduce((s, e) => s + (e.liters || 0), 0);
 
-            if (carData.fuelConsumption > 0 && fuelTotal > 0) {
-                const pricePerLiter = 2.5;
-                const liters = fuelTotal / pricePerLiter;
-                return (liters / carData.fuelConsumption) * 100;
+            if (carData && carData.fuelConsumption > 0 && totalLiters > 0) {
+                return (totalLiters / carData.fuelConsumption) * 100;
             }
             return 0;
         }
 
         function getOilStatus() {
             const mileage = calculateMileage();
-            const interval = carData.oilInterval || 10000;
+            const interval = carData?.oilInterval || 10000;
 
             if (mileage === 0 || interval === 0) return { status: 'unknown', mileage, remaining: interval };
 
@@ -2287,19 +2556,18 @@
         //  RENDER
         // ============================================================
         function renderCarCard() {
+            if (!carData) return;
             document.getElementById('carModel').textContent = carData.model || '🚗 Мой автомобиль';
             document.getElementById('carPlate').textContent = carData.plate || 'Нажмите, чтобы добавить';
             document.getElementById('carFuelConsumption').textContent = carData.fuelConsumption ? carData.fuelConsumption
                 .toFixed(1) : '—';
 
             const items = getExpensesForQuarter(currentQuarter);
-            const fuelTotal = items.filter(e => e.category === 'fuel').reduce((s, e) => s + e.amount, 0);
+            const fuelTotal = items.filter(e => e.category === 'fuel').reduce((s, e) => s + (e.liters || 0), 0);
 
             if (carData.fuelConsumption > 0 && fuelTotal > 0) {
-                const pricePerLiter = 2.5;
-                const liters = fuelTotal / pricePerLiter;
-                const mileage = (liters / carData.fuelConsumption) * 100;
-                document.getElementById('carFuelUsed').textContent = liters.toFixed(1);
+                const mileage = (fuelTotal / carData.fuelConsumption) * 100;
+                document.getElementById('carFuelUsed').textContent = fuelTotal.toFixed(1);
                 document.getElementById('carMileage').textContent = mileage.toFixed(0);
             } else {
                 document.getElementById('carFuelUsed').textContent = '—';
@@ -2309,7 +2577,7 @@
             const container = document.getElementById('oilReminderContainer');
             const status = getOilStatus();
             let html = '';
-            if (status.status === 'unknown' || !carData.oilInterval) {
+            if (status.status === 'unknown' || !carData?.oilInterval) {
                 html =
                     `<span class="oil-reminder" style="background:rgba(255,255,255,0.02);color:var(--text-muted);border-color:rgba(255,255,255,0.02);">
                         <i class="fas fa-oil-can"></i> Укажите интервал замены масла
@@ -2521,6 +2789,7 @@
             renderInsights(items);
             renderQuarterStats();
             renderNotes();
+            renderFuelTab();
             document.getElementById('listBadge').textContent = items.length + ' записей';
             const total = items.reduce((s, e) => s + e.amount, 0);
             document.getElementById('quarterTotalBadge').innerHTML =
@@ -2674,6 +2943,7 @@
                 const dateStr = formatDate(e.date);
                 const desc = e.description || '';
                 const amt = e.amount.toFixed(2);
+                const liters = e.liters ? `<span class="liters-badge">${e.liters.toFixed(1)} л</span>` : '';
                 html += `
                     <div class="expense-item animate-fade-up" style="animation-delay:${(idx % 10) * 0.03}s;">
                         <div class="left">
@@ -2686,6 +2956,7 @@
                                 <div class="date"><i class="far fa-calendar-alt"></i> ${dateStr}</div>
                             </div>
                         </div>
+                        ${liters}
                         <div class="amount" style="color:var(--green);">${amt}</div>
                         <button class="delete-btn" data-id="${e.id}" title="Удалить">
                             <i class="fas fa-trash-alt"></i>
@@ -2706,6 +2977,7 @@
             const container = document.getElementById('insightsContainer');
             const total = items.reduce((s, e) => s + e.amount, 0);
             const fuelTotal = items.filter(e => e.category === 'fuel').reduce((s, e) => s + e.amount, 0);
+            const fuelLiters = items.filter(e => e.category === 'fuel').reduce((s, e) => s + (e.liters || 0), 0);
             const repairTotal = items.filter(e => e.category === 'repair' || e.category === 'parts').reduce((s, e) => s + e
                 .amount, 0);
             const count = items.length;
@@ -2721,10 +2993,8 @@
                 if (repairTotal > total * 0.2) {
                     insights.push('🔧 <strong>Ремонт и запчасти</strong> — значительная статья расходов.');
                 }
-                if (carData.fuelConsumption > 0 && fuelTotal > 0) {
-                    const pricePerLiter = 2.5;
-                    const liters = fuelTotal / pricePerLiter;
-                    const mileage = (liters / carData.fuelConsumption) * 100;
+                if (carData && carData.fuelConsumption > 0 && fuelLiters > 0) {
+                    const mileage = (fuelLiters / carData.fuelConsumption) * 100;
                     if (carData.fuelConsumption > 10) {
                         insights.push(
                             `🚗 <strong>Расход ${carData.fuelConsumption.toFixed(1)} л/100км</strong> — выше среднего.`
@@ -2770,38 +3040,47 @@
         }
 
         // ============================================================
-        //  NOTES RENDER
+        //  NOTES RENDER (расширенный журнал ТО)
         // ============================================================
         function renderNotes() {
             const container = document.getElementById('notesList');
-            document.getElementById('notesBadge').textContent = notes.length + ' записей';
+            const filtered = currentNoteFilter === 'all' ?
+                notes :
+                notes.filter(n => n.type === currentNoteFilter);
 
-            if (!notes.length) {
+            document.getElementById('notesBadge').textContent = filtered.length + ' записей';
+
+            if (!filtered.length) {
                 container.innerHTML = `
                     <div class="empty-state animate-fade-in">
                         <i class="fas fa-sticky-note"></i>
-                        <p>Нет заметок</p>
+                        <p>Нет записей в журнале ТО</p>
                         <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Добавьте запись о работе, ремонте или замене деталей</p>
                     </div>
                 `;
                 return;
             }
 
-            const sorted = [...notes].sort((a, b) => b.date.localeCompare(a.date));
+            const sorted = [...filtered].sort((a, b) => b.date.localeCompare(a.date));
             let html = '';
             sorted.forEach((n, idx) => {
                 const dateStr = formatDate(n.date);
                 const amount = n.amount ? n.amount.toFixed(2) : '';
+                const typeInfo = NOTE_TYPES[n.type] || NOTE_TYPES.maintenance;
+                const partInfo = n.partName ? `🔧 ${n.partName} (${n.partArticle || 'б/а'})` : '';
+                const mileageInfo = n.partMileage ? `, пробег: ${n.partMileage} км` : '';
                 html += `
                     <div class="note-item animate-fade-up" style="animation-delay:${(idx % 10) * 0.04}s;">
                         <div class="note-icon">
-                            <i class="fas fa-tools"></i>
+                            <i class="fas ${typeInfo.icon}"></i>
                         </div>
                         <div class="note-content">
                             <div class="note-title">${n.title || 'Без заголовка'}</div>
                             <div class="note-desc">${n.description || '—'}</div>
+                            ${partInfo ? `<div class="note-desc" style="font-size:12px;color:var(--text-muted);">${partInfo}${mileageInfo}</div>` : ''}
                             <div class="note-meta">
                                 <span><i class="far fa-calendar-alt"></i> ${dateStr}</span>
+                                <span class="note-type">${typeInfo.label}</span>
                                 ${amount ? `<span><i class="fas fa-money-bill-wave"></i> ${amount} BYN</span>` : ''}
                             </div>
                         </div>
@@ -2823,29 +3102,296 @@
         }
 
         // ============================================================
+        //  FUEL TAB RENDER
+        // ============================================================
+        function renderFuelTab() {
+            const container = document.getElementById('fuelList');
+            const fuelEntries = expenses
+                .filter(e => e.category === 'fuel' && e.liters)
+                .sort((a, b) => a.date.localeCompare(b.date));
+
+            document.getElementById('fuelBadge').textContent = fuelEntries.length + ' записей';
+
+            if (!fuelEntries.length) {
+                container.innerHTML = `
+                    <div class="empty-state animate-fade-in">
+                        <i class="fas fa-gas-pump"></i>
+                        <p>Нет записей о заправках</p>
+                        <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Добавьте расход в категории "Бензин" с указанием литров</p>
+                    </div>
+                `;
+                renderFuelChart([]);
+                return;
+            }
+
+            let html = '';
+            const sorted = [...fuelEntries].sort((a, b) => b.date.localeCompare(a.date));
+            sorted.slice(0, 10).forEach((e, idx) => {
+                const dateStr = formatDate(e.date);
+                const amt = e.amount.toFixed(2);
+                const liters = e.liters.toFixed(1);
+                const mileage = e.mileage || '—';
+                const consumption = e.mileage && e.liters > 0 && carData?.fuelConsumption ?
+                    ((e.liters / (e.mileage - (e.prevMileage || 0))) * 100).toFixed(1) :
+                    '—';
+                html += `
+                    <div class="expense-item animate-fade-up" style="animation-delay:${(idx % 10) * 0.03}s;">
+                        <div class="left">
+                            <div class="icon-wrap" style="color:var(--green);background:rgba(213,255,64,0.03);">
+                                <i class="fas fa-gas-pump"></i>
+                            </div>
+                            <div class="info">
+                                <div class="cat" style="color:#fff;">Заправка</div>
+                                <div class="desc">${e.description || '—'}</div>
+                                <div class="date"><i class="far fa-calendar-alt"></i> ${dateStr}</div>
+                            </div>
+                        </div>
+                        <span class="liters-badge">${liters} л</span>
+                        <span class="liters-badge" style="color:var(--green);">${consumption !== '—' ? consumption + ' л/100км' : ''}</span>
+                        <div class="amount" style="color:var(--green);">${amt}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+
+            renderFuelChart(fuelEntries);
+        }
+
+        function renderFuelChart(fuelEntries) {
+            const ctx = document.getElementById('fuelChart').getContext('2d');
+            if (fuelChartInstance) fuelChartInstance.destroy();
+
+            if (fuelEntries.length < 2) {
+                fuelChartInstance = null;
+                return;
+            }
+
+            // Группируем по датам, считаем расход
+            const data = [];
+            let prevMileage = null;
+            fuelEntries.forEach((e, i) => {
+                if (e.mileage && prevMileage !== null) {
+                    const dist = e.mileage - prevMileage;
+                    if (dist > 0 && e.liters > 0) {
+                        const consumption = (e.liters / dist) * 100;
+                        data.push({
+                            date: e.date,
+                            consumption: consumption,
+                            liters: e.liters,
+                            mileage: e.mileage
+                        });
+                    }
+                }
+                if (e.mileage) prevMileage = e.mileage;
+            });
+
+            if (data.length === 0) {
+                fuelChartInstance = null;
+                return;
+            }
+
+            const labels = data.map(d => formatDate(d.date));
+            const values = data.map(d => d.consumption);
+
+            fuelChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Расход (л/100км)',
+                        data: values,
+                        borderColor: '#D5FF40',
+                        backgroundColor: 'rgba(213,255,64,0.05)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#D5FF40',
+                        pointBorderColor: '#0A0A0A',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#A0A0A0',
+                                font: { family: 'Poppins', size: 10, weight: '500' },
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#555555',
+                                font: { size: 10, family: 'Poppins' },
+                                callback: v => v.toFixed(1) + ' л',
+                            },
+                            grid: { color: 'rgba(255,255,255,0.01)' }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#555555',
+                                font: { size: 10, family: 'Poppins' },
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
         //  NOTES CRUD
         // ============================================================
-        function addNote(title, description, date, amount) {
+        function addNote(title, description, date, type, amount, partName, partArticle, partMileage) {
             const entry = {
                 id: 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
                 title: title.trim() || 'Без заголовка',
                 description: description.trim() || '',
                 date: date || new Date().toISOString().split('T')[0],
+                type: type || 'maintenance',
                 amount: amount ? parseFloat(amount) : null,
+                partName: partName || '',
+                partArticle: partArticle || '',
+                partMileage: partMileage ? parseInt(partMileage) : null,
             };
-            notes.push(entry);
-            saveNotes();
-            renderNotes();
-            showToast('📝 Заметка добавлена');
-            return entry;
+            return saveNote(entry).then(() => {
+                notes.push(entry);
+                renderNotes();
+                showToast('📝 Запись добавлена в журнал ТО');
+                return entry;
+            });
         }
 
         function deleteNote(id) {
-            if (!confirm('Удалить эту заметку?')) return;
-            notes = notes.filter(n => n.id !== id);
-            saveNotes();
-            renderNotes();
-            showToast('🗑️ Заметка удалена');
+            if (!confirm('Удалить эту запись?')) return;
+            return deleteNoteFromDB(id).then(() => {
+                notes = notes.filter(n => n.id !== id);
+                renderNotes();
+                showToast('🗑️ Запись удалена');
+            });
+        }
+
+        // ============================================================
+        //  EXPENSE CRUD
+        // ============================================================
+        function addExpense(date, category, amount, description, liters, mileage) {
+            const entry = {
+                id: 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                date: date,
+                category: category,
+                amount: parseFloat(amount),
+                description: description.trim() || '',
+                liters: liters ? parseFloat(liters) : null,
+                mileage: mileage ? parseInt(mileage) : null,
+            };
+            return saveExpense(entry).then(() => {
+                expenses.push(entry);
+                renderAll();
+                renderFuelTab();
+                showToast('✅ Расход добавлен');
+                return entry;
+            });
+        }
+
+        function deleteExpense(id) {
+            if (!confirm('Удалить этот расход?')) return;
+            return deleteExpenseFromDB(id).then(() => {
+                expenses = expenses.filter(e => e.id !== id);
+                renderAll();
+                renderFuelTab();
+                showToast('🗑️ Расход удалён');
+            });
+        }
+
+        function editExpense(id, date, category, amount, description, liters, mileage) {
+            const idx = expenses.findIndex(e => e.id === id);
+            if (idx === -1) return Promise.reject('Not found');
+            const entry = {
+                ...expenses[idx],
+                date,
+                category,
+                amount: parseFloat(amount),
+                description: description.trim() || '',
+                liters: liters ? parseFloat(liters) : null,
+                mileage: mileage ? parseInt(mileage) : null,
+            };
+            return saveExpense(entry).then(() => {
+                expenses[idx] = entry;
+                renderAll();
+                renderFuelTab();
+                showToast('✅ Расход обновлён');
+            });
+        }
+
+        // ============================================================
+        //  BACKUP (JSON)
+        // ============================================================
+        function exportBackup() {
+            const data = {
+                version: 2,
+                exportedAt: new Date().toISOString(),
+                car: carData,
+                expenses: expenses,
+                notes: notes,
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `taxi_backup_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast('📦 Бэкап экспортирован');
+        }
+
+        function importBackup(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!data.expenses || !data.notes) {
+                        showToast('⚠️ Неверный формат файла');
+                        return;
+                    }
+                    // Проверка версии
+                    if (data.version !== 2) {
+                        showToast('⚠️ Версия бэкапа не поддерживается');
+                        return;
+                    }
+                    // Загружаем данные
+                    const promises = [];
+                    // Очищаем существующие данные
+                    promises.push(clearStore(STORE_EXPENSES));
+                    promises.push(clearStore(STORE_NOTES));
+                    promises.push(clearStore(STORE_CAR));
+
+                    Promise.all(promises).then(() => {
+                        const savePromises = [];
+                        data.expenses.forEach(e => savePromises.push(saveExpense(e)));
+                        data.notes.forEach(n => savePromises.push(saveNote(n)));
+                        if (data.car) {
+                            savePromises.push(putToStore(STORE_CAR, data.car));
+                        }
+                        return Promise.all(savePromises);
+                    }).then(() => {
+                        // Перезагружаем данные
+                        return Promise.all([loadExpenses(), loadNotes(), loadCarData()]);
+                    }).then(() => {
+                        renderAll();
+                        renderFuelTab();
+                        showToast('✅ Бэкап импортирован успешно');
+                    }).catch(err => {
+                        showToast('⚠️ Ошибка при импорте: ' + err.message);
+                    });
+                } catch (err) {
+                    showToast('⚠️ Ошибка при чтении файла: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
         }
 
         // ============================================================
@@ -2858,40 +3404,7 @@
         }
 
         // ============================================================
-        //  CRUD EXPENSES
-        // ============================================================
-        function addExpense(date, category, amount, description) {
-            const entry = {
-                id: 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-                date: date,
-                category: category,
-                amount: parseFloat(amount),
-                description: description.trim() || '',
-            };
-            expenses.push(entry);
-            saveExpenses();
-            return entry;
-        }
-
-        function deleteExpense(id) {
-            if (!confirm('Удалить этот расход?')) return;
-            expenses = expenses.filter(e => e.id !== id);
-            saveExpenses();
-            renderAll();
-            showToast('🗑️ Расход удалён');
-        }
-
-        function editExpense(id, date, category, amount, description) {
-            const idx = expenses.findIndex(e => e.id === id);
-            if (idx === -1) return false;
-            expenses[idx] = { ...expenses[idx], date, category, amount: parseFloat(amount), description: description.trim() ||
-                    '' };
-            saveExpenses();
-            return true;
-        }
-
-        // ============================================================
-        //  MODAL
+        //  MODAL (расходы)
         // ============================================================
         const modalOverlay = document.getElementById('modalOverlay');
         const form = document.getElementById('expenseForm');
@@ -2899,18 +3412,31 @@
         const formDate = document.getElementById('formDate');
         const formCategory = document.getElementById('formCategory');
         const formAmount = document.getElementById('formAmount');
+        const formLiters = document.getElementById('formLiters');
+        const formMileage = document.getElementById('formMileage');
         const formDesc = document.getElementById('formDesc');
+        const litersGroup = document.getElementById('litersGroup');
+        const mileageGroup = document.getElementById('mileageGroup');
+        const submitBtn = document.getElementById('submitBtn');
 
-        function populateCategorySelect(selected) {
-            formCategory.innerHTML = '';
-            CAT_KEYS.forEach(k => {
-                const opt = document.createElement('option');
-                opt.value = k;
-                opt.textContent = CATEGORIES[k].label;
-                if (k === selected) opt.selected = true;
-                formCategory.appendChild(opt);
-            });
-        }
+        // Запрет будущих дат
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('formDate').setAttribute('max', today);
+
+        // Показ/скрытие полей для бензина
+        formCategory.addEventListener('change', function() {
+            if (this.value === 'fuel') {
+                litersGroup.style.display = 'block';
+                mileageGroup.style.display = 'block';
+                formLiters.required = true;
+            } else {
+                litersGroup.style.display = 'none';
+                mileageGroup.style.display = 'none';
+                formLiters.required = false;
+                formLiters.value = '';
+                formMileage.value = '';
+            }
+        });
 
         function openModal(editData = null, presetCategory = null) {
             modalOverlay.classList.add('open');
@@ -2919,20 +3445,50 @@
             if (editData) {
                 editId.value = editData.id;
                 formDate.value = editData.date;
-                populateCategorySelect(editData.category);
+                formCategory.value = editData.category;
                 formAmount.value = editData.amount;
                 formDesc.value = editData.description || '';
+                if (editData.liters) {
+                    formLiters.value = editData.liters;
+                    litersGroup.style.display = 'block';
+                    mileageGroup.style.display = 'block';
+                } else {
+                    litersGroup.style.display = 'none';
+                    mileageGroup.style.display = 'none';
+                }
+                if (editData.mileage) {
+                    formMileage.value = editData.mileage;
+                }
                 document.querySelector('#modalTitle').innerHTML = '<i class="fas fa-edit"></i> Редактировать';
-                document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-sync-alt"></i> Обновить';
+                submitBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Обновить';
             } else {
                 editId.value = '';
-                formDate.value = new Date().toISOString().split('T')[0];
-                populateCategorySelect(presetCategory || 'fuel');
+                formDate.value = today;
+                formCategory.value = presetCategory || 'fuel';
                 formAmount.value = '';
                 formDesc.value = '';
+                formLiters.value = '';
+                formMileage.value = '';
+                if (formCategory.value === 'fuel') {
+                    litersGroup.style.display = 'block';
+                    mileageGroup.style.display = 'block';
+                } else {
+                    litersGroup.style.display = 'none';
+                    mileageGroup.style.display = 'none';
+                }
                 document.querySelector('#modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Новый расход';
-                document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Сохранить';
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Сохранить';
             }
+
+            // Telegram MainButton
+            if (tg) {
+                tg.MainButton.setText(editData ? 'Обновить' : 'Сохранить');
+                tg.MainButton.show();
+                tg.MainButton.onClick(() => {
+                    form.dispatchEvent(new Event('submit'));
+                });
+            }
+
             setTimeout(() => formDate.focus(), 100);
         }
 
@@ -2941,6 +3497,10 @@
             document.body.style.overflow = '';
             form.reset();
             editId.value = '';
+            if (tg) {
+                tg.MainButton.hide();
+                tg.MainButton.offClick();
+            }
         }
 
         modalOverlay.addEventListener('click', (e) => {
@@ -2962,10 +3522,10 @@
         function openCarModal() {
             carModalOverlay.classList.add('open');
             document.body.style.overflow = 'hidden';
-            carModelInput.value = carData.model || '';
-            carPlateInput.value = carData.plate || '';
-            carFuelInput.value = carData.fuelConsumption || '';
-            carOilIntervalInput.value = carData.oilInterval || 10000;
+            carModelInput.value = carData?.model || '';
+            carPlateInput.value = carData?.plate || '';
+            carFuelInput.value = carData?.fuelConsumption || '';
+            carOilIntervalInput.value = carData?.oilInterval || 10000;
             setTimeout(() => carModelInput.focus(), 100);
         }
 
@@ -2991,10 +3551,11 @@
             carData.plate = carPlateInput.value.trim();
             carData.fuelConsumption = parseFloat(carFuelInput.value) || 0;
             carData.oilInterval = parseFloat(carOilIntervalInput.value) || 10000;
-            saveCarData();
-            closeCarModal();
-            renderAll();
-            showToast('✅ Данные автомобиля сохранены');
+            saveCarData().then(() => {
+                closeCarModal();
+                renderAll();
+                showToast('✅ Данные автомобиля сохранены');
+            });
         });
 
         // ============================================================
@@ -3008,9 +3569,10 @@
                     date: new Date().toISOString()
                 };
                 carData.oilLastReset = resetData;
-                saveCarData();
-                renderAll();
-                showToast('🛢️ Счётчик масла сброшен!');
+                saveCarData().then(() => {
+                    renderAll();
+                    showToast('🛢️ Счётчик масла сброшен!');
+                });
             }
         });
 
@@ -3019,22 +3581,58 @@
         // ============================================================
         document.getElementById('addNoteBtn').addEventListener('click', function(e) {
             e.preventDefault();
+            const type = document.getElementById('noteType').value;
             const title = document.getElementById('noteTitle').value;
             const description = document.getElementById('noteDesc').value;
             const date = document.getElementById('noteDate').value;
             const amount = document.getElementById('noteAmount').value;
+            const partName = document.getElementById('partName').value;
+            const partArticle = document.getElementById('partArticle').value;
+            const partMileage = document.getElementById('partMileage').value;
 
             if (!title && !description) {
                 showToast('⚠️ Заполните заголовок или описание');
                 return;
             }
 
-            addNote(title, description, date || new Date().toISOString().split('T')[0], amount || null);
+            addNote(
+                title,
+                description,
+                date || new Date().toISOString().split('T')[0],
+                type,
+                amount || null,
+                partName,
+                partArticle,
+                partMileage
+            );
 
             document.getElementById('noteTitle').value = '';
             document.getElementById('noteDesc').value = '';
             document.getElementById('noteDate').value = '';
             document.getElementById('noteAmount').value = '';
+            document.getElementById('partName').value = '';
+            document.getElementById('partArticle').value = '';
+            document.getElementById('partMileage').value = '';
+        });
+
+        // Показ полей для запчастей
+        document.getElementById('noteType').addEventListener('change', function() {
+            const partsFields = document.getElementById('partsFields');
+            if (this.value === 'parts') {
+                partsFields.style.display = 'block';
+            } else {
+                partsFields.style.display = 'none';
+            }
+        });
+
+        // Фильтр заметок
+        document.querySelectorAll('#notesFilter button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#notesFilter button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentNoteFilter = this.dataset.filter;
+                renderNotes();
+            });
         });
 
         // ============================================================
@@ -3046,6 +3644,8 @@
             const category = formCategory.value;
             const amount = parseFloat(formAmount.value);
             const description = formDesc.value;
+            const liters = category === 'fuel' ? parseFloat(formLiters.value) : null;
+            const mileage = category === 'fuel' ? parseInt(formMileage.value) : null;
             const id = editId.value;
 
             if (!date || !category || isNaN(amount) || amount <= 0) {
@@ -3053,18 +3653,20 @@
                 return;
             }
 
-            if (id) {
-                editExpense(id, date, category, amount, description);
-                showToast('✅ Расход обновлён');
-            } else {
-                addExpense(date, category, amount, description);
-                showToast('✅ Расход добавлен');
+            if (category === 'fuel' && (!liters || liters <= 0)) {
+                showToast('⚠️ Укажите количество литров');
+                return;
             }
 
-            closeModal();
-            renderAll();
-            renderQuarterSelector();
-            renderAll();
+            if (id) {
+                editExpense(id, date, category, amount, description, liters, mileage).then(() => {
+                    closeModal();
+                });
+            } else {
+                addExpense(date, category, amount, description, liters, mileage).then(() => {
+                    closeModal();
+                });
+            }
         });
 
         // ============================================================
@@ -3076,35 +3678,17 @@
         });
 
         // ============================================================
-        //  EXPORT CSV
+        //  BACKUP (JSON)
         // ============================================================
-        document.getElementById('exportBtn').addEventListener('click', function() {
-            const items = getExpensesForQuarter(currentQuarter);
-            if (!items.length) {
-                showToast('📭 Нет данных для экспорта');
-                return;
+        document.getElementById('backupExportBtn').addEventListener('click', exportBackup);
+        document.getElementById('backupImportBtn').addEventListener('click', function() {
+            document.getElementById('importFileInput').click();
+        });
+        document.getElementById('importFileInput').addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                importBackup(this.files[0]);
             }
-            const headers = ['Дата', 'Категория', 'Сумма (BYN)', 'Описание'];
-            if (carData.model || carData.plate) {
-                headers.push('Автомобиль', 'Госномер', 'Расход л/100км');
-            }
-            const rows = items.map(e => {
-                const cat = CATEGORIES[e.category]?.label || e.category;
-                const row = [e.date, cat, e.amount.toFixed(2), e.description || ''];
-                if (carData.model || carData.plate) {
-                    row.push(carData.model || '', carData.plate || '', carData.fuelConsumption ? carData
-                        .fuelConsumption.toFixed(1) : '');
-                }
-                return row;
-            });
-            const csv = [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n');
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `taxi_expenses_${currentQuarter}.csv`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-            showToast('📥 CSV экспортирован');
+            this.value = '';
         });
 
         // ============================================================
@@ -3122,6 +3706,9 @@
 
                 if (tab === 'notes') {
                     renderNotes();
+                }
+                if (tab === 'fuel') {
+                    renderFuelTab();
                 }
             });
         });
@@ -3148,6 +3735,7 @@
             }
             renderCharts(getExpensesForQuarter(currentQuarter));
             renderQuarterChart(getAllQuartersData());
+            renderFuelChart(expenses.filter(e => e.category === 'fuel' && e.liters));
             showToast(isDark ? '🌙 Тёмная тема' : '☀️ Светлая тема');
         });
 
@@ -3177,26 +3765,26 @@
         // ============================================================
         //  INIT
         // ============================================================
-        loadCarData();
-        loadExpenses();
-        loadNotes();
-        currentQuarter = getAvailableQuartersForSelect().pop() || getQuarter(new Date());
-        renderQuarterSelector();
-        renderAll();
+        openDB().then(() => {
+            return Promise.all([
+                loadCarData(),
+                loadExpenses(),
+                loadNotes()
+            ]);
+        }).then(() => {
+            currentQuarter = getAvailableQuartersForSelect().pop() || getQuarter(new Date());
+            renderQuarterSelector();
+            renderAll();
+            renderFuelTab();
+            console.log('🚗 Такси Расходы Premium — IndexedDB');
+            console.log(`📊 ${expenses.length} записей, ${notes.length} заметок, текущий квартал: ${currentQuarter}`);
+        }).catch(err => {
+            console.error('Ошибка при инициализации:', err);
+            showToast('⚠️ Ошибка при загрузке данных');
+        });
 
         window.addEventListener('storage', function(e) {
-            if (e.key === 'taxi_expenses') {
-                loadExpenses();
-                renderAll();
-            }
-            if (e.key === 'taxi_notes') {
-                loadNotes();
-                renderNotes();
-            }
-            if (e.key === 'taxi_car') {
-                loadCarData();
-                renderAll();
-            }
+            // Для совместимости с localStorage (не используется)
         });
 
         document.addEventListener('keydown', function(e) {
@@ -3206,10 +3794,26 @@
             }
         });
 
-        console.log('🚗 Black & Green — Такси Расходы 2026');
+        // ============================================================
+        //  SERVICE WORKER REGISTRATION
+        // ============================================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(() => {
+                console.log('✅ Service Worker зарегистрирован');
+            }).catch(() => {
+                console.log('ℹ️ Service Worker не доступен');
+            });
+        }
+
+        console.log('🚗 Такси Расходы Premium — полная версия');
         console.log(`📊 ${expenses.length} записей, ${notes.length} заметок, текущий квартал: ${currentQuarter}`);
         console.log('🎨 Цвета: #0A0A0A | #D5FF40');
+        console.log('💾 Хранилище: IndexedDB');
+        console.log('📦 Резервное копирование: JSON');
+        console.log('🔧 Расширенный журнал ТО с пресетами');
+        console.log('⛽ Умный учёт топлива в литрах');
+        console.log('📱 PWA Support');
+        console.log('🤖 Telegram WebApp Integration');
     </script>
-
 </body>
 </html>
