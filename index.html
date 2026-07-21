@@ -1,1887 +1,1629 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0f0f0f">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Экономка Pro&quot;,&quot;short_name&quot;:&quot;Экономка&quot;,&quot;start_url&quot;:&quot;.&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#0f0f0f&quot;,&quot;theme_color&quot;:&quot;#6c5ce7&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%236c5ce7' width='100' height='100' rx='20'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='white' font-family='sans-serif'%3E💰%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}">
-    <title>Экономка Pro · 2026</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🚕 Такси Расходы</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+
     <style>
-        * {
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
-            --bg: #0f0f0f;
+            --bg-primary: #08080e;
+            --bg-secondary: #11111e;
             --bg-card: rgba(255, 255, 255, 0.04);
-            --bg-input: rgba(255, 255, 255, 0.06);
-            --text: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.5);
-            --text-muted: rgba(255, 255, 255, 0.25);
-            --accent: #6c5ce7;
-            --accent-glow: rgba(108, 92, 231, 0.3);
-            --accent-green: #00b894;
-            --accent-red: #ff6b6b;
-            --accent-yellow: #fdcb6e;
-            --accent-gold: #f9ca24;
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --border-card: rgba(255, 255, 255, 0.06);
+            --text-primary: #f0f0f5;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a82;
+            --accent-1: #7c6aff;
+            --accent-2: #4ecdc4;
+            --accent-3: #ff6b6b;
+            --accent-4: #ffd93d;
+            --accent-5: #6bcb77;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
             --radius: 20px;
-            --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --radius-sm: 12px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            min-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0 0 100px 0;
             overflow-x: hidden;
-            position: relative;
-            transition: background 0.5s var(--ease), color 0.5s var(--ease);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        body.light {
-            --bg: #f5f5f5;
-            --bg-card: rgba(0, 0, 0, 0.04);
-            --bg-input: rgba(0, 0, 0, 0.06);
-            --text: #1a1a1a;
-            --text-secondary: rgba(0, 0, 0, 0.5);
-            --text-muted: rgba(0, 0, 0, 0.25);
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-1);
+            border-radius: 10px;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(ellipse at 30% 20%, rgba(108, 92, 231, 0.08), transparent 60%);
-            pointer-events: none;
-            z-index: 0;
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
-
-        #particles {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(108, 92, 231, 0.12);
-            animation: float 8s ease-in-out infinite;
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(124, 106, 255, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(124, 106, 255, 0.4);
+            }
         }
         @keyframes float {
             0%,
             100% {
-                transform: translateY(0) scale(1);
-                opacity: 0.3;
+                transform: translateY(0px);
             }
             50% {
-                transform: translateY(-60px) scale(1.5);
-                opacity: 0.8;
+                transform: translateY(-6px);
             }
         }
-
-        .app {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 420px;
-            background: rgba(15, 15, 15, 0.92);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: 32px;
-            padding: 16px 14px 14px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-            max-height: 98vh;
-            overflow-y: auto;
-            transition: all 0.3s ease;
-        }
-        body.light .app {
-            background: rgba(245, 245, 245, 0.92);
-        }
-        .app::-webkit-scrollbar {
-            width: 3px;
-        }
-        .app::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 4px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            margin-bottom: 10px;
-        }
-        .header .logo {
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .header .logo span {
-            color: var(--accent);
-        }
-        .header .top-actions {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .header .top-actions button {
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 8px;
-            padding: 4px 8px;
-            color: var(--text-secondary);
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-        .header .top-actions button:hover {
-            background: var(--accent-dim);
-            color: var(--accent);
-        }
-        .header .balance {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 4px;
-            font-size: 10px;
-            color: var(--text-secondary);
-        }
-        .header .balance .amount {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text);
-            transition: all 0.3s ease;
-        }
-        .header .balance .amount.positive {
-            color: var(--accent-green);
-        }
-        .header .balance .amount.negative {
-            color: var(--accent-red);
-        }
-        .header .balance .currency-select {
-            background: var(--bg-input);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 8px;
-            padding: 2px 8px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, rgba(108, 92, 231, 0.12), rgba(0, 184, 148, 0.06));
-            border-radius: var(--radius);
-            padding: 16px 14px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(108, 92, 231, 0.08);
-            position: relative;
-            overflow: hidden;
-        }
-        .balance-card .glow-ring {
-            position: absolute;
-            right: -30px;
-            top: -30px;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(108, 92, 231, 0.08), transparent 70%);
-            animation: pulseRing 4s ease-in-out infinite;
-        }
-        @keyframes pulseRing {
-            0%,
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
             100% {
-                transform: scale(1);
-                opacity: 0.5;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 1;
+                background-position: 200% 0;
             }
         }
-        .balance-card .label {
-            font-size: 10px;
-            color: var(--text-secondary);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .balance-card .big-number {
-            font-size: 34px;
-            font-weight: 800;
-            letter-spacing: -2px;
-            margin: 2px 0 4px;
-            transition: all 0.3s ease;
-        }
-        .balance-card .big-number.positive {
-            color: var(--accent-green);
-        }
-        .balance-card .big-number.negative {
-            color: var(--accent-red);
-        }
-        .balance-card .sub {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        .balance-card .sub span {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-        .quick-btn {
-            padding: 8px 2px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            background: var(--bg-card);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-        .quick-btn .icon {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 1px;
-        }
-        .quick-btn:active {
-            transform: scale(0.95);
-        }
-        .quick-btn.income {
-            border-color: rgba(0, 184, 148, 0.15);
-        }
-        .quick-btn.income:active {
-            background: rgba(0, 184, 148, 0.12);
-        }
-        .quick-btn.expense {
-            border-color: rgba(255, 107, 107, 0.12);
-        }
-        .quick-btn.expense:active {
-            background: rgba(255, 107, 107, 0.08);
-        }
-        .quick-btn.stats {
-            border-color: rgba(108, 92, 231, 0.12);
-        }
-        .quick-btn.stats:active {
-            background: rgba(108, 92, 231, 0.08);
-        }
-        .quick-btn.voice {
-            border-color: rgba(249, 202, 36, 0.12);
-        }
-        .quick-btn.voice:active {
-            background: rgba(249, 202, 36, 0.08);
-        }
-        .quick-btn.family {
-            border-color: rgba(0, 184, 148, 0.12);
-        }
-        .quick-btn.family:active {
-            background: rgba(0, 184, 148, 0.08);
-        }
-        .quick-btn.calendar {
-            border-color: rgba(108, 92, 231, 0.12);
-        }
-        .quick-btn.calendar:active {
-            background: rgba(108, 92, 231, 0.08);
-        }
-
-        .input-area {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .input-area .row {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .input-area input {
-            flex: 1;
-            background: var(--bg-input);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 10px;
-            padding: 8px 12px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            outline: none;
-            transition: border-color 0.3s ease;
-            min-width: 0;
-        }
-        .input-area input:focus {
-            border-color: var(--accent);
-        }
-        .input-area input::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-            font-size: 13px;
-        }
-        .input-area .btn-add {
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: none;
-            background: var(--accent);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
-        .input-area .btn-add:active {
-            transform: scale(0.95);
-        }
-        .input-area .btn-add.income-mode {
-            background: var(--accent-green);
-            box-shadow: 0 4px 20px rgba(0, 184, 148, 0.3);
-        }
-
-        .input-area .type-toggle {
-            display: flex;
-            gap: 4px;
-            margin-top: 6px;
-            background: var(--bg-input);
-            border-radius: 8px;
-            padding: 3px;
-        }
-        .input-area .type-toggle button {
-            flex: 1;
-            padding: 5px;
-            border: none;
-            border-radius: 6px;
-            background: transparent;
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .input-area .type-toggle button.active {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 2px 10px var(--accent-glow);
-        }
-        .input-area .type-toggle button.active.income-mode {
-            background: var(--accent-green);
-        }
-
-        .input-area .voice-btn {
-            margin-top: 6px;
-            padding: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 8px;
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-        }
-        .input-area .voice-btn:active {
-            transform: scale(0.95);
-        }
-        .input-area .voice-btn.listening {
-            background: var(--accent-red);
-            color: #fff;
-            border-color: var(--accent-red);
-        }
-
-        .categories {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-        .categories .cat-btn {
-            padding: 4px 8px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .categories .cat-btn.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-            box-shadow: 0 2px 12px var(--accent-glow);
-        }
-        .categories .cat-btn:active {
-            transform: scale(0.95);
-        }
-
-        .budget-section {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .budget-section .budget-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-        .budget-section .budget-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 0;
-            font-size: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-        }
-        .budget-section .budget-item .spent.over {
-            color: var(--accent-red);
-        }
-        .budget-section .budget-item .limit {
-            color: var(--accent);
-            font-weight: 600;
-        }
-        .budget-bar {
-            height: 3px;
-            background: var(--bg-input);
-            border-radius: 3px;
-            margin-top: 2px;
-            overflow: hidden;
-        }
-        .budget-bar .bar {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.5s var(--ease), background 0.5s;
-        }
-        .budget-bar .bar.ok {
-            background: var(--accent-green);
-        }
-        .budget-bar .bar.warn {
-            background: var(--accent-yellow);
-        }
-        .budget-bar .bar.danger {
-            background: var(--accent-red);
-        }
-
-        .piggy-section {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .piggy-section .piggy-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 10px;
-            color: var(--text-secondary);
-        }
-        .piggy-section .piggy-header .balance {
-            color: var(--accent-gold);
-            font-weight: 700;
-            font-size: 16px;
-        }
-        .piggy-progress {
-            height: 4px;
-            background: var(--bg-input);
-            border-radius: 4px;
-            margin: 4px 0;
-            overflow: hidden;
-        }
-        .piggy-progress .bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-gold), var(--accent-yellow));
-            border-radius: 4px;
-            transition: width 0.5s var(--ease);
-        }
-        .piggy-actions {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-top: 4px;
-        }
-        .piggy-actions button {
-            padding: 3px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .piggy-actions button:hover {
-            border-color: var(--accent-gold);
-            color: var(--accent-gold);
-        }
-
-        .truth-moment {
-            background: rgba(255, 107, 107, 0.05);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 107, 107, 0.08);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        .truth-moment .icon {
-            font-size: 18px;
-        }
-        .truth-moment .text strong {
-            color: var(--accent-gold);
-            font-weight: 700;
-        }
-
-        .transactions .title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 10px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            padding: 0 2px;
-        }
-        .transactions .title .clear-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 9px;
-            cursor: pointer;
-            transition: color 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-        .transactions .title .clear-btn:hover {
-            color: var(--accent-red);
-        }
-
-        .transaction-list {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            max-height: 160px;
-            overflow-y: auto;
-        }
-        .transaction-list::-webkit-scrollbar {
-            width: 2px;
-        }
-        .transaction-list::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        .tx-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 8px;
-            border-radius: 8px;
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.02);
-            animation: slideIn 0.3s var(--ease);
-        }
-        @keyframes slideIn {
+        @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-6px);
+                transform: translateY(-20px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
-        .tx-item .tx-icon {
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 0.6s ease forwards;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .animate-slide-down {
+            animation: slideDown 0.4s ease forwards;
+        }
+        .animate-scale-in {
+            animation: scaleIn 0.3s ease forwards;
+        }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(8, 8, 14, 0.82);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            border-bottom: 1px solid var(--border-card);
+            padding: 16px 20px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .app-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .app-header .brand i {
+            font-size: 24px;
+            -webkit-text-fill-color: var(--accent-1);
+            background: none;
+            filter: drop-shadow(0 0 12px rgba(124, 106, 255, 0.3));
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== QUARTER SELECTOR ===== */
+        .quarter-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 50px;
+            padding: 4px 6px 4px 16px;
+            backdrop-filter: blur(10px);
+        }
+        .quarter-selector label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .quarter-selector select {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font);
             font-size: 14px;
-            width: 26px;
-            height: 26px;
+            font-weight: 600;
+            padding: 6px 8px;
+            outline: none;
+            cursor: pointer;
+            min-width: 100px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0a0b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            padding-right: 24px;
+        }
+        .quarter-selector select option {
+            background: #1a1a2e;
+            color: #f0f0f5;
+        }
+
+        .btn-icon {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.03);
-            flex-shrink: 0;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
         }
-        .tx-item .tx-info {
+        .btn-icon:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+        .btn-icon.active {
+            background: var(--accent-1);
+            color: #fff;
+            border-color: var(--accent-1);
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* ===== SUMMARY GRID ===== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            padding: 16px 14px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            border-radius: 0 0 10px 10px;
+            opacity: 0.6;
+        }
+        .summary-card:nth-child(1)::before {
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+        }
+        .summary-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--accent-3), var(--accent-4));
+        }
+        .summary-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--accent-5), var(--accent-2));
+        }
+        .summary-card:nth-child(4)::before {
+            background: linear-gradient(90deg, var(--accent-4), var(--accent-3));
+        }
+
+        .summary-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .summary-card .label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .summary-card .label i {
+            font-size: 13px;
+        }
+        .summary-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 6px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff, #b0b0d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .summary-card .sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ===== CHARTS ===== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        .chart-card:hover {
+            background: var(--bg-card-hover);
+        }
+        .chart-card .chart-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-card .chart-title i {
+            font-size: 14px;
+            color: var(--accent-1);
+        }
+        .chart-card canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 200px;
+        }
+
+        /* ===== EXPENSE LIST ===== */
+        .expense-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .expense-section .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .expense-section .section-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .expense-section .section-header h3 i {
+            color: var(--accent-2);
+        }
+        .expense-section .section-header .badge {
+            font-size: 12px;
+            background: var(--bg-card-hover);
+            padding: 4px 12px;
+            border-radius: 50px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-card);
+        }
+
+        .expense-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-card);
+            transition: var(--transition);
+            animation: fadeUp 0.4s ease forwards;
+            gap: 10px;
+        }
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+        .expense-item:hover {
+            padding-left: 6px;
+        }
+
+        .expense-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
             flex: 1;
+        }
+        .expense-item .icon-wrap {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            color: #fff;
+        }
+        .expense-item .info {
             min-width: 0;
         }
-        .tx-item .tx-info .tx-name {
-            font-size: 11px;
+        .expense-item .info .cat {
+            font-size: 14px;
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .tx-item .tx-info .tx-meta {
-            font-size: 8px;
+        .expense-item .info .desc {
+            font-size: 12px;
             color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .tx-item .tx-amount {
-            font-size: 13px;
+        .expense-item .info .date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .expense-item .amount {
+            font-size: 16px;
             font-weight: 700;
             white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 8px;
         }
-        .tx-item .tx-amount.income {
-            color: var(--accent-green);
-        }
-        .tx-item .tx-amount.expense {
-            color: var(--accent-red);
-        }
-        .tx-item .tx-delete {
+        .expense-item .delete-btn {
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 12px;
             cursor: pointer;
-            padding: 0 2px;
-            transition: color 0.2s;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 14px;
+            flex-shrink: 0;
         }
-        .tx-item .tx-delete:hover {
-            color: var(--accent-red);
+        .expense-item .delete-btn:hover {
+            color: var(--accent-3);
+            background: rgba(255, 107, 107, 0.1);
         }
 
         .empty-state {
             text-align: center;
-            padding: 20px 10px;
-            color: var(--text-secondary);
-            font-size: 11px;
-        }
-        .empty-state .icon {
-            font-size: 28px;
-            display: block;
-            margin-bottom: 4px;
-            opacity: 0.3;
-        }
-
-        .ai-tip {
-            background: rgba(108, 92, 231, 0.04);
-            border-radius: 10px;
-            padding: 8px 10px;
-            border: 1px solid rgba(108, 92, 231, 0.04);
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 10px;
+            padding: 40px 20px;
             color: var(--text-secondary);
         }
-        .ai-tip .icon {
+        .empty-state i {
+            font-size: 48px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        .empty-state p {
             font-size: 14px;
         }
-        .ai-tip .text {
-            flex: 1;
+
+        /* ===== FLOATING ACTION BUTTON ===== */
+        .fab {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-1), #5a4adf);
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 300;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(124, 106, 255, 0.4);
+            transition: var(--transition);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: float 3s ease-in-out infinite;
         }
-        .ai-tip .text strong {
-            color: var(--accent);
-            font-weight: 600;
+        .fab:hover {
+            transform: scale(1.08) rotate(90deg);
+            box-shadow: 0 12px 48px rgba(124, 106, 255, 0.6);
+        }
+        .fab:active {
+            transform: scale(0.92);
         }
 
+        /* ===== MODAL ===== */
         .modal-overlay {
-            display: none;
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal {
-            background: var(--bg);
-            border-radius: 24px;
-            padding: 20px 16px;
-            max-width: 400px;
-            width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        body.light .modal {
-            background: #f5f5f5;
-        }
-        .modal .close {
-            float: right;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .modal .close:hover {
-            color: var(--text);
-        }
-        .modal .title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        .modal .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            font-size: 12px;
-        }
-        .modal .stat-row .label {
-            color: var(--text-secondary);
-        }
-        .modal .stat-row .value {
-            font-weight: 600;
-        }
-        .modal .stat-row .value.green {
-            color: var(--accent-green);
-        }
-        .modal .stat-row .value.red {
-            color: var(--accent-red);
-        }
-        .modal .stat-row .value.purple {
-            color: var(--accent);
-        }
-        .modal .stat-row .value.gold {
-            color: var(--accent-gold);
-        }
-        .modal .chart {
-            display: flex;
-            gap: 4px;
-            margin: 8px 0;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 200;
+            display: none;
             align-items: flex-end;
-            height: 70px;
-            padding: 0 2px;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
         }
-        .modal .chart .bar-container {
-            flex: 1;
+        .modal-overlay.open {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-        .modal .chart .bar {
-            width: 100%;
-            border-radius: 3px 3px 0 0;
-            min-height: 4px;
-            transition: height 0.6s var(--ease);
-        }
-        .modal .chart .day {
-            font-size: 7px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        .modal .export-buttons {
-            display: flex;
-            gap: 4px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .modal .export-buttons button {
-            flex: 1;
-            padding: 6px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            cursor: pointer;
-            transition: all 0.2s;
-            min-width: 50px;
-        }
-        .modal .export-buttons button:hover {
-            border-color: var(--accent);
-            color: var(--accent);
         }
 
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin: 8px 0;
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius) var(--radius) 0 0;
+            max-width: 500px;
+            width: 100%;
+            padding: 24px 20px 32px;
+            animation: slideDown 0.4s ease;
+            max-height: 92vh;
+            overflow-y: auto;
+            border-top: 1px solid var(--border-card);
         }
-        .calendar-grid .day {
-            aspect-ratio: 1;
-            border-radius: 6px;
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-header h2 i {
+            color: var(--accent-1);
+        }
+        .modal-close {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+        }
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
             font-weight: 500;
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.02);
-            transition: all 0.2s;
-            cursor: default;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
         }
-        .calendar-grid .day.has-expense {
-            border-color: var(--accent-red);
-            background: rgba(255, 107, 107, 0.05);
-        }
-        .calendar-grid .day.has-income {
-            border-color: var(--accent-green);
-            background: rgba(0, 184, 148, 0.05);
-        }
-        .calendar-grid .day.today {
-            border-color: var(--accent);
-            box-shadow: 0 0 10px var(--accent-glow);
+        .form-group label i {
+            margin-right: 6px;
+            color: var(--accent-1);
         }
 
-        .family-section {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
             background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .family-section .family-member {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 0;
-            font-size: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-        }
-        .family-section .family-member .name {
-            font-weight: 600;
-        }
-        .family-section .family-member .balance {
-            color: var(--accent);
-        }
-
-        .input-field {
-            background: var(--bg-input);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 6px;
-            padding: 6px 8px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: var(--font);
+            font-size: 15px;
+            transition: var(--transition);
             outline: none;
         }
-        .input-field:focus {
-            border-color: var(--accent);
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 0 4px rgba(124, 106, 255, 0.15);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
-        @media (max-width: 400px) {
-            .app {
-                padding: 10px;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
             }
-            .balance-card .big-number {
-                font-size: 28px;
-            }
-            .quick-actions {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 4px;
-            }
-            .quick-btn {
-                padding: 6px 2px;
-                font-size: 8px;
-            }
-            .quick-btn .icon {
-                font-size: 16px;
-            }
-            .input-area input {
-                font-size: 14px;
-                padding: 6px 8px;
-            }
-            .input-area .btn-add {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-            .header .balance .amount {
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-1), #5a4adf);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-family: var(--font);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(124, 106, 255, 0.3);
+        }
+        .btn-submit:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== CATEGORY COLORS ===== */
+        .cat-fuel {
+            background: #ff6b6b;
+        }
+        .cat-insurance {
+            background: #4ecdc4;
+        }
+        .cat-wash {
+            background: #45b7d1;
+        }
+        .cat-fszn {
+            background: #96ceb4;
+        }
+        .cat-medic {
+            background: #ffd93d;
+            color: #1a1a2e;
+        }
+        .cat-repair {
+            background: #dda0dd;
+            color: #1a1a2e;
+        }
+        .cat-parts {
+            background: #ff9ff3;
+            color: #1a1a2e;
+        }
+        .cat-other {
+            background: #feca57;
+            color: #1a1a2e;
+        }
+
+        .text-fuel {
+            color: #ff6b6b;
+        }
+        .text-insurance {
+            color: #4ecdc4;
+        }
+        .text-wash {
+            color: #45b7d1;
+        }
+        .text-fszn {
+            color: #96ceb4;
+        }
+        .text-medic {
+            color: #ffd93d;
+        }
+        .text-repair {
+            color: #dda0dd;
+        }
+        .text-parts {
+            color: #ff9ff3;
+        }
+        .text-other {
+            color: #feca57;
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 300;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-card);
+            padding: 12px 24px;
+            border-radius: 50px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.4s ease;
+            pointer-events: auto;
+            transition: var(--transition);
+        }
+        .toast i {
+            color: var(--accent-2);
+            font-size: 18px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .app-header .brand {
                 font-size: 17px;
             }
+            .app-header .brand i {
+                font-size: 20px;
+            }
+            .quarter-selector {
+                padding: 2px 4px 2px 12px;
+            }
+            .quarter-selector select {
+                font-size: 13px;
+                min-width: 80px;
+                padding-right: 20px;
+            }
+            .summary-card .value {
+                font-size: 20px;
+            }
+            .fab {
+                width: 54px;
+                height: 54px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
+            .modal {
+                padding: 20px 16px 28px;
+            }
+            .expense-item .info .cat {
+                font-size: 13px;
+            }
+            .expense-item .amount {
+                font-size: 14px;
+            }
+        }
+
+        /* ===== UTILITY ===== */
+        .text-center {
+            text-align: center;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .gap-4 {
+            gap: 4px;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .w-full {
+            width: 100%;
+        }
+
+        /* ===== PRELOADER SHIMMER ===== */
+        .shimmer-loading {
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+            height: 20px;
+            width: 100%;
+            margin: 4px 0;
+        }
+
+        /* Export button */
+        .export-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-family: var(--font);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .export-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--accent-1);
+        }
+        .export-btn i {
+            font-size: 13px;
+        }
+
+        /* Quarter total in header */
+        .quarter-total-badge {
+            font-size: 13px;
+            background: rgba(124, 106, 255, 0.15);
+            border: 1px solid rgba(124, 106, 255, 0.2);
+            padding: 4px 16px;
+            border-radius: 50px;
+            color: var(--accent-1);
+            font-weight: 600;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
-    <div id="particles"></div>
-
-    <div class="app" id="app">
-
-        <div class="header">
-            <div class="logo">💰 Эконом<span>ка</span></div>
-            <div class="top-actions">
-                <button id="themeToggle" title="Тема">🌓</button>
-                <button id="familyToggle" title="Семья">👨‍👩‍👧</button>
-                <button id="calendarToggle" title="Календарь">📅</button>
-                <button id="voiceToggle" title="Голос">🎤</button>
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="brand">
+            <i class="fas fa-car"></i>
+            <span>Такси Расходы</span>
+        </div>
+        <div class="header-actions">
+            <div class="quarter-selector">
+                <label><i class="far fa-calendar-alt"></i></label>
+                <select id="quarterSelect"></select>
             </div>
-            <div class="balance">
-                <span>Баланс</span>
-                <span style="display:flex;align-items:center;gap:6px;">
-                    <span class="amount positive" id="balanceDisplay">0</span>
-                    <select class="currency-select" id="currencySelect">
-                        <option value="BYN">Br</option>
-                        <option value="USD">$</option>
-                        <option value="EUR">€</option>
-                        <option value="RUB">₽</option>
-                        <option value="BTC">₿</option>
-                        <option value="ETH">⟠</option>
-                    </select>
-                </span>
+            <button class="btn-icon" id="themeToggle" title="Сменить тему (beta)">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="export-btn" id="exportBtn">
+                <i class="fas fa-file-export"></i> CSV
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== MAIN ===== -->
+    <div class="container" id="app">
+
+        <!-- Quarter total badge -->
+        <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+            <span class="quarter-total-badge" id="quarterTotalBadge">
+                <i class="fas fa-coins"></i> 0,00 BYN
+            </span>
+        </div>
+
+        <!-- ===== SUMMARY ===== -->
+        <div class="summary-grid" id="summaryGrid">
+            <div class="summary-card animate-fade-up" style="animation-delay:0.05s;">
+                <div class="label"><i class="fas fa-wallet"></i> Всего</div>
+                <div class="value" id="totalExpenses">0,00</div>
+                <div class="sub">BYN</div>
+            </div>
+            <div class="summary-card animate-fade-up" style="animation-delay:0.1s;">
+                <div class="label"><i class="fas fa-layer-group"></i> Категорий</div>
+                <div class="value" id="categoryCount">0</div>
+                <div class="sub">с расходами</div>
+            </div>
+            <div class="summary-card animate-fade-up" style="animation-delay:0.15s;">
+                <div class="label"><i class="fas fa-receipt"></i> Записей</div>
+                <div class="value" id="entryCount">0</div>
+                <div class="sub">в квартале</div>
+            </div>
+            <div class="summary-card animate-fade-up" style="animation-delay:0.2s;">
+                <div class="label"><i class="fas fa-arrow-up"></i> Среднее</div>
+                <div class="value" id="avgExpense">0,00</div>
+                <div class="sub">BYN / запись</div>
             </div>
         </div>
 
-        <div class="balance-card">
-            <div class="glow-ring"></div>
-            <div class="label">Доходы / Расходы</div>
-            <div class="big-number positive" id="balanceBig">0</div>
-            <div class="sub">
-                Доход: <span id="totalIncome">0</span> &nbsp;·&nbsp; Расход: <span id="totalExpense">0</span>
+        <!-- ===== CHARTS ===== -->
+        <div class="charts-grid">
+            <div class="chart-card animate-fade-up" style="animation-delay:0.1s;">
+                <div class="chart-title"><i class="fas fa-chart-pie"></i> По категориям</div>
+                <canvas id="pieChart"></canvas>
+            </div>
+            <div class="chart-card animate-fade-up" style="animation-delay:0.15s;">
+                <div class="chart-title"><i class="fas fa-chart-bar"></i> Топ категорий</div>
+                <canvas id="barChart"></canvas>
             </div>
         </div>
 
-        <div class="quick-actions">
-            <button class="quick-btn income" id="quickIncome"><span class="icon">➕</span>Доход</button>
-            <button class="quick-btn expense" id="quickExpense"><span class="icon">➖</span>Расход</button>
-            <button class="quick-btn stats" id="quickStats"><span class="icon">📊</span>Статистика</button>
-            <button class="quick-btn voice" id="quickVoice"><span class="icon">🎤</span>Голос</button>
-        </div>
-
-        <div class="input-area">
-            <div class="row">
-                <input type="number" id="amountInput" placeholder="Сумма" inputmode="decimal" step="0.01">
-                <button class="btn-add" id="addBtn">➕</button>
+        <!-- ===== EXPENSE LIST ===== -->
+        <div class="expense-section animate-fade-up" style="animation-delay:0.2s;">
+            <div class="section-header">
+                <h3><i class="fas fa-list-ul"></i> Расходы</h3>
+                <span class="badge" id="listBadge">0 записей</span>
             </div>
-            <div class="type-toggle">
-                <button class="active" id="typeIncome" data-type="income">💰 Доход</button>
-                <button id="typeExpense" data-type="expense">💳 Расход</button>
-            </div>
-            <button class="voice-btn" id="voiceBtn">🎤 Нажмите и говорите</button>
-        </div>
-
-        <div class="categories" id="categoryList">
-            <button class="cat-btn active" data-cat="all">Все</button>
-            <button class="cat-btn" data-cat="Еда">🍔 Еда</button>
-            <button class="cat-btn" data-cat="Транспорт">🚗 Транспорт</button>
-            <button class="cat-btn" data-cat="Жильё">🏠 Жильё</button>
-            <button class="cat-btn" data-cat="Развлечения">🎮 Развлечения</button>
-            <button class="cat-btn" data-cat="Здоровье">💊 Здоровье</button>
-            <button class="cat-btn" data-cat="Зарплата">💼 Зарплата</button>
-            <button class="cat-btn" data-cat="Другое">📦 Другое</button>
-        </div>
-
-        <div class="budget-section" id="budgetSection">
-            <div class="budget-header">
-                <span>📊 Бюджеты</span>
-                <span id="budgetStatus">OK</span>
-            </div>
-            <div id="budgetList"></div>
-        </div>
-
-        <div class="piggy-section">
-            <div class="piggy-header">
-                <span>🐷 Копилка</span>
-                <span class="balance" id="piggyBalance">0</span>
-            </div>
-            <div class="piggy-progress"><div class="bar" id="piggyProgress" style="width:0%"></div></div>
-            <div class="piggy-actions">
-                <button id="piggyAdd">➕ Добавить</button>
-                <button id="piggyWithdraw">🏦 Забрать</button>
-                <button id="piggyAuto">⚡ Округление</button>
-            </div>
-        </div>
-
-        <div class="truth-moment" id="truthMoment">
-            <span class="icon">💡</span>
-            <div class="text"><strong id="truthText">0 ₽</strong> — столько вы могли бы накопить, если бы не тратили на импульсивные покупки</div>
-        </div>
-
-        <div class="transactions">
-            <div class="title">
-                <span>📋 Операции</span>
-                <button class="clear-btn" id="clearAll">Очистить всё</button>
-            </div>
-            <div class="transaction-list" id="txList">
+            <div id="expenseList">
                 <div class="empty-state">
-                    <span class="icon">📭</span>
-                    Пока нет операций
+                    <i class="fas fa-inbox"></i>
+                    <p>Нет расходов за выбранный квартал</p>
+                    <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Нажмите + чтобы добавить</p>
                 </div>
             </div>
         </div>
 
-        <div class="ai-tip" id="aiTip">
-            <span class="icon">🤖</span>
-            <div class="text"><strong>Совет:</strong> <span id="tipText">Начните записывать расходы, чтобы увидеть картину</span></div>
+        <!-- ===== FOOTER ===== -->
+        <div style="text-align:center;padding:16px 0 8px;color:var(--text-muted);font-size:12px;border-top:1px solid var(--border-card);">
+            <i class="fas fa-database" style="margin-right:4px;"></i> Данные хранятся локально
+            <span style="margin:0 8px;">·</span>
+            <i class="fas fa-car"></i> Такси расходы BYN
         </div>
-
     </div>
 
-    <div class="modal-overlay" id="statsModal">
+    <!-- ===== FAB ===== -->
+    <button class="fab" id="fabAdd" aria-label="Добавить расход">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
-            <button class="close" id="closeStats">✕</button>
-            <div class="title">📊 Статистика</div>
-            <div id="statsContent">
-                <div class="stat-row"><span class="label">Всего операций</span><span class="value purple" id="statTotal">0</span></div>
-                <div class="stat-row"><span class="label">Общий доход</span><span class="value green" id="statIncome">0</span></div>
-                <div class="stat-row"><span class="label">Общий расход</span><span class="value red" id="statExpense">0</span></div>
-                <div class="stat-row"><span class="label">Средний расход в день</span><span class="value" id="statAvg">0</span></div>
-                <div class="stat-row"><span class="label">Прогноз на неделю</span><span class="value" id="statForecast">0</span></div>
-                <div class="stat-row"><span class="label">💰 В копилке</span><span class="value gold" id="statPiggy">0</span></div>
-                <div style="margin-top:8px;font-size:10px;color:var(--text-secondary);">📅 Расходы по дням</div>
-                <div class="chart" id="chartBars"></div>
-                <div class="export-buttons">
-                    <button id="exportCSV">📄 CSV</button>
-                    <button id="exportJSON">📦 JSON</button>
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Новый расход</h2>
+                <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="expenseForm" autocomplete="off">
+                <input type="hidden" id="editId" value="" />
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Категория</label>
+                        <select id="formCategory" required>
+                            <option value="fuel">⛽ Бензин</option>
+                            <option value="insurance">🛡️ Страховка</option>
+                            <option value="wash">🧼 Мойка</option>
+                            <option value="fszn">🏛️ ФСЗН</option>
+                            <option value="medic">🩺 Медик/Механик</option>
+                            <option value="repair">🔧 Ремонт на СТО</option>
+                            <option value="parts">⚙️ Запчасти</option>
+                            <option value="other">📌 Прочие</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-day"></i> Дата</label>
+                        <input type="date" id="formDate" required />
+                    </div>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-money-bill-wave"></i> Сумма (BYN)</label>
+                    <input type="number" id="formAmount" placeholder="0.00" step="0.01" min="0" required />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-pen"></i> Описание (необязательно)</label>
+                    <input type="text" id="formDesc" placeholder="Например: заправка, ТО, страховка..." />
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+            </form>
         </div>
     </div>
 
-    <div class="modal-overlay" id="calendarModal">
-        <div class="modal">
-            <button class="close" id="closeCalendar">✕</button>
-            <div class="title">📅 Календарь расходов</div>
-            <div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:6px;" id="calendarMonth"></div>
-            <div class="calendar-grid" id="calendarGrid"></div>
-            <div style="margin-top:8px;font-size:10px;color:var(--text-secondary);">
-                <span style="display:inline-block;width:10px;height:10px;background:rgba(255,107,107,0.2);border-radius:2px;border:1px solid var(--accent-red);"></span> Расход &nbsp;
-                <span style="display:inline-block;width:10px;height:10px;background:rgba(0,184,148,0.2);border-radius:2px;border:1px solid var(--accent-green);"></span> Доход
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="familyModal">
-        <div class="modal">
-            <button class="close" id="closeFamily">✕</button>
-            <div class="title">👨‍👩‍👧 Семейный бюджет</div>
-            <div style="margin-bottom:6px;display:flex;gap:4px;">
-                <input class="input-field" id="familyNameInput" placeholder="Имя" style="flex:1;padding:6px 8px;font-size:12px;background:var(--bg-input);border:1px solid rgba(255,255,255,0.04);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;">
-                <button id="familyAddBtn" style="padding:6px 12px;border-radius:6px;border:none;background:var(--accent);color:#fff;font-weight:600;cursor:pointer;">➕</button>
-            </div>
-            <div id="familyList"></div>
-            <div style="margin-top:6px;font-size:10px;color:var(--text-secondary);">Общий баланс семьи: <span id="familyTotalBalance" style="color:var(--accent);font-weight:600;">0</span></div>
-        </div>
-    </div>
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        (function() {
-            // ===== TELEGRAM =====
-            const tg = window.Telegram?.WebApp;
-            if (tg) {
-                tg.expand();
-                tg.ready();
+        // ============================================================
+        //  DATA LAYER
+        // ============================================================
+        const CATEGORIES = {
+            fuel: { label: 'Бензин', icon: 'fa-gas-pump', color: '#ff6b6b' },
+            insurance: { label: 'Страховка', icon: 'fa-shield', color: '#4ecdc4' },
+            wash: { label: 'Мойка', icon: 'fa-car-wash', color: '#45b7d1' },
+            fszn: { label: 'ФСЗН', icon: 'fa-building', color: '#96ceb4' },
+            medic: { label: 'Медик/Механик', icon: 'fa-user-md', color: '#ffd93d' },
+            repair: { label: 'Ремонт на СТО', icon: 'fa-wrench', color: '#dda0dd' },
+            parts: { label: 'Запчасти', icon: 'fa-cogs', color: '#ff9ff3' },
+            other: { label: 'Прочие', icon: 'fa-ellipsis-h', color: '#feca57' }
+        };
+
+        const CAT_KEYS = Object.keys(CATEGORIES);
+
+        let expenses = [];
+        let currentQuarter = '';
+        let pieChartInstance = null;
+        let barChartInstance = null;
+
+        // ============================================================
+        //  STORAGE
+        // ============================================================
+        function loadExpenses() {
+            try {
+                const raw = localStorage.getItem('taxi_expenses');
+                if (raw) {
+                    expenses = JSON.parse(raw);
+                    if (!Array.isArray(expenses)) expenses = [];
+                } else {
+                    // Seed with sample data for demo
+                    expenses = generateSampleData();
+                    saveExpenses();
+                }
+            } catch {
+                expenses = [];
+            }
+            // ensure each has id
+            expenses = expenses.filter(e => e && typeof e === 'object').map(e => ({
+                ...e,
+                id: e.id || 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+            }));
+        }
+
+        function saveExpenses() {
+            localStorage.setItem('taxi_expenses', JSON.stringify(expenses));
+        }
+
+        function generateSampleData() {
+            const now = new Date();
+            const q = getQuarter(now);
+            const samples = [];
+            const cats = ['fuel', 'insurance', 'wash', 'fszn', 'medic', 'repair', 'parts', 'other'];
+            const descs = ['Заправка', 'Оплата страховки', 'Мойка', 'ФСЗН отчисление', 'Медосмотр', 'Ремонт ходовой',
+                'Замена масла', 'Прочие расходы'
+            ];
+            for (let i = 0; i < 14; i++) {
+                const d = new Date(now);
+                d.setDate(d.getDate() - i * 3 - Math.floor(Math.random() * 5));
+                const cat = cats[Math.floor(Math.random() * cats.length)];
+                samples.push({
+                    id: 's_' + Date.now() + '_' + i,
+                    date: d.toISOString().split('T')[0],
+                    category: cat,
+                    amount: +(Math.random() * 120 + 10).toFixed(2),
+                    description: descs[Math.floor(Math.random() * descs.length)] + ' #' + (i + 1)
+                });
+            }
+            // sort by date
+            samples.sort((a, b) => a.date.localeCompare(b.date));
+            return samples;
+        }
+
+        // ============================================================
+        //  QUARTER HELPERS
+        // ============================================================
+        function getQuarter(date) {
+            const d = new Date(date);
+            const y = d.getFullYear();
+            const m = d.getMonth();
+            const q = Math.floor(m / 3) + 1;
+            return `${y}-Q${q}`;
+        }
+
+        function getQuarterRange(quarter) {
+            const [year, q] = quarter.split('-Q');
+            const y = parseInt(year);
+            const qi = parseInt(q);
+            const startMonth = (qi - 1) * 3;
+            const endMonth = qi * 3 - 1;
+            const start = new Date(y, startMonth, 1);
+            const end = new Date(y, endMonth + 1, 0);
+            return { start, end };
+        }
+
+        function getAvailableQuarters() {
+            if (!expenses.length) return [];
+            const set = new Set();
+            expenses.forEach(e => {
+                if (e.date) set.add(getQuarter(e.date));
+            });
+            // add current quarter if not present
+            const now = getQuarter(new Date());
+            set.add(now);
+            return Array.from(set).sort();
+        }
+
+        function getExpensesForQuarter(quarter) {
+            if (!quarter) return [];
+            const { start, end } = getQuarterRange(quarter);
+            return expenses.filter(e => {
+                if (!e.date) return false;
+                const d = new Date(e.date);
+                return d >= start && d <= end;
+            });
+        }
+
+        // ============================================================
+        //  RENDER
+        // ============================================================
+        function renderQuarterSelector() {
+            const sel = document.getElementById('quarterSelect');
+            const qs = getAvailableQuarters();
+            sel.innerHTML = '';
+            qs.forEach(q => {
+                const opt = document.createElement('option');
+                opt.value = q;
+                const label = q.replace('-Q', ' Кв. ');
+                opt.textContent = label;
+                sel.appendChild(opt);
+            });
+            if (currentQuarter && qs.includes(currentQuarter)) {
+                sel.value = currentQuarter;
+            } else if (qs.length) {
+                sel.value = qs[qs.length - 1];
+                currentQuarter = sel.value;
             } else {
-                console.log('Запуск вне Telegram');
+                const now = getQuarter(new Date());
+                sel.innerHTML = `<option value="${now}">${now.replace('-Q', ' Кв. ')}</option>`;
+                sel.value = now;
+                currentQuarter = now;
             }
+        }
 
-            // ===== AUDIO CONTEXT (один для всех звуков) =====
-            let audioCtx = null;
+        function renderAll() {
+            const q = currentQuarter;
+            if (!q) return;
+            const items = getExpensesForQuarter(q);
+            renderSummary(items);
+            renderCharts(items);
+            renderList(items);
+            document.getElementById('listBadge').textContent = items.length + ' записей';
+            // total badge
+            const total = items.reduce((s, e) => s + e.amount, 0);
+            document.getElementById('quarterTotalBadge').innerHTML =
+                `<i class="fas fa-coins"></i> ${total.toFixed(2)} BYN`;
+        }
 
-            // ===== DATA =====
-            let state = {
-                transactions: [],
-                piggy: 0,
-                budgets: {},
-                regulars: [],
-                currency: 'BYN',
-                theme: 'dark',
-                family: []
-            };
+        function renderSummary(items) {
+            const total = items.reduce((s, e) => s + e.amount, 0);
+            const cats = new Set(items.map(e => e.category));
+            document.getElementById('totalExpenses').textContent = total.toFixed(2);
+            document.getElementById('categoryCount').textContent = cats.size;
+            document.getElementById('entryCount').textContent = items.length;
+            const avg = items.length ? total / items.length : 0;
+            document.getElementById('avgExpense').textContent = avg.toFixed(2);
+        }
 
-            const CURRENCY_SYMBOLS = { BYN: 'Br', USD: '$', EUR: '€', RUB: '₽', BTC: '₿', ETH: '⟠' };
-            const CURRENCY_RATES = { BYN: 1, USD: 3.2, EUR: 3.5, RUB: 0.035, BTC: 80000, ETH: 2500 };
+        function renderCharts(items) {
+            const ctxPie = document.getElementById('pieChart').getContext('2d');
+            const ctxBar = document.getElementById('barChart').getContext('2d');
 
-            function loadData() {
-                try {
-                    const saved = localStorage.getItem('economkaPro2026');
-                    if (saved) {
-                        const data = JSON.parse(saved);
-                        state.transactions = data.transactions || [];
-                        state.piggy = data.piggy || 0;
-                        state.budgets = data.budgets || {};
-                        state.regulars = data.regulars || [];
-                        state.currency = data.currency || 'BYN';
-                        state.theme = data.theme || 'dark';
-                        state.family = data.family || [];
-                    }
-                } catch (e) {
-                    console.warn('Ошибка загрузки данных:', e);
+            // aggregate by category
+            const map = {};
+            CAT_KEYS.forEach(k => map[k] = 0);
+            items.forEach(e => {
+                if (map[e.category] !== undefined) map[e.category] += e.amount;
+            });
+
+            const labels = [];
+            const data = [];
+            const colors = [];
+            CAT_KEYS.forEach(k => {
+                if (map[k] > 0) {
+                    labels.push(CATEGORIES[k].label);
+                    data.push(map[k]);
+                    colors.push(CATEGORIES[k].color);
                 }
-                applyTheme();
-                document.getElementById('currencySelect').value = state.currency;
-                updateUI();
+            });
+
+            // if no data, show placeholder
+            if (data.length === 0) {
+                labels.push('Нет данных');
+                data.push(1);
+                colors.push('#333');
             }
 
-            function saveData() {
-                try {
-                    localStorage.setItem('economkaPro2026', JSON.stringify({
-                        transactions: state.transactions,
-                        piggy: state.piggy,
-                        budgets: state.budgets,
-                        regulars: state.regulars,
-                        currency: state.currency,
-                        theme: state.theme,
-                        family: state.family
-                    }));
-                } catch (e) {
-                    console.warn('Не удалось сохранить данные:', e);
-                }
-            }
-
-            // ===== FORMAT =====
-            function getSymbol() { return CURRENCY_SYMBOLS[state.currency] || 'Br'; }
-
-            function getRate() { return CURRENCY_RATES[state.currency] || 1; }
-
-            function formatMoney(amount) {
-                const symbol = getSymbol();
-                return Math.round(amount * 100) / 100 + ' ' + symbol;
-            }
-
-            function getCategoryIcon(cat) {
-                const icons = {
-                    'Еда': '🍔',
-                    'Транспорт': '🚗',
-                    'Жильё': '🏠',
-                    'Развлечения': '🎮',
-                    'Здоровье': '💊',
-                    'Зарплата': '💼',
-                    'Подарок': '🎁',
-                    'Другое': '📦'
-                };
-                return icons[cat] || '📌';
-            }
-
-            // ===== UI =====
-            function updateUI() {
-                const totalIncome = state.transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-                const totalExpense = state.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-                const balance = totalIncome - totalExpense;
-
-                document.getElementById('balanceDisplay').textContent = formatMoney(balance);
-                document.getElementById('balanceDisplay').className = 'amount ' + (balance >= 0 ? 'positive' :
-                    'negative');
-                const big = document.getElementById('balanceBig');
-                big.textContent = formatMoney(balance);
-                big.className = 'big-number ' + (balance >= 0 ? 'positive' : 'negative');
-                document.getElementById('totalIncome').textContent = formatMoney(totalIncome);
-                document.getElementById('totalExpense').textContent = formatMoney(totalExpense);
-
-                document.getElementById('piggyBalance').textContent = formatMoney(state.piggy);
-                const piggyPercent = Math.min((state.piggy / 10000) * 100, 100);
-                document.getElementById('piggyProgress').style.width = piggyPercent + '%';
-
-                renderBudgets();
-                renderTransactions();
-                updateTip(totalIncome, totalExpense);
-                updateTruthMoment();
-                renderFamily();
-                saveData();
-            }
-
-            // ===== BUDGETS =====
-            function renderBudgets() {
-                const list = document.getElementById('budgetList');
-                const categories = ['Еда', 'Транспорт', 'Жильё', 'Развлечения', 'Здоровье'];
-                let html = '';
-                let allOk = true;
-
-                categories.forEach(cat => {
-                    const limit = state.budgets[cat] || 0;
-                    if (limit === 0) return;
-                    const spent = state.transactions
-                        .filter(t => t.type === 'expense' && t.category === cat)
-                        .reduce((s, t) => s + t.amount, 0);
-                    const percent = Math.min((spent / limit) * 100, 100);
-                    const status = percent < 70 ? 'ok' : percent < 90 ? 'warn' : 'danger';
-                    if (percent > 100) allOk = false;
-
-                    html += `
-                        <div class="budget-item">
-                            <span>${getCategoryIcon(cat)} ${cat}</span>
-                            <span><span class="spent ${percent > 100 ? 'over' : ''}">${formatMoney(spent)}</span> / <span class="limit">${formatMoney(limit)}</span></span>
-                        </div>
-                        <div class="budget-bar"><div class="bar ${status}" style="width:${Math.min(percent, 100)}%"></div></div>
-                    `;
-                });
-
-                if (!html) html =
-                    `<div style="font-size:10px;color:var(--text-muted);padding:4px 0;">Двойной клик по категории для установки бюджета</div>`;
-                list.innerHTML = html;
-                document.getElementById('budgetStatus').textContent = allOk ? '✅ OK' : '⚠️ Превышение';
-                document.getElementById('budgetStatus').style.color = allOk ? 'var(--accent-green)' :
-                    'var(--accent-red)';
-            }
-
-            // ===== TRANSACTIONS =====
-            function renderTransactions() {
-                const list = document.getElementById('txList');
-                const filter = document.querySelector('.cat-btn.active')?.dataset.cat || 'all';
-                let filtered = state.transactions;
-                if (filter !== 'all') filtered = filtered.filter(t => t.category === filter);
-                filtered = [...filtered].reverse();
-
-                if (filtered.length === 0) {
-                    list.innerHTML =
-                        `<div class="empty-state"><span class="icon">📭</span>${state.transactions.length === 0 ? 'Пока нет операций' : 'Нет операций в этой категории'}</div>`;
-                    return;
-                }
-
-                list.innerHTML = filtered.map((t, idx) => {
-                    const realIdx = state.transactions.indexOf(t);
-                    return `
-                        <div class="tx-item">
-                            <div class="tx-icon">${getCategoryIcon(t.category)}</div>
-                            <div class="tx-info">
-                                <div class="tx-name">${t.category || 'Другое'}${t.regular ? ' 🔄' : ''}</div>
-                                <div class="tx-meta">${t.date || 'Сегодня'}${t.familyMember ? ' · 👤' + t.familyMember : ''}</div>
-                            </div>
-                            <div class="tx-amount ${t.type === 'income' ? 'income' : 'expense'}">
-                                ${t.type === 'income' ? '+' : '-'} ${formatMoney(t.amount)}
-                            </div>
-                            <button class="tx-delete" data-idx="${realIdx}">✕</button>
-                        </div>
-                    `;
-                }).join('');
-
-                list.querySelectorAll('.tx-delete').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const idx = parseInt(this.dataset.idx);
-                        if (confirm('Удалить транзакцию?')) {
-                            state.transactions.splice(idx, 1);
-                            playSound('delete');
-                            updateUI();
-                        }
-                    });
-                });
-            }
-
-            // ===== VOICE INPUT (ИСПРАВЛЕН) =====
-            function startVoice() {
-                const recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!recognition) {
-                    alert('Голосовой ввод не поддерживается в этом браузере.');
-                    return;
-                }
-
-                // Проверка разрешения
-                if (navigator.permissions && navigator.permissions.query) {
-                    navigator.permissions.query({ name: 'microphone' })
-                        .then(result => {
-                            if (result.state === 'denied') {
-                                alert('Нет доступа к микрофону. Разрешите в настройках браузера.');
-                                return;
+            // Pie
+            if (pieChartInstance) pieChartInstance.destroy();
+            pieChartInstance = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderColor: 'transparent',
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#a0a0b8',
+                                font: { family: 'Inter', size: 10, weight: '500' },
+                                padding: 8,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
                             }
-                            doRecognition();
-                        })
-                        .catch(() => doRecognition());
-                } else {
-                    doRecognition();
+                        }
+                    },
+                    cutout: '65%',
                 }
+            });
+
+            // Bar (top 5)
+            const sorted = CAT_KEYS
+                .filter(k => map[k] > 0)
+                .sort((a, b) => map[b] - map[a])
+                .slice(0, 5);
+
+            const barLabels = sorted.map(k => CATEGORIES[k].label);
+            const barData = sorted.map(k => map[k]);
+            const barColors = sorted.map(k => CATEGORIES[k].color);
+
+            if (barLabels.length === 0) {
+                barLabels.push('Нет данных');
+                barData.push(1);
+                barColors.push('#333');
             }
 
-            function doRecognition() {
-                const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = 'ru-RU';
-                recognition.continuous = false;
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-
-                const btn = document.getElementById('voiceBtn');
-                btn.classList.add('listening');
-                btn.textContent = '🎤 Слушаю...';
-
-                recognition.onresult = function(event) {
-                    const text = event.results[0][0].transcript;
-                    btn.textContent = '🎤 Распознано: ' + text;
-                    btn.classList.remove('listening');
-                    processVoiceCommand(text);
-                };
-
-                recognition.onerror = function(event) {
-                    console.error('Ошибка распознавания:', event.error);
-                    btn.textContent = '🎤 Ошибка: ' + event.error;
-                    btn.classList.remove('listening');
-                    if (event.error === 'not-allowed') {
-                        alert('Доступ к микрофону запрещён.');
-                    } else if (event.error === 'no-speech') {
-                        alert('Речь не обнаружена. Попробуйте ещё раз.');
-                    } else {
-                        alert('Ошибка распознавания. Попробуйте ещё раз.');
+            if (barChartInstance) barChartInstance.destroy();
+            barChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: barLabels,
+                    datasets: [{
+                        label: 'BYN',
+                        data: barData,
+                        backgroundColor: barColors.map(c => c + 'cc'),
+                        borderColor: barColors,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#6a6a82',
+                                font: { family: 'Inter', size: 10 },
+                                callback: v => v.toFixed(0),
+                            },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#6a6a82',
+                                font: { family: 'Inter', size: 10 },
+                            },
+                            grid: { display: false }
+                        }
                     }
-                    setTimeout(() => btn.textContent = '🎤 Нажмите и говорите', 3000);
-                };
-
-                recognition.onend = function() {
-                    if (btn.classList.contains('listening')) {
-                        btn.classList.remove('listening');
-                        btn.textContent = '🎤 Нажмите и говорите';
-                    }
-                };
-
-                recognition.start();
-            }
-
-            function processVoiceCommand(text) {
-                const words = text.toLowerCase().split(' ');
-                let amount = 0;
-                let category = 'Другое';
-                let type = 'expense';
-
-                for (let w of words) {
-                    const num = parseFloat(w.replace(',', '.'));
-                    if (!isNaN(num) && num > 0) {
-                        amount = num;
-                        break;
-                    }
                 }
+            });
+        }
 
-                const catMap = {
-                    'еда': 'Еда',
-                    'продукты': 'Еда',
-                    'обед': 'Еда',
-                    'транспорт': 'Транспорт',
-                    'такси': 'Транспорт',
-                    'бензин': 'Транспорт',
-                    'жильё': 'Жильё',
-                    'квартира': 'Жильё',
-                    'коммуналка': 'Жильё',
-                    'развлечения': 'Развлечения',
-                    'кино': 'Развлечения',
-                    'игры': 'Развлечения',
-                    'здоровье': 'Здоровье',
-                    'аптека': 'Здоровье',
-                    'врач': 'Здоровье',
-                    'зарплата': 'Зарплата',
-                    'доход': 'Зарплата'
-                };
-                for (let w of words) {
-                    if (catMap[w]) { category = catMap[w]; break; }
-                }
-
-                if (words.includes('доход') || words.includes('зарплата') || words.includes('получил')) {
-                    type = 'income';
-                }
-
-                if (amount > 0) {
-                    state.transactions.push({
-                        amount: amount,
-                        type: type,
-                        category: category,
-                        date: new Date().toLocaleDateString('ru-RU'),
-                        regular: false,
-                        familyMember: null
-                    });
-                    playSound(type === 'income' ? 'income' : 'expense');
-                    updateUI();
-                    document.getElementById('voiceBtn').textContent = '✅ Добавлено: ' + formatMoney(amount) + ' (' +
-                        category + ')';
-                    setTimeout(() => document.getElementById('voiceBtn').textContent = '🎤 Нажмите и говорите', 3000);
-                } else {
-                    alert('Не удалось распознать сумму. Скажите, например: "Потратил 500 на еду"');
-                }
-            }
-
-            // ===== TRUTH MOMENT =====
-            function updateTruthMoment() {
-                const impulsive = state.transactions
-                    .filter(t => t.type === 'expense' && (t.category === 'Развлечения' || t.category === 'Другое'))
-                    .reduce((s, t) => s + t.amount, 0);
-                document.getElementById('truthText').textContent = formatMoney(impulsive);
-            }
-
-            // ===== FAMILY =====
-            function renderFamily() {
-                const list = document.getElementById('familyList');
-                const members = state.family || [];
-                if (members.length === 0) {
-                    list.innerHTML = '<div style="font-size:10px;color:var(--text-muted);padding:4px 0;">Добавьте членов семьи</div>';
-                    document.getElementById('familyTotalBalance').textContent = '0';
-                    return;
-                }
-                let totalBalance = 0;
-                list.innerHTML = members.map(m => {
-                    const balance = state.transactions
-                        .filter(t => t.familyMember === m.name)
-                        .reduce((s, t) => s + (t.type === 'income' ? t.amount : -t.amount), 0);
-                    totalBalance += balance;
-                    return `
-                        <div class="family-member">
-                            <span class="name">👤 ${m.name}</span>
-                            <span class="balance">${formatMoney(balance)}</span>
-                        </div>
-                    `;
-                }).join('');
-                document.getElementById('familyTotalBalance').textContent = formatMoney(totalBalance);
-            }
-
-            // ===== FORECAST =====
-            function calculateForecast() {
-                const expenses = state.transactions.filter(t => t.type === 'expense');
-                if (expenses.length === 0) return 0;
-                const total = expenses.reduce((s, t) => s + t.amount, 0);
-                const avg = total / expenses.length;
-                return avg * 7;
-            }
-
-            // ===== AI TIP =====
-            function updateTip(totalIncome, totalExpense) {
-                const tipEl = document.getElementById('tipText');
-                const tips = [
-                    'Начните записывать расходы, чтобы увидеть картину',
-                    'Попробуйте откладывать 10% от каждого дохода',
-                    'Контролируйте импульсивные покупки — подождите 24 часа',
-                    'Планируйте бюджет на неделю вперёд',
-                    'Сравните расходы на кафе и готовку дома — экономия очевидна',
-                    'Пересмотрите подписки: возможно, вы платите за то, чем не пользуетесь'
-                ];
-
-                if (state.transactions.length === 0) { tipEl.textContent = tips[0]; return; }
-
-                const avgExpense = state.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount,
-                    0) / (state.transactions.length || 1);
-
-                if (avgExpense > 500 && totalIncome > 0) {
-                    tipEl.textContent = 'Ваш средний расход выше 500. Попробуйте проанализировать крупные траты.';
-                } else if (totalExpense > totalIncome && totalIncome > 0) {
-                    tipEl.textContent = '⚠️ Расходы превышают доходы! Пересмотрите бюджет.';
-                } else if (state.transactions.length > 20) {
-                    tipEl.textContent = 'Отличная привычка! Вы уже записали ' + state.transactions.length +
-                        ' операций.';
-                } else {
-                    tipEl.textContent = tips[Math.floor(Math.random() * tips.length)];
-                }
-            }
-
-            // ===== SOUND (исправлен, единый AudioContext) =====
-            function playSound(type) {
-                try {
-                    if (!audioCtx) {
-                        audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-                    }
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    gain.gain.value = 0.06;
-                    if (type === 'income') {
-                        osc.frequency.value = 880;
-                        osc.type = 'sine';
-                        osc.start(audioCtx.currentTime);
-                        osc.stop(audioCtx.currentTime + 0.08);
-                    } else if (type === 'expense') {
-                        osc.frequency.value = 440;
-                        osc.type = 'sine';
-                        osc.start(audioCtx.currentTime);
-                        osc.stop(audioCtx.currentTime + 0.12);
-                    } else if (type === 'delete') {
-                        osc.frequency.value = 300;
-                        osc.type = 'sawtooth';
-                        osc.start(audioCtx.currentTime);
-                        osc.stop(audioCtx.currentTime + 0.05);
-                    }
-                } catch (e) { /* игнорируем ошибки звука */ }
-            }
-
-            // ===== VIBRATION (с проверкой tg) =====
-            function vibrate(pattern) {
-                try {
-                    if (tg && tg.HapticFeedback) {
-                        tg.HapticFeedback.impactOccurred(pattern || 'light');
-                    }
-                } catch (e) { /* игнорируем */ }
-            }
-
-            // ===== THEME =====
-            function applyTheme() {
-                if (state.theme === 'light') document.body.classList.add('light');
-                else document.body.classList.remove('light');
-            }
-
-            function toggleTheme() {
-                state.theme = state.theme === 'dark' ? 'light' : 'dark';
-                applyTheme();
-                saveData();
-            }
-
-            // ===== CALENDAR =====
-            function showCalendar() {
-                const modal = document.getElementById('calendarModal');
-                modal.classList.add('active');
-
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = now.getMonth();
-                document.getElementById('calendarMonth').textContent = now.toLocaleDateString('ru-RU', { month: 'long',
-                    year: 'numeric' });
-
-                const firstDay = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const grid = document.getElementById('calendarGrid');
-                grid.innerHTML = '';
-
-                for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
-                    const d = document.createElement('div');
-                    d.className = 'day';
-                    grid.appendChild(d);
-                }
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const date = new Date(year, month, day);
-                    const dateStr = date.toLocaleDateString('ru-RU');
-                    const dayEl = document.createElement('div');
-                    dayEl.className = 'day';
-                    dayEl.textContent = day;
-
-                    const hasExpense = state.transactions.some(t => t.type === 'expense' && t.date === dateStr);
-                    const hasIncome = state.transactions.some(t => t.type === 'income' && t.date === dateStr);
-                    if (hasExpense) dayEl.classList.add('has-expense');
-                    if (hasIncome) dayEl.classList.add('has-income');
-                    if (date.toDateString() === new Date().toDateString()) dayEl.classList.add('today');
-
-                    grid.appendChild(dayEl);
-                }
-            }
-
-            // ===== FAMILY =====
-            function addFamilyMember() {
-                const input = document.getElementById('familyNameInput');
-                const name = input.value.trim();
-                if (!name) return;
-                if (!state.family) state.family = [];
-                if (state.family.some(m => m.name === name)) {
-                    alert('Такой участник уже есть');
-                    return;
-                }
-                state.family.push({ name: name });
-                input.value = '';
-                updateUI();
-                saveData();
-            }
-
-            // ===== STATS =====
-            function showStats() {
-                const totalIncome = state.transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-                const totalExpense = state.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-
-                document.getElementById('statTotal').textContent = state.transactions.length;
-                document.getElementById('statIncome').textContent = formatMoney(totalIncome);
-                document.getElementById('statExpense').textContent = formatMoney(totalExpense);
-                const avg = state.transactions.length > 0 ? totalExpense / state.transactions.length : 0;
-                document.getElementById('statAvg').textContent = formatMoney(avg);
-                document.getElementById('statPiggy').textContent = formatMoney(state.piggy);
-
-                const forecast = calculateForecast();
-                document.getElementById('statForecast').textContent = formatMoney(forecast);
-
-                const catCount = {};
-                state.transactions.filter(t => t.type === 'expense').forEach(t => {
-                    catCount[t.category] = (catCount[t.category] || 0) + t.amount;
-                });
-                let topCat = '—';
-                let topVal = 0;
-                for (const [cat, val] of Object.entries(catCount)) {
-                    if (val > topVal) { topVal = val;
-                        topCat = cat; }
-                }
-                document.getElementById('statTopCat').textContent = topCat !== '—' ? `${topCat} (${formatMoney(topVal)})` :
-                    '—';
-
-                const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-                const today = new Date();
-                const weekData = [];
-                for (let i = 6; i >= 0; i--) {
-                    const d = new Date(today);
-                    d.setDate(d.getDate() - i);
-                    const dateStr = d.toLocaleDateString('ru-RU');
-                    const dayTotal = state.transactions
-                        .filter(t => t.type === 'expense' && t.date === dateStr)
-                        .reduce((s, t) => s + t.amount, 0);
-                    weekData.push({ day: days[d.getDay() === 0 ? 6 : d.getDay() - 1], amount: dayTotal });
-                }
-
-                const maxVal = Math.max(...weekData.map(d => d.amount), 1);
-                const chartEl = document.getElementById('chartBars');
-                chartEl.innerHTML = weekData.map(d => `
-                    <div class="bar-container">
-                        <div class="bar" style="height:${(d.amount / maxVal) * 60 + 4}px;background:${d.amount > 0 ? 'var(--accent)' : 'rgba(255,255,255,0.04)'};"></div>
-                        <span class="day">${d.day}</span>
+        function renderList(items) {
+            const container = document.getElementById('expenseList');
+            if (!items.length) {
+                container.innerHTML = `
+                    <div class="empty-state animate-fade-in">
+                        <i class="fas fa-inbox"></i>
+                        <p>Нет расходов за выбранный квартал</p>
+                        <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Нажмите + чтобы добавить</p>
                     </div>
-                `).join('');
-
-                document.getElementById('statsModal').classList.add('active');
+                `;
+                return;
             }
 
-            // ===== EXPORT =====
-            function exportCSV() {
-                if (state.transactions.length === 0) { alert('Нет данных'); return; }
-                let csv = 'Дата,Тип,Категория,Сумма,Валюта,Участник\n';
-                state.transactions.forEach(t => {
-                    csv += `${t.date},${t.type},${t.category},${t.amount},${state.currency},${t.familyMember || ''}\n`;
-                });
-                downloadFile(csv, 'transactions.csv', 'text/csv');
-            }
+            // sort by date desc
+            const sorted = [...items].sort((a, b) => b.date.localeCompare(a.date));
 
-            function exportJSON() {
-                if (state.transactions.length === 0) { alert('Нет данных'); return; }
-                const data = {
-                    transactions: state.transactions,
-                    piggy: state.piggy,
-                    budgets: state.budgets,
-                    regulars: state.regulars,
-                    family: state.family,
-                    currency: state.currency,
-                    exported: new Date().toISOString()
-                };
-                downloadFile(JSON.stringify(data, null, 2), 'economka_backup.json', 'application/json');
-            }
-
-            function downloadFile(content, filename, type) {
-                const blob = new Blob([content], { type: type });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-
-            // ===== ADD TRANSACTION (ИСПРАВЛЕНА ЗАПЯТАЯ) =====
-            let currentType = 'income';
-
-            function addTransaction() {
-                const input = document.getElementById('amountInput');
-                const amount = parseFloat(input.value.replace(',', '.'));
-                if (!amount || amount <= 0) {
-                    vibrate('rigid');
-                    input.style.borderColor = 'var(--accent-red)';
-                    setTimeout(() => input.style.borderColor = '', 500);
-                    return;
-                }
-
-                const category = document.querySelector('.cat-btn.active')?.dataset.cat || 'Другое';
-                const type = currentType;
-
-                if (localStorage.getItem('economkaAutoPiggy') === 'true') {
-                    const rounded = Math.ceil(amount);
-                    const diff = rounded - amount;
-                    if (diff > 0 && diff < 1) {
-                        state.piggy += diff;
-                    }
-                }
-
-                state.transactions.push({
-                    amount: amount,
-                    type: type,
-                    category: category,
-                    date: new Date().toLocaleDateString('ru-RU'),
-                    regular: false,
-                    familyMember: null
-                });
-
-                input.value = '';
-                playSound(type === 'income' ? 'income' : 'expense');
-                vibrate('medium');
-                updateUI();
-                input.focus();
-            }
-
-            // ===== EVENT LISTENERS =====
-            document.getElementById('addBtn').addEventListener('click', addTransaction);
-            document.getElementById('amountInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addTransaction();
+            let html = '';
+            sorted.forEach((e, idx) => {
+                const cat = CATEGORIES[e.category] || CATEGORIES.other;
+                const icon = cat.icon || 'fa-circle';
+                const color = cat.color || '#888';
+                const label = cat.label || e.category;
+                const dateStr = formatDate(e.date);
+                const desc = e.description || '';
+                const amt = e.amount.toFixed(2);
+                const catClass = 'cat-' + e.category;
+                html += `
+                    <div class="expense-item animate-fade-up" style="animation-delay:${(idx % 10) * 0.03}s;">
+                        <div class="left">
+                            <div class="icon-wrap ${catClass}">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="info">
+                                <div class="cat">${label}</div>
+                                <div class="desc">${desc || '—'}</div>
+                                <div class="date"><i class="far fa-calendar-alt"></i> ${dateStr}</div>
+                            </div>
+                        </div>
+                        <div class="amount" style="color:${color};">${amt}</div>
+                        <button class="delete-btn" data-id="${e.id}" title="Удалить">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
             });
 
-            document.getElementById('quickIncome').addEventListener('click', () => {
-                document.getElementById('typeIncome').click();
-                document.getElementById('amountInput').focus();
-            });
-            document.getElementById('quickExpense').addEventListener('click', () => {
-                document.getElementById('typeExpense').click();
-                document.getElementById('amountInput').focus();
-            });
-            document.getElementById('quickStats').addEventListener('click', showStats);
-            document.getElementById('quickVoice').addEventListener('click', startVoice);
+            container.innerHTML = html;
 
-            document.querySelectorAll('.type-toggle button').forEach(btn => {
+            // delete handlers
+            container.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.type-toggle button').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentType = this.dataset.type;
-                    const addBtn = document.getElementById('addBtn');
-                    if (currentType === 'income') {
-                        addBtn.classList.add('income-mode');
-                        addBtn.textContent = '💰 Доход';
-                    } else {
-                        addBtn.classList.remove('income-mode');
-                        addBtn.textContent = '💳 Расход';
-                    }
-                    vibrate('light');
+                    const id = this.dataset.id;
+                    deleteExpense(id);
                 });
             });
+        }
 
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    renderTransactions();
-                    vibrate('light');
-                });
-                btn.addEventListener('dblclick', function() {
-                    const cat = this.dataset.cat;
-                    if (cat === 'all') return;
-                    const current = state.budgets[cat] || 0;
-                    const limit = prompt(`Установить бюджет для "${cat}":`, current);
-                    if (limit !== null && !isNaN(limit) && limit >= 0) {
-                        if (parseFloat(limit) === 0) delete state.budgets[cat];
-                        else state.budgets[cat] = parseFloat(limit);
-                        saveData();
-                        updateUI();
-                    }
-                });
-            });
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
 
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-            document.getElementById('familyToggle').addEventListener('click', () => {
-                document.getElementById('familyModal').classList.add('active');
-            });
-            document.getElementById('calendarToggle').addEventListener('click', showCalendar);
-            document.getElementById('voiceToggle').addEventListener('click', startVoice);
-            document.getElementById('voiceBtn').addEventListener('click', startVoice);
+        // ============================================================
+        //  CRUD
+        // ============================================================
+        function addExpense(date, category, amount, description) {
+            const entry = {
+                id: 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                date: date,
+                category: category,
+                amount: parseFloat(amount),
+                description: description.trim() || '',
+            };
+            expenses.push(entry);
+            saveExpenses();
+            return entry;
+        }
 
-            document.getElementById('piggyAdd').addEventListener('click', () => {
-                const amount = prompt('Сколько добавить в копилку?');
-                if (amount && !isNaN(amount) && amount > 0) {
-                    state.piggy += parseFloat(amount);
-                    playSound('income');
-                    updateUI();
-                }
-            });
-            document.getElementById('piggyWithdraw').addEventListener('click', () => {
-                if (state.piggy <= 0) { alert('Копилка пуста!'); return; }
-                const amount = prompt('Сколько забрать? (макс: ' + state.piggy + ')');
-                if (amount && !isNaN(amount) && amount > 0 && amount <= state.piggy) {
-                    state.piggy -= parseFloat(amount);
-                    playSound('expense');
-                    updateUI();
-                }
-            });
-            document.getElementById('piggyAuto').addEventListener('click', () => {
-                const active = confirm('Включить автоматическое округление?');
-                if (active) {
-                    localStorage.setItem('economkaAutoPiggy', 'true');
-                    alert('✅ Авто-копилка включена!');
-                } else {
-                    localStorage.removeItem('economkaAutoPiggy');
-                    alert('❌ Авто-копилка отключена.');
-                }
-            });
+        function deleteExpense(id) {
+            if (!confirm('Удалить этот расход?')) return;
+            expenses = expenses.filter(e => e.id !== id);
+            saveExpenses();
+            renderAll();
+            showToast('🗑️ Расход удалён');
+        }
 
-            document.getElementById('clearAll').addEventListener('click', () => {
-                if (state.transactions.length === 0) return;
-                if (confirm('Удалить все операции?')) {
-                    state.transactions = [];
-                    state.piggy = 0;
-                    playSound('delete');
-                    updateUI();
-                }
-            });
+        function editExpense(id, date, category, amount, description) {
+            const idx = expenses.findIndex(e => e.id === id);
+            if (idx === -1) return false;
+            expenses[idx] = { ...expenses[idx], date, category, amount: parseFloat(amount), description: description.trim() ||
+                '' };
+            saveExpenses();
+            return true;
+        }
 
-            document.getElementById('currencySelect').addEventListener('change', function() {
-                state.currency = this.value;
-                saveData();
-                updateUI();
-            });
+        // ============================================================
+        //  MODAL
+        // ============================================================
+        const modalOverlay = document.getElementById('modalOverlay');
+        const form = document.getElementById('expenseForm');
+        const editId = document.getElementById('editId');
+        const formDate = document.getElementById('formDate');
+        const formCategory = document.getElementById('formCategory');
+        const formAmount = document.getElementById('formAmount');
+        const formDesc = document.getElementById('formDesc');
 
-            document.getElementById('closeStats').addEventListener('click', () => {
-                document.getElementById('statsModal').classList.remove('active');
-            });
-            document.getElementById('closeCalendar').addEventListener('click', () => {
-                document.getElementById('calendarModal').classList.remove('active');
-            });
-            document.getElementById('closeFamily').addEventListener('click', () => {
-                document.getElementById('familyModal').classList.remove('active');
-            });
-            document.querySelectorAll('.modal-overlay').forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) modal.classList.remove('active');
-                });
-            });
+        function openModal(editData = null) {
+            modalOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            if (editData) {
+                editId.value = editData.id;
+                formDate.value = editData.date;
+                formCategory.value = editData.category;
+                formAmount.value = editData.amount;
+                formDesc.value = editData.description || '';
+                document.querySelector('.modal-header h2').innerHTML = '<i class="fas fa-edit"></i> Редактировать';
+                document.querySelector('.btn-submit i').className = 'fas fa-sync-alt';
+                document.querySelector('.btn-submit span')?.remove();
+                document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-sync-alt"></i> Обновить';
+            } else {
+                editId.value = '';
+                formDate.value = new Date().toISOString().split('T')[0];
+                formCategory.value = 'fuel';
+                formAmount.value = '';
+                formDesc.value = '';
+                document.querySelector('.modal-header h2').innerHTML = '<i class="fas fa-plus-circle"></i> Новый расход';
+                document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Сохранить';
+            }
+            setTimeout(() => formDate.focus(), 100);
+        }
 
-            document.getElementById('familyAddBtn').addEventListener('click', addFamilyMember);
-            document.getElementById('familyNameInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addFamilyMember();
-            });
+        function closeModal() {
+            modalOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+            form.reset();
+            editId.value = '';
+        }
 
-            document.getElementById('exportCSV').addEventListener('click', exportCSV);
-            document.getElementById('exportJSON').addEventListener('click', exportJSON);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
 
-            // ===== CHECK VOICE SUPPORT =====
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                document.getElementById('voiceBtn').textContent = '🎤 Голос не поддерживается';
-                document.getElementById('voiceBtn').disabled = true;
-                document.getElementById('voiceBtn').style.opacity = '0.5';
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+
+        document.getElementById('fabAdd').addEventListener('click', () => openModal());
+
+        // ============================================================
+        //  FORM SUBMIT
+        // ============================================================
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const date = formDate.value;
+            const category = formCategory.value;
+            const amount = parseFloat(formAmount.value);
+            const description = formDesc.value;
+            const id = editId.value;
+
+            if (!date || !category || isNaN(amount) || amount <= 0) {
+                showToast('⚠️ Заполните все поля корректно');
+                return;
             }
 
-            // ===== INIT =====
-            loadData();
-
-            window.addEventListener('beforeunload', saveData);
-
-            console.log('💰 Экономка Pro 2026 (исправленная)');
-            console.log('📱 ' + state.transactions.length + ' операций загружено');
-
-            // Уведомление
-            if ('Notification' in window && Notification.permission === 'granted') {
-                if (new Date().getHours() === 9) {
-                    new Notification('🌅 Доброе утро! Не забудьте записать вчерашние траты.');
-                }
-            } else if ('Notification' in window && Notification.permission !== 'denied') {
-                Notification.requestPermission();
+            if (id) {
+                // edit
+                editExpense(id, date, category, amount, description);
+                showToast('✅ Расход обновлён');
+            } else {
+                addExpense(date, category, amount, description);
+                showToast('✅ Расход добавлен');
             }
 
-        })();
+            closeModal();
+            renderAll();
+            // update quarter selector if needed
+            const qs = getAvailableQuarters();
+            const sel = document.getElementById('quarterSelect');
+            if (!qs.includes(currentQuarter)) {
+                currentQuarter = qs[qs.length - 1] || currentQuarter;
+            }
+            renderQuarterSelector();
+            // re-render with correct quarter
+            renderAll();
+        });
+
+        // ============================================================
+        //  QUARTER SELECT CHANGE
+        // ============================================================
+        document.getElementById('quarterSelect').addEventListener('change', function() {
+            currentQuarter = this.value;
+            renderAll();
+        });
+
+        // ============================================================
+        //  EXPORT CSV
+        // ============================================================
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const items = getExpensesForQuarter(currentQuarter);
+            if (!items.length) {
+                showToast('📭 Нет данных для экспорта');
+                return;
+            }
+            const headers = ['Дата', 'Категория', 'Сумма (BYN)', 'Описание'];
+            const rows = items.map(e => {
+                const cat = CATEGORIES[e.category]?.label || e.category;
+                return [e.date, cat, e.amount.toFixed(2), e.description || ''];
+            });
+            const csv = [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `taxi_expenses_${currentQuarter}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast('📥 CSV экспортирован');
+        });
+
+        // ============================================================
+        //  THEME TOGGLE (light/dark demo)
+        // ============================================================
+        let isDark = true;
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            isDark = !isDark;
+            const root = document.documentElement;
+            if (isDark) {
+                root.style.setProperty('--bg-primary', '#08080e');
+                root.style.setProperty('--bg-secondary', '#11111e');
+                root.style.setProperty('--bg-card', 'rgba(255,255,255,0.04)');
+                root.style.setProperty('--bg-card-hover', 'rgba(255,255,255,0.08)');
+                root.style.setProperty('--border-card', 'rgba(255,255,255,0.06)');
+                root.style.setProperty('--text-primary', '#f0f0f5');
+                root.style.setProperty('--text-secondary', '#a0a0b8');
+                root.style.setProperty('--text-muted', '#6a6a82');
+                this.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                root.style.setProperty('--bg-primary', '#f0f2f8');
+                root.style.setProperty('--bg-secondary', '#ffffff');
+                root.style.setProperty('--bg-card', 'rgba(0,0,0,0.03)');
+                root.style.setProperty('--bg-card-hover', 'rgba(0,0,0,0.06)');
+                root.style.setProperty('--border-card', 'rgba(0,0,0,0.08)');
+                root.style.setProperty('--text-primary', '#1a1a2e');
+                root.style.setProperty('--text-secondary', '#4a4a6a');
+                root.style.setProperty('--text-muted', '#8a8aaa');
+                this.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            // re-render charts with new colors
+            renderCharts(getExpensesForQuarter(currentQuarter));
+            showToast(isDark ? '🌙 Тёмная тема' : '☀️ Светлая тема');
+        });
+
+        // ============================================================
+        //  TOAST
+        // ============================================================
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast animate-slide-down';
+            toast.innerHTML = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2200);
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        loadExpenses();
+        currentQuarter = getAvailableQuarters().pop() || getQuarter(new Date());
+        renderQuarterSelector();
+        renderAll();
+
+        // Handle storage changes from other tabs
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'taxi_expenses') {
+                loadExpenses();
+                renderAll();
+            }
+        });
+
+        // Keyboard shortcut: Escape to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        console.log('🚕 Такси Расходы v1.0 — данные в localStorage');
+        console.log(`📊 ${expenses.length} записей, текущий квартал: ${currentQuarter}`);
     </script>
+
 </body>
 </html>
