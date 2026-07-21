@@ -11,7 +11,12 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         :root {
             --bg: #0f0f0f;
@@ -62,14 +67,30 @@
             z-index: 0;
         }
 
-        #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        #particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
         .particle {
             position: absolute;
             border-radius: 50%;
             background: rgba(108, 92, 231, 0.12);
             animation: float 8s ease-in-out infinite;
         }
-        @keyframes float { 0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; } 50% { transform: translateY(-60px) scale(1.5); opacity: 0.8; } }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-60px) scale(1.5);
+                opacity: 0.8;
+            }
+        }
 
         .app {
             position: relative;
@@ -87,11 +108,17 @@
             overflow-y: auto;
             transition: all 0.3s ease;
         }
-        body.light .app { background: rgba(245, 245, 245, 0.92); }
-        .app::-webkit-scrollbar { width: 3px; }
-        .app::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        body.light .app {
+            background: rgba(245, 245, 245, 0.92);
+        }
+        .app::-webkit-scrollbar {
+            width: 3px;
+        }
+        .app::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
 
-        /* ===== ХЕДЕР ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -110,11 +137,18 @@
             align-items: center;
             gap: 6px;
         }
-        .header .logo span { color: var(--accent); }
-        .header .top-actions { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .header .logo span {
+            color: var(--accent);
+        }
+        .header .top-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
         .header .top-actions button {
             background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             border-radius: 8px;
             padding: 4px 8px;
             color: var(--text-secondary);
@@ -123,7 +157,10 @@
             transition: all 0.2s;
             font-family: 'Inter', sans-serif;
         }
-        .header .top-actions button:hover { background: var(--accent-dim); color: var(--accent); }
+        .header .top-actions button:hover {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
         .header .balance {
             width: 100%;
             display: flex;
@@ -139,11 +176,15 @@
             color: var(--text);
             transition: all 0.3s ease;
         }
-        .header .balance .amount.positive { color: var(--accent-green); }
-        .header .balance .amount.negative { color: var(--accent-red); }
+        .header .balance .amount.positive {
+            color: var(--accent-green);
+        }
+        .header .balance .amount.negative {
+            color: var(--accent-red);
+        }
         .header .balance .currency-select {
             background: var(--bg-input);
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             border-radius: 8px;
             padding: 2px 8px;
             color: var(--text);
@@ -154,7 +195,6 @@
             outline: none;
         }
 
-        /* ===== КАРТОЧКА БАЛАНСА ===== */
         .balance-card {
             background: linear-gradient(135deg, rgba(108, 92, 231, 0.12), rgba(0, 184, 148, 0.06));
             border-radius: var(--radius);
@@ -174,16 +214,51 @@
             background: radial-gradient(circle, rgba(108, 92, 231, 0.08), transparent 70%);
             animation: pulseRing 4s ease-in-out infinite;
         }
-        @keyframes pulseRing { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } }
-        .balance-card .label { font-size: 10px; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; }
-        .balance-card .big-number { font-size: 34px; font-weight: 800; letter-spacing: -2px; margin: 2px 0 4px; transition: all 0.3s ease; }
-        .balance-card .big-number.positive { color: var(--accent-green); }
-        .balance-card .big-number.negative { color: var(--accent-red); }
-        .balance-card .sub { font-size: 11px; color: var(--text-secondary); }
-        .balance-card .sub span { color: var(--accent); font-weight: 600; }
+        @keyframes pulseRing {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+        .balance-card .label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .balance-card .big-number {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 2px 0 4px;
+            transition: all 0.3s ease;
+        }
+        .balance-card .big-number.positive {
+            color: var(--accent-green);
+        }
+        .balance-card .big-number.negative {
+            color: var(--accent-red);
+        }
+        .balance-card .sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .balance-card .sub span {
+            color: var(--accent);
+            font-weight: 600;
+        }
 
-        /* ===== БЫСТРЫЕ ДЕЙСТВИЯ ===== */
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px; }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
         .quick-btn {
             padding: 8px 2px;
             border-radius: 12px;
@@ -197,22 +272,51 @@
             transition: all 0.2s ease;
             text-align: center;
         }
-        .quick-btn .icon { font-size: 18px; display: block; margin-bottom: 1px; }
-        .quick-btn:active { transform: scale(0.95); }
-        .quick-btn.income { border-color: rgba(0, 184, 148, 0.15); }
-        .quick-btn.income:active { background: rgba(0, 184, 148, 0.12); }
-        .quick-btn.expense { border-color: rgba(255, 107, 107, 0.12); }
-        .quick-btn.expense:active { background: rgba(255, 107, 107, 0.08); }
-        .quick-btn.stats { border-color: rgba(108, 92, 231, 0.12); }
-        .quick-btn.stats:active { background: rgba(108, 92, 231, 0.08); }
-        .quick-btn.voice { border-color: rgba(249, 202, 36, 0.12); }
-        .quick-btn.voice:active { background: rgba(249, 202, 36, 0.08); }
-        .quick-btn.family { border-color: rgba(0, 184, 148, 0.12); }
-        .quick-btn.family:active { background: rgba(0, 184, 148, 0.08); }
-        .quick-btn.calendar { border-color: rgba(108, 92, 231, 0.12); }
-        .quick-btn.calendar:active { background: rgba(108, 92, 231, 0.08); }
+        .quick-btn .icon {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 1px;
+        }
+        .quick-btn:active {
+            transform: scale(0.95);
+        }
+        .quick-btn.income {
+            border-color: rgba(0, 184, 148, 0.15);
+        }
+        .quick-btn.income:active {
+            background: rgba(0, 184, 148, 0.12);
+        }
+        .quick-btn.expense {
+            border-color: rgba(255, 107, 107, 0.12);
+        }
+        .quick-btn.expense:active {
+            background: rgba(255, 107, 107, 0.08);
+        }
+        .quick-btn.stats {
+            border-color: rgba(108, 92, 231, 0.12);
+        }
+        .quick-btn.stats:active {
+            background: rgba(108, 92, 231, 0.08);
+        }
+        .quick-btn.voice {
+            border-color: rgba(249, 202, 36, 0.12);
+        }
+        .quick-btn.voice:active {
+            background: rgba(249, 202, 36, 0.08);
+        }
+        .quick-btn.family {
+            border-color: rgba(0, 184, 148, 0.12);
+        }
+        .quick-btn.family:active {
+            background: rgba(0, 184, 148, 0.08);
+        }
+        .quick-btn.calendar {
+            border-color: rgba(108, 92, 231, 0.12);
+        }
+        .quick-btn.calendar:active {
+            background: rgba(108, 92, 231, 0.08);
+        }
 
-        /* ===== ВВОД ===== */
         .input-area {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -220,7 +324,11 @@
             margin-bottom: 10px;
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .input-area .row { display: flex; gap: 6px; align-items: center; }
+        .input-area .row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
         .input-area input {
             flex: 1;
             background: var(--bg-input);
@@ -235,8 +343,14 @@
             transition: border-color 0.3s ease;
             min-width: 0;
         }
-        .input-area input:focus { border-color: var(--accent); }
-        .input-area input::placeholder { color: var(--text-muted); font-weight: 400; font-size: 13px; }
+        .input-area input:focus {
+            border-color: var(--accent);
+        }
+        .input-area input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 13px;
+        }
         .input-area .btn-add {
             padding: 8px 14px;
             border-radius: 10px;
@@ -251,8 +365,13 @@
             white-space: nowrap;
             box-shadow: 0 4px 20px var(--accent-glow);
         }
-        .input-area .btn-add:active { transform: scale(0.95); }
-        .input-area .btn-add.income-mode { background: var(--accent-green); box-shadow: 0 4px 20px rgba(0, 184, 148, 0.3); }
+        .input-area .btn-add:active {
+            transform: scale(0.95);
+        }
+        .input-area .btn-add.income-mode {
+            background: var(--accent-green);
+            box-shadow: 0 4px 20px rgba(0, 184, 148, 0.3);
+        }
 
         .input-area .type-toggle {
             display: flex;
@@ -275,8 +394,14 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .input-area .type-toggle button.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px var(--accent-glow); }
-        .input-area .type-toggle button.active.income-mode { background: var(--accent-green); }
+        .input-area .type-toggle button.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+        .input-area .type-toggle button.active.income-mode {
+            background: var(--accent-green);
+        }
 
         .input-area .voice-btn {
             margin-top: 6px;
@@ -291,11 +416,21 @@
             width: 100%;
             transition: all 0.2s;
         }
-        .input-area .voice-btn:active { transform: scale(0.95); }
-        .input-area .voice-btn.listening { background: var(--accent-red); color: #fff; border-color: var(--accent-red); }
+        .input-area .voice-btn:active {
+            transform: scale(0.95);
+        }
+        .input-area .voice-btn.listening {
+            background: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-red);
+        }
 
-        /* ===== КАТЕГОРИИ ===== */
-        .categories { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+        .categories {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
         .categories .cat-btn {
             padding: 4px 8px;
             border-radius: 16px;
@@ -308,10 +443,16 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .categories .cat-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 12px var(--accent-glow); }
-        .categories .cat-btn:active { transform: scale(0.95); }
+        .categories .cat-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+        .categories .cat-btn:active {
+            transform: scale(0.95);
+        }
 
-        /* ===== БЮДЖЕТЫ ===== */
         .budget-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -334,15 +475,35 @@
             font-size: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         }
-        .budget-section .budget-item .spent.over { color: var(--accent-red); }
-        .budget-section .budget-item .limit { color: var(--accent); font-weight: 600; }
-        .budget-bar { height: 3px; background: var(--bg-input); border-radius: 3px; margin-top: 2px; overflow: hidden; }
-        .budget-bar .bar { height: 100%; border-radius: 3px; transition: width 0.5s var(--ease), background 0.5s; }
-        .budget-bar .bar.ok { background: var(--accent-green); }
-        .budget-bar .bar.warn { background: var(--accent-yellow); }
-        .budget-bar .bar.danger { background: var(--accent-red); }
+        .budget-section .budget-item .spent.over {
+            color: var(--accent-red);
+        }
+        .budget-section .budget-item .limit {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .budget-bar {
+            height: 3px;
+            background: var(--bg-input);
+            border-radius: 3px;
+            margin-top: 2px;
+            overflow: hidden;
+        }
+        .budget-bar .bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s var(--ease), background 0.5s;
+        }
+        .budget-bar .bar.ok {
+            background: var(--accent-green);
+        }
+        .budget-bar .bar.warn {
+            background: var(--accent-yellow);
+        }
+        .budget-bar .bar.danger {
+            background: var(--accent-red);
+        }
 
-        /* ===== КОПИЛКА ===== */
         .piggy-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -357,10 +518,30 @@
             font-size: 10px;
             color: var(--text-secondary);
         }
-        .piggy-section .piggy-header .balance { color: var(--accent-gold); font-weight: 700; font-size: 16px; }
-        .piggy-progress { height: 4px; background: var(--bg-input); border-radius: 4px; margin: 4px 0; overflow: hidden; }
-        .piggy-progress .bar { height: 100%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-yellow)); border-radius: 4px; transition: width 0.5s var(--ease); }
-        .piggy-actions { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+        .piggy-section .piggy-header .balance {
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .piggy-progress {
+            height: 4px;
+            background: var(--bg-input);
+            border-radius: 4px;
+            margin: 4px 0;
+            overflow: hidden;
+        }
+        .piggy-progress .bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-yellow));
+            border-radius: 4px;
+            transition: width 0.5s var(--ease);
+        }
+        .piggy-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
         .piggy-actions button {
             padding: 3px 8px;
             border-radius: 6px;
@@ -372,9 +553,31 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .piggy-actions button:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+        .piggy-actions button:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
 
-        /* ===== ТРАНЗАКЦИИ ===== */
+        .truth-moment {
+            background: rgba(255, 107, 107, 0.05);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 107, 107, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .truth-moment .icon {
+            font-size: 18px;
+        }
+        .truth-moment .text strong {
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
         .transactions .title {
             display: flex;
             justify-content: space-between;
@@ -393,7 +596,9 @@
             transition: color 0.2s;
             font-family: 'Inter', sans-serif;
         }
-        .transactions .title .clear-btn:hover { color: var(--accent-red); }
+        .transactions .title .clear-btn:hover {
+            color: var(--accent-red);
+        }
 
         .transaction-list {
             display: flex;
@@ -402,8 +607,13 @@
             max-height: 160px;
             overflow-y: auto;
         }
-        .transaction-list::-webkit-scrollbar { width: 2px; }
-        .transaction-list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .transaction-list::-webkit-scrollbar {
+            width: 2px;
+        }
+        .transaction-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
 
         .tx-item {
             display: flex;
@@ -415,21 +625,79 @@
             border: 1px solid rgba(255, 255, 255, 0.02);
             animation: slideIn 0.3s var(--ease);
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-        .tx-item .tx-icon { font-size: 14px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: rgba(255, 255, 255, 0.03); flex-shrink: 0; }
-        .tx-item .tx-info { flex: 1; min-width: 0; }
-        .tx-item .tx-info .tx-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tx-item .tx-info .tx-meta { font-size: 8px; color: var(--text-secondary); }
-        .tx-item .tx-amount { font-size: 13px; font-weight: 700; white-space: nowrap; }
-        .tx-item .tx-amount.income { color: var(--accent-green); }
-        .tx-item .tx-amount.expense { color: var(--accent-red); }
-        .tx-item .tx-delete { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; padding: 0 2px; transition: color 0.2s; }
-        .tx-item .tx-delete:hover { color: var(--accent-red); }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tx-item .tx-icon {
+            font-size: 14px;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            flex-shrink: 0;
+        }
+        .tx-item .tx-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .tx-item .tx-info .tx-name {
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .tx-item .tx-info .tx-meta {
+            font-size: 8px;
+            color: var(--text-secondary);
+        }
+        .tx-item .tx-amount {
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .tx-item .tx-amount.income {
+            color: var(--accent-green);
+        }
+        .tx-item .tx-amount.expense {
+            color: var(--accent-red);
+        }
+        .tx-item .tx-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 0 2px;
+            transition: color 0.2s;
+        }
+        .tx-item .tx-delete:hover {
+            color: var(--accent-red);
+        }
 
-        .empty-state { text-align: center; padding: 20px 10px; color: var(--text-secondary); font-size: 11px; }
-        .empty-state .icon { font-size: 28px; display: block; margin-bottom: 4px; opacity: 0.3; }
+        .empty-state {
+            text-align: center;
+            padding: 20px 10px;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+        .empty-state .icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 4px;
+            opacity: 0.3;
+        }
 
-        /* ===== AI-СОВЕТ ===== */
         .ai-tip {
             background: rgba(108, 92, 231, 0.04);
             border-radius: 10px;
@@ -442,11 +710,17 @@
             font-size: 10px;
             color: var(--text-secondary);
         }
-        .ai-tip .icon { font-size: 14px; }
-        .ai-tip .text { flex: 1; }
-        .ai-tip .text strong { color: var(--accent); font-weight: 600; }
+        .ai-tip .icon {
+            font-size: 14px;
+        }
+        .ai-tip .text {
+            flex: 1;
+        }
+        .ai-tip .text strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
 
-        /* ===== МОДАЛ СТАТИСТИКИ ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -458,7 +732,9 @@
             justify-content: center;
             padding: 20px;
         }
-        .modal-overlay.active { display: flex; }
+        .modal-overlay.active {
+            display: flex;
+        }
         .modal {
             background: var(--bg);
             border-radius: 24px;
@@ -470,10 +746,25 @@
             max-height: 80vh;
             overflow-y: auto;
         }
-        body.light .modal { background: #f5f5f5; }
-        .modal .close { float: right; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
-        .modal .close:hover { color: var(--text); }
-        .modal .title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        body.light .modal {
+            background: #f5f5f5;
+        }
+        .modal .close {
+            float: right;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .modal .close:hover {
+            color: var(--text);
+        }
+        .modal .title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
         .modal .stat-row {
             display: flex;
             justify-content: space-between;
@@ -481,22 +772,56 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
             font-size: 12px;
         }
-        .modal .stat-row .label { color: var(--text-secondary); }
-        .modal .stat-row .value { font-weight: 600; }
-        .modal .stat-row .value.green { color: var(--accent-green); }
-        .modal .stat-row .value.red { color: var(--accent-red); }
-        .modal .stat-row .value.purple { color: var(--accent); }
-        .modal .stat-row .value.gold { color: var(--accent-gold); }
-        .modal .chart { display: flex; gap: 4px; margin: 8px 0; align-items: flex-end; height: 70px; padding: 0 2px; }
-        .modal .chart .bar-container { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .modal .stat-row .label {
+            color: var(--text-secondary);
+        }
+        .modal .stat-row .value {
+            font-weight: 600;
+        }
+        .modal .stat-row .value.green {
+            color: var(--accent-green);
+        }
+        .modal .stat-row .value.red {
+            color: var(--accent-red);
+        }
+        .modal .stat-row .value.purple {
+            color: var(--accent);
+        }
+        .modal .stat-row .value.gold {
+            color: var(--accent-gold);
+        }
+        .modal .chart {
+            display: flex;
+            gap: 4px;
+            margin: 8px 0;
+            align-items: flex-end;
+            height: 70px;
+            padding: 0 2px;
+        }
+        .modal .chart .bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
         .modal .chart .bar {
             width: 100%;
             border-radius: 3px 3px 0 0;
             min-height: 4px;
             transition: height 0.6s var(--ease);
         }
-        .modal .chart .day { font-size: 7px; color: var(--text-muted); margin-top: 2px; }
-        .modal .export-buttons { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+        .modal .chart .day {
+            font-size: 7px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .modal .export-buttons {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
         .modal .export-buttons button {
             flex: 1;
             padding: 6px;
@@ -510,9 +835,11 @@
             transition: all 0.2s;
             min-width: 50px;
         }
-        .modal .export-buttons button:hover { border-color: var(--accent); color: var(--accent); }
+        .modal .export-buttons button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
 
-        /* ===== КАЛЕНДАРЬ ===== */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -532,27 +859,19 @@
             transition: all 0.2s;
             cursor: default;
         }
-        .calendar-grid .day.has-expense { border-color: var(--accent-red); background: rgba(255, 107, 107, 0.05); }
-        .calendar-grid .day.has-income { border-color: var(--accent-green); background: rgba(0, 184, 148, 0.05); }
-        .calendar-grid .day.today { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
-
-        /* ===== МОМЕНТ ИСТИНЫ ===== */
-        .truth-moment {
+        .calendar-grid .day.has-expense {
+            border-color: var(--accent-red);
             background: rgba(255, 107, 107, 0.05);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 107, 107, 0.08);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: var(--text-secondary);
         }
-        .truth-moment .icon { font-size: 18px; }
-        .truth-moment .text strong { color: var(--accent-gold); font-weight: 700; }
+        .calendar-grid .day.has-income {
+            border-color: var(--accent-green);
+            background: rgba(0, 184, 148, 0.05);
+        }
+        .calendar-grid .day.today {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
 
-        /* ===== СЕМЕЙНЫЙ БЮДЖЕТ ===== */
         .family-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -568,19 +887,56 @@
             font-size: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         }
-        .family-section .family-member .name { font-weight: 600; }
-        .family-section .family-member .balance { color: var(--accent); }
+        .family-section .family-member .name {
+            font-weight: 600;
+        }
+        .family-section .family-member .balance {
+            color: var(--accent);
+        }
 
-        /* ===== АДАПТИВ ===== */
+        .input-field {
+            background: var(--bg-input);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            padding: 6px 8px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            outline: none;
+        }
+        .input-field:focus {
+            border-color: var(--accent);
+        }
+
         @media (max-width: 400px) {
-            .app { padding: 10px; }
-            .balance-card .big-number { font-size: 28px; }
-            .quick-actions { grid-template-columns: repeat(4, 1fr); gap: 4px; }
-            .quick-btn { padding: 6px 2px; font-size: 8px; }
-            .quick-btn .icon { font-size: 16px; }
-            .input-area input { font-size: 14px; padding: 6px 8px; }
-            .input-area .btn-add { padding: 6px 10px; font-size: 12px; }
-            .header .balance .amount { font-size: 17px; }
+            .app {
+                padding: 10px;
+            }
+            .balance-card .big-number {
+                font-size: 28px;
+            }
+            .quick-actions {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 4px;
+            }
+            .quick-btn {
+                padding: 6px 2px;
+                font-size: 8px;
+            }
+            .quick-btn .icon {
+                font-size: 16px;
+            }
+            .input-area input {
+                font-size: 14px;
+                padding: 6px 8px;
+            }
+            .input-area .btn-add {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .header .balance .amount {
+                font-size: 17px;
+            }
         }
     </style>
 </head>
@@ -590,7 +946,6 @@
 
     <div class="app" id="app">
 
-        <!-- ХЕДЕР -->
         <div class="header">
             <div class="logo">💰 Эконом<span>ка</span></div>
             <div class="top-actions">
@@ -615,7 +970,6 @@
             </div>
         </div>
 
-        <!-- КАРТОЧКА БАЛАНСА -->
         <div class="balance-card">
             <div class="glow-ring"></div>
             <div class="label">Доходы / Расходы</div>
@@ -625,7 +979,6 @@
             </div>
         </div>
 
-        <!-- БЫСТРЫЕ ДЕЙСТВИЯ -->
         <div class="quick-actions">
             <button class="quick-btn income" id="quickIncome"><span class="icon">➕</span>Доход</button>
             <button class="quick-btn expense" id="quickExpense"><span class="icon">➖</span>Расход</button>
@@ -633,7 +986,6 @@
             <button class="quick-btn voice" id="quickVoice"><span class="icon">🎤</span>Голос</button>
         </div>
 
-        <!-- ВВОД -->
         <div class="input-area">
             <div class="row">
                 <input type="number" id="amountInput" placeholder="Сумма" inputmode="decimal" step="0.01">
@@ -646,7 +998,6 @@
             <button class="voice-btn" id="voiceBtn">🎤 Нажмите и говорите</button>
         </div>
 
-        <!-- КАТЕГОРИИ -->
         <div class="categories" id="categoryList">
             <button class="cat-btn active" data-cat="all">Все</button>
             <button class="cat-btn" data-cat="Еда">🍔 Еда</button>
@@ -658,7 +1009,6 @@
             <button class="cat-btn" data-cat="Другое">📦 Другое</button>
         </div>
 
-        <!-- БЮДЖЕТЫ -->
         <div class="budget-section" id="budgetSection">
             <div class="budget-header">
                 <span>📊 Бюджеты</span>
@@ -667,7 +1017,6 @@
             <div id="budgetList"></div>
         </div>
 
-        <!-- КОПИЛКА -->
         <div class="piggy-section">
             <div class="piggy-header">
                 <span>🐷 Копилка</span>
@@ -681,13 +1030,11 @@
             </div>
         </div>
 
-        <!-- МОМЕНТ ИСТИНЫ -->
         <div class="truth-moment" id="truthMoment">
             <span class="icon">💡</span>
             <div class="text"><strong id="truthText">0 ₽</strong> — столько вы могли бы накопить, если бы не тратили на импульсивные покупки</div>
         </div>
 
-        <!-- ТРАНЗАКЦИИ -->
         <div class="transactions">
             <div class="title">
                 <span>📋 Операции</span>
@@ -701,7 +1048,6 @@
             </div>
         </div>
 
-        <!-- AI-СОВЕТ -->
         <div class="ai-tip" id="aiTip">
             <span class="icon">🤖</span>
             <div class="text"><strong>Совет:</strong> <span id="tipText">Начните записывать расходы, чтобы увидеть картину</span></div>
@@ -709,7 +1055,6 @@
 
     </div>
 
-    <!-- МОДАЛ СТАТИСТИКИ -->
     <div class="modal-overlay" id="statsModal">
         <div class="modal">
             <button class="close" id="closeStats">✕</button>
@@ -731,7 +1076,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛ КАЛЕНДАРЯ -->
     <div class="modal-overlay" id="calendarModal">
         <div class="modal">
             <button class="close" id="closeCalendar">✕</button>
@@ -745,7 +1089,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛ СЕМЬИ -->
     <div class="modal-overlay" id="familyModal">
         <div class="modal">
             <button class="close" id="closeFamily">✕</button>
@@ -761,26 +1104,17 @@
 
     <script>
         (function() {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            tg.ready();
+            // ===== TELEGRAM =====
+            const tg = window.Telegram?.WebApp;
+            if (tg) {
+                tg.expand();
+                tg.ready();
+            } else {
+                console.log('Запуск вне Telegram');
+            }
 
-            // ===== PARTICLE =====
-            (function initParticles() {
-                const container = document.getElementById('particles');
-                for (let i = 0; i < 8; i++) {
-                    const p = document.createElement('div');
-                    p.className = 'particle';
-                    const size = 2 + Math.random() * 5;
-                    p.style.width = size + 'px';
-                    p.style.height = size + 'px';
-                    p.style.left = Math.random() * 100 + '%';
-                    p.style.top = Math.random() * 100 + '%';
-                    p.style.animationDelay = Math.random() * 8 + 's';
-                    p.style.animationDuration = (6 + Math.random() * 6) + 's';
-                    container.appendChild(p);
-                }
-            })();
+            // ===== AUDIO CONTEXT (один для всех звуков) =====
+            let audioCtx = null;
 
             // ===== DATA =====
             let state = {
@@ -790,8 +1124,7 @@
                 regulars: [],
                 currency: 'BYN',
                 theme: 'dark',
-                family: [],
-                voiceEnabled: false
+                family: []
             };
 
             const CURRENCY_SYMBOLS = { BYN: 'Br', USD: '$', EUR: '€', RUB: '₽', BTC: '₿', ETH: '⟠' };
@@ -810,27 +1143,35 @@
                         state.theme = data.theme || 'dark';
                         state.family = data.family || [];
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.warn('Ошибка загрузки данных:', e);
+                }
                 applyTheme();
                 document.getElementById('currencySelect').value = state.currency;
                 updateUI();
             }
 
             function saveData() {
-                localStorage.setItem('economkaPro2026', JSON.stringify({
-                    transactions: state.transactions,
-                    piggy: state.piggy,
-                    budgets: state.budgets,
-                    regulars: state.regulars,
-                    currency: state.currency,
-                    theme: state.theme,
-                    family: state.family
-                }));
+                try {
+                    localStorage.setItem('economkaPro2026', JSON.stringify({
+                        transactions: state.transactions,
+                        piggy: state.piggy,
+                        budgets: state.budgets,
+                        regulars: state.regulars,
+                        currency: state.currency,
+                        theme: state.theme,
+                        family: state.family
+                    }));
+                } catch (e) {
+                    console.warn('Не удалось сохранить данные:', e);
+                }
             }
 
             // ===== FORMAT =====
             function getSymbol() { return CURRENCY_SYMBOLS[state.currency] || 'Br'; }
+
             function getRate() { return CURRENCY_RATES[state.currency] || 1; }
+
             function formatMoney(amount) {
                 const symbol = getSymbol();
                 return Math.round(amount * 100) / 100 + ' ' + symbol;
@@ -838,9 +1179,14 @@
 
             function getCategoryIcon(cat) {
                 const icons = {
-                    'Еда': '🍔', 'Транспорт': '🚗', 'Жильё': '🏠',
-                    'Развлечения': '🎮', 'Здоровье': '💊', 'Зарплата': '💼',
-                    'Подарок': '🎁', 'Другое': '📦'
+                    'Еда': '🍔',
+                    'Транспорт': '🚗',
+                    'Жильё': '🏠',
+                    'Развлечения': '🎮',
+                    'Здоровье': '💊',
+                    'Зарплата': '💼',
+                    'Подарок': '🎁',
+                    'Другое': '📦'
                 };
                 return icons[cat] || '📌';
             }
@@ -852,34 +1198,23 @@
                 const balance = totalIncome - totalExpense;
 
                 document.getElementById('balanceDisplay').textContent = formatMoney(balance);
-                document.getElementById('balanceDisplay').className = 'amount ' + (balance >= 0 ? 'positive' : 'negative');
+                document.getElementById('balanceDisplay').className = 'amount ' + (balance >= 0 ? 'positive' :
+                    'negative');
                 const big = document.getElementById('balanceBig');
                 big.textContent = formatMoney(balance);
                 big.className = 'big-number ' + (balance >= 0 ? 'positive' : 'negative');
                 document.getElementById('totalIncome').textContent = formatMoney(totalIncome);
                 document.getElementById('totalExpense').textContent = formatMoney(totalExpense);
 
-                // Piggy
                 document.getElementById('piggyBalance').textContent = formatMoney(state.piggy);
                 const piggyPercent = Math.min((state.piggy / 10000) * 100, 100);
                 document.getElementById('piggyProgress').style.width = piggyPercent + '%';
 
-                // Budgets
                 renderBudgets();
-
-                // Transactions
                 renderTransactions();
-
-                // AI tip
                 updateTip(totalIncome, totalExpense);
-
-                // Truth moment
-                updateTruthMoment(totalIncome, totalExpense);
-
-                // Family
+                updateTruthMoment();
                 renderFamily();
-
-                // Save
                 saveData();
             }
 
@@ -909,10 +1244,12 @@
                     `;
                 });
 
-                if (!html) html = `<div style="font-size:10px;color:var(--text-muted);padding:4px 0;">Двойной клик по категории для установки бюджета</div>`;
+                if (!html) html =
+                    `<div style="font-size:10px;color:var(--text-muted);padding:4px 0;">Двойной клик по категории для установки бюджета</div>`;
                 list.innerHTML = html;
                 document.getElementById('budgetStatus').textContent = allOk ? '✅ OK' : '⚠️ Превышение';
-                document.getElementById('budgetStatus').style.color = allOk ? 'var(--accent-green)' : 'var(--accent-red)';
+                document.getElementById('budgetStatus').style.color = allOk ? 'var(--accent-green)' :
+                    'var(--accent-red)';
             }
 
             // ===== TRANSACTIONS =====
@@ -924,7 +1261,8 @@
                 filtered = [...filtered].reverse();
 
                 if (filtered.length === 0) {
-                    list.innerHTML = `<div class="empty-state"><span class="icon">📭</span>${state.transactions.length === 0 ? 'Пока нет операций' : 'Нет операций в этой категории'}</div>`;
+                    list.innerHTML =
+                        `<div class="empty-state"><span class="icon">📭</span>${state.transactions.length === 0 ? 'Пока нет операций' : 'Нет операций в этой категории'}</div>`;
                     return;
                 }
 
@@ -957,17 +1295,36 @@
                 });
             }
 
-            // ===== VOICE INPUT =====
+            // ===== VOICE INPUT (ИСПРАВЛЕН) =====
             function startVoice() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    alert('Голосовой ввод не поддерживается в этом браузере');
+                const recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!recognition) {
+                    alert('Голосовой ввод не поддерживается в этом браузере.');
                     return;
                 }
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const recognition = new SpeechRecognition();
+
+                // Проверка разрешения
+                if (navigator.permissions && navigator.permissions.query) {
+                    navigator.permissions.query({ name: 'microphone' })
+                        .then(result => {
+                            if (result.state === 'denied') {
+                                alert('Нет доступа к микрофону. Разрешите в настройках браузера.');
+                                return;
+                            }
+                            doRecognition();
+                        })
+                        .catch(() => doRecognition());
+                } else {
+                    doRecognition();
+                }
+            }
+
+            function doRecognition() {
+                const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
                 recognition.lang = 'ru-RU';
                 recognition.continuous = false;
                 recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
 
                 const btn = document.getElementById('voiceBtn');
                 btn.classList.add('listening');
@@ -977,27 +1334,39 @@
                     const text = event.results[0][0].transcript;
                     btn.textContent = '🎤 Распознано: ' + text;
                     btn.classList.remove('listening');
-                    setTimeout(() => btn.textContent = '🎤 Нажмите и говорите', 2000);
                     processVoiceCommand(text);
                 };
 
-                recognition.onerror = function() {
-                    btn.textContent = '🎤 Ошибка, попробуйте снова';
+                recognition.onerror = function(event) {
+                    console.error('Ошибка распознавания:', event.error);
+                    btn.textContent = '🎤 Ошибка: ' + event.error;
                     btn.classList.remove('listening');
-                    setTimeout(() => btn.textContent = '🎤 Нажмите и говорите', 2000);
+                    if (event.error === 'not-allowed') {
+                        alert('Доступ к микрофону запрещён.');
+                    } else if (event.error === 'no-speech') {
+                        alert('Речь не обнаружена. Попробуйте ещё раз.');
+                    } else {
+                        alert('Ошибка распознавания. Попробуйте ещё раз.');
+                    }
+                    setTimeout(() => btn.textContent = '🎤 Нажмите и говорите', 3000);
+                };
+
+                recognition.onend = function() {
+                    if (btn.classList.contains('listening')) {
+                        btn.classList.remove('listening');
+                        btn.textContent = '🎤 Нажмите и говорите';
+                    }
                 };
 
                 recognition.start();
             }
 
             function processVoiceCommand(text) {
-                // Простой парсинг: ищем сумму и категорию
                 const words = text.toLowerCase().split(' ');
                 let amount = 0;
                 let category = 'Другое';
                 let type = 'expense';
 
-                // Ищем число
                 for (let w of words) {
                     const num = parseFloat(w.replace(',', '.'));
                     if (!isNaN(num) && num > 0) {
@@ -1006,26 +1375,34 @@
                     }
                 }
 
-                // Определяем категорию
                 const catMap = {
-                    'еда': 'Еда', 'продукты': 'Еда', 'обед': 'Еда',
-                    'транспорт': 'Транспорт', 'такси': 'Транспорт', 'бензин': 'Транспорт',
-                    'жильё': 'Жильё', 'квартира': 'Жильё', 'коммуналка': 'Жильё',
-                    'развлечения': 'Развлечения', 'кино': 'Развлечения', 'игры': 'Развлечения',
-                    'здоровье': 'Здоровье', 'аптека': 'Здоровье', 'врач': 'Здоровье',
-                    'зарплата': 'Зарплата', 'доход': 'Зарплата'
+                    'еда': 'Еда',
+                    'продукты': 'Еда',
+                    'обед': 'Еда',
+                    'транспорт': 'Транспорт',
+                    'такси': 'Транспорт',
+                    'бензин': 'Транспорт',
+                    'жильё': 'Жильё',
+                    'квартира': 'Жильё',
+                    'коммуналка': 'Жильё',
+                    'развлечения': 'Развлечения',
+                    'кино': 'Развлечения',
+                    'игры': 'Развлечения',
+                    'здоровье': 'Здоровье',
+                    'аптека': 'Здоровье',
+                    'врач': 'Здоровье',
+                    'зарплата': 'Зарплата',
+                    'доход': 'Зарплата'
                 };
                 for (let w of words) {
                     if (catMap[w]) { category = catMap[w]; break; }
                 }
 
-                // Тип
                 if (words.includes('доход') || words.includes('зарплата') || words.includes('получил')) {
                     type = 'income';
                 }
 
                 if (amount > 0) {
-                    // Добавляем транзакцию
                     state.transactions.push({
                         amount: amount,
                         type: type,
@@ -1036,7 +1413,8 @@
                     });
                     playSound(type === 'income' ? 'income' : 'expense');
                     updateUI();
-                    document.getElementById('voiceBtn').textContent = '✅ Добавлено: ' + formatMoney(amount) + ' (' + category + ')';
+                    document.getElementById('voiceBtn').textContent = '✅ Добавлено: ' + formatMoney(amount) + ' (' +
+                        category + ')';
                     setTimeout(() => document.getElementById('voiceBtn').textContent = '🎤 Нажмите и говорите', 3000);
                 } else {
                     alert('Не удалось распознать сумму. Скажите, например: "Потратил 500 на еду"');
@@ -1044,8 +1422,7 @@
             }
 
             // ===== TRUTH MOMENT =====
-            function updateTruthMoment(totalIncome, totalExpense) {
-                // Считаем импульсивные покупки (условно: категории Развлечения + Другое)
+            function updateTruthMoment() {
                 const impulsive = state.transactions
                     .filter(t => t.type === 'expense' && (t.category === 'Развлечения' || t.category === 'Другое'))
                     .reduce((s, t) => s + t.amount, 0);
@@ -1083,7 +1460,6 @@
                 if (expenses.length === 0) return 0;
                 const total = expenses.reduce((s, t) => s + t.amount, 0);
                 const avg = total / expenses.length;
-                // Прогноз на неделю (7 дней)
                 return avg * 7;
             }
 
@@ -1101,49 +1477,58 @@
 
                 if (state.transactions.length === 0) { tipEl.textContent = tips[0]; return; }
 
-                const avgExpense = state.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0) / (state.transactions.length || 1);
+                const avgExpense = state.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount,
+                    0) / (state.transactions.length || 1);
 
                 if (avgExpense > 500 && totalIncome > 0) {
                     tipEl.textContent = 'Ваш средний расход выше 500. Попробуйте проанализировать крупные траты.';
                 } else if (totalExpense > totalIncome && totalIncome > 0) {
                     tipEl.textContent = '⚠️ Расходы превышают доходы! Пересмотрите бюджет.';
                 } else if (state.transactions.length > 20) {
-                    tipEl.textContent = 'Отличная привычка! Вы уже записали ' + state.transactions.length + ' операций.';
+                    tipEl.textContent = 'Отличная привычка! Вы уже записали ' + state.transactions.length +
+                        ' операций.';
                 } else {
                     tipEl.textContent = tips[Math.floor(Math.random() * tips.length)];
                 }
             }
 
-            // ===== SOUND =====
+            // ===== SOUND (исправлен, единый AudioContext) =====
             function playSound(type) {
                 try {
-                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
+                    if (!audioCtx) {
+                        audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                    }
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
                     osc.connect(gain);
-                    gain.connect(ctx.destination);
+                    gain.connect(audioCtx.destination);
                     gain.gain.value = 0.06;
                     if (type === 'income') {
                         osc.frequency.value = 880;
                         osc.type = 'sine';
-                        osc.start(ctx.currentTime);
-                        osc.stop(ctx.currentTime + 0.08);
+                        osc.start(audioCtx.currentTime);
+                        osc.stop(audioCtx.currentTime + 0.08);
                     } else if (type === 'expense') {
                         osc.frequency.value = 440;
                         osc.type = 'sine';
-                        osc.start(ctx.currentTime);
-                        osc.stop(ctx.currentTime + 0.12);
+                        osc.start(audioCtx.currentTime);
+                        osc.stop(audioCtx.currentTime + 0.12);
                     } else if (type === 'delete') {
                         osc.frequency.value = 300;
                         osc.type = 'sawtooth';
-                        osc.start(ctx.currentTime);
-                        osc.stop(ctx.currentTime + 0.05);
+                        osc.start(audioCtx.currentTime);
+                        osc.stop(audioCtx.currentTime + 0.05);
                     }
-                } catch (e) {}
+                } catch (e) { /* игнорируем ошибки звука */ }
             }
 
+            // ===== VIBRATION (с проверкой tg) =====
             function vibrate(pattern) {
-                try { tg.HapticFeedback?.impactOccurred(pattern || 'light'); } catch (e) {}
+                try {
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.impactOccurred(pattern || 'light');
+                    }
+                } catch (e) { /* игнорируем */ }
             }
 
             // ===== THEME =====
@@ -1166,14 +1551,14 @@
                 const now = new Date();
                 const year = now.getFullYear();
                 const month = now.getMonth();
-                document.getElementById('calendarMonth').textContent = now.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+                document.getElementById('calendarMonth').textContent = now.toLocaleDateString('ru-RU', { month: 'long',
+                    year: 'numeric' });
 
                 const firstDay = new Date(year, month, 1).getDay();
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 const grid = document.getElementById('calendarGrid');
                 grid.innerHTML = '';
 
-                // Пустые ячейки
                 for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
                     const d = document.createElement('div');
                     d.className = 'day';
@@ -1225,11 +1610,9 @@
                 document.getElementById('statAvg').textContent = formatMoney(avg);
                 document.getElementById('statPiggy').textContent = formatMoney(state.piggy);
 
-                // Forecast
                 const forecast = calculateForecast();
                 document.getElementById('statForecast').textContent = formatMoney(forecast);
 
-                // Top category
                 const catCount = {};
                 state.transactions.filter(t => t.type === 'expense').forEach(t => {
                     catCount[t.category] = (catCount[t.category] || 0) + t.amount;
@@ -1237,11 +1620,12 @@
                 let topCat = '—';
                 let topVal = 0;
                 for (const [cat, val] of Object.entries(catCount)) {
-                    if (val > topVal) { topVal = val; topCat = cat; }
+                    if (val > topVal) { topVal = val;
+                        topCat = cat; }
                 }
-                document.getElementById('statTopCat').textContent = topCat !== '—' ? `${topCat} (${formatMoney(topVal)})` : '—';
+                document.getElementById('statTopCat').textContent = topCat !== '—' ? `${topCat} (${formatMoney(topVal)})` :
+                    '—';
 
-                // Chart
                 const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
                 const today = new Date();
                 const weekData = [];
@@ -1279,7 +1663,15 @@
 
             function exportJSON() {
                 if (state.transactions.length === 0) { alert('Нет данных'); return; }
-                const data = { transactions: state.transactions, piggy: state.piggy, budgets: state.budgets, regulars: state.regulars, family: state.family, currency: state.currency, exported: new Date().toISOString() };
+                const data = {
+                    transactions: state.transactions,
+                    piggy: state.piggy,
+                    budgets: state.budgets,
+                    regulars: state.regulars,
+                    family: state.family,
+                    currency: state.currency,
+                    exported: new Date().toISOString()
+                };
                 downloadFile(JSON.stringify(data, null, 2), 'economka_backup.json', 'application/json');
             }
 
@@ -1295,12 +1687,12 @@
                 URL.revokeObjectURL(url);
             }
 
-            // ===== ADD TRANSACTION =====
+            // ===== ADD TRANSACTION (ИСПРАВЛЕНА ЗАПЯТАЯ) =====
             let currentType = 'income';
 
             function addTransaction() {
                 const input = document.getElementById('amountInput');
-                const amount = parseFloat(input.value);
+                const amount = parseFloat(input.value.replace(',', '.'));
                 if (!amount || amount <= 0) {
                     vibrate('rigid');
                     input.style.borderColor = 'var(--accent-red)';
@@ -1310,10 +1702,7 @@
 
                 const category = document.querySelector('.cat-btn.active')?.dataset.cat || 'Другое';
                 const type = currentType;
-                const regular = false; // можно добавить чекбокс, но упростим
-                const familyMember = null; // можно добавить выбор
 
-                // Авто-округление в копилку (если включено)
                 if (localStorage.getItem('economkaAutoPiggy') === 'true') {
                     const rounded = Math.ceil(amount);
                     const diff = rounded - amount;
@@ -1327,8 +1716,8 @@
                     type: type,
                     category: category,
                     date: new Date().toLocaleDateString('ru-RU'),
-                    regular: regular,
-                    familyMember: familyMember
+                    regular: false,
+                    familyMember: null
                 });
 
                 input.value = '';
@@ -1340,7 +1729,9 @@
 
             // ===== EVENT LISTENERS =====
             document.getElementById('addBtn').addEventListener('click', addTransaction);
-            document.getElementById('amountInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') addTransaction(); });
+            document.getElementById('amountInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTransaction();
+            });
 
             document.getElementById('quickIncome').addEventListener('click', () => {
                 document.getElementById('typeIncome').click();
@@ -1377,7 +1768,6 @@
                     renderTransactions();
                     vibrate('light');
                 });
-                // Двойной клик для бюджета
                 btn.addEventListener('dblclick', function() {
                     const cat = this.dataset.cat;
                     if (cat === 'all') return;
@@ -1444,7 +1834,6 @@
                 updateUI();
             });
 
-            // Modal close
             document.getElementById('closeStats').addEventListener('click', () => {
                 document.getElementById('statsModal').classList.remove('active');
             });
@@ -1460,33 +1849,30 @@
                 });
             });
 
-            // Family
             document.getElementById('familyAddBtn').addEventListener('click', addFamilyMember);
             document.getElementById('familyNameInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') addFamilyMember();
             });
 
-            // Export
             document.getElementById('exportCSV').addEventListener('click', exportCSV);
             document.getElementById('exportJSON').addEventListener('click', exportJSON);
+
+            // ===== CHECK VOICE SUPPORT =====
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                document.getElementById('voiceBtn').textContent = '🎤 Голос не поддерживается';
+                document.getElementById('voiceBtn').disabled = true;
+                document.getElementById('voiceBtn').style.opacity = '0.5';
+            }
 
             // ===== INIT =====
             loadData();
 
-            // Проверка браузера на поддержку голоса
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                document.getElementById('voiceBtn').textContent = '🎤 Голос не поддерживается';
-                document.getElementById('voiceBtn').disabled = true;
-            }
-
-            // Авто-сохранение
             window.addEventListener('beforeunload', saveData);
 
-            console.log('💰 Экономка Pro 2026');
-            console.log('✨ Голос, семья, прогнозы, календарь, момент истины, мультивалютность');
+            console.log('💰 Экономка Pro 2026 (исправленная)');
             console.log('📱 ' + state.transactions.length + ' операций загружено');
 
-            // Уведомление о начале дня (если есть)
+            // Уведомление
             if ('Notification' in window && Notification.permission === 'granted') {
                 if (new Date().getHours() === 9) {
                     new Notification('🌅 Доброе утро! Не забудьте записать вчерашние траты.');
