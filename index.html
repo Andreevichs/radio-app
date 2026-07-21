@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>🚕 Такси Расходы • Полная статистика</title>
+    <title>🚕 Такси Расходы • 4 квартала</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,7 @@
             --radius-xl: 28px;
             --radius-lg: 20px;
             --radius-md: 14px;
+            --radius-sm: 10px;
             --transition: 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
             --font: 'Inter', -apple-system, system-ui, sans-serif;
         }
@@ -743,7 +744,7 @@
         }
 
         /* ============================================================
-           QUARTER STATS (новая секция)
+           QUARTER STATS (4 квартала)
            ============================================================ */
         .quarter-stats-section {
             background: var(--bg-glass);
@@ -827,6 +828,9 @@
         }
         .quarter-stat-card.worst .q-total {
             color: var(--neon-red);
+        }
+        .quarter-stat-card.empty {
+            opacity: 0.6;
         }
 
         .quarter-chart-container {
@@ -1667,7 +1671,7 @@
             </div>
             <div class="welcome-title">Обслуживание и расходы авто</div>
             <div class="welcome-subtitle">
-                <i class="fas fa-chart-line"></i> Полная статистика по кварталам
+                <i class="fas fa-chart-line"></i> Полная статистика по 4 кварталам
                 <br /><i class="fas fa-oil-can"></i> Напоминалка о замене масла
             </div>
             <button class="welcome-btn" id="welcomeBtn">
@@ -1765,7 +1769,7 @@
             </div>
         </div>
 
-        <!-- ===== QUARTER STATS (новая секция) ===== -->
+        <!-- ===== QUARTER STATS (4 квартала) ===== -->
         <div class="quarter-stats-section animate-fade-up" id="quarterStatsSection">
             <div class="section-title">
                 <i class="fas fa-chart-simple"></i>
@@ -1941,8 +1945,8 @@
             model: '',
             plate: '',
             fuelConsumption: 0,
-            oilInterval: 10000, // км
-            oilLastReset: null // дата сброса
+            oilInterval: 10000,
+            oilLastReset: null
         };
 
         function loadCarData() {
@@ -1962,7 +1966,7 @@
         }
 
         // ============================================================
-        //  STORAGE
+        //  STORAGE (без демо-данных!)
         // ============================================================
         function loadExpenses() {
             try {
@@ -1971,8 +1975,7 @@
                     expenses = JSON.parse(raw);
                     if (!Array.isArray(expenses)) expenses = [];
                 } else {
-                    expenses = generateSampleData();
-                    saveExpenses();
+                    expenses = []; // ← ЧИСТО, БЕЗ ДЕМО
                 }
             } catch {
                 expenses = [];
@@ -1985,29 +1988,6 @@
 
         function saveExpenses() {
             localStorage.setItem('taxi_expenses', JSON.stringify(expenses));
-        }
-
-        function generateSampleData() {
-            const now = new Date();
-            const samples = [];
-            const cats = ['fuel', 'insurance', 'wash', 'fszn', 'medic', 'repair', 'parts', 'other'];
-            const descs = ['Заправка', 'Оплата страховки', 'Мойка', 'ФСЗН отчисление', 'Медосмотр', 'Ремонт ходовой',
-                'Замена масла', 'Прочие расходы'
-            ];
-            for (let i = 0; i < 20; i++) {
-                const d = new Date(now);
-                d.setDate(d.getDate() - i * 4 - Math.floor(Math.random() * 6));
-                const cat = cats[Math.floor(Math.random() * cats.length)];
-                samples.push({
-                    id: 's_' + Date.now() + '_' + i,
-                    date: d.toISOString().split('T')[0],
-                    category: cat,
-                    amount: +(Math.random() * 130 + 10).toFixed(2),
-                    description: descs[Math.floor(Math.random() * descs.length)] + ' #' + (i + 1)
-                });
-            }
-            samples.sort((a, b) => a.date.localeCompare(b.date));
-            return samples;
         }
 
         // ============================================================
@@ -2038,15 +2018,17 @@
             return { start, end };
         }
 
-        function getAvailableQuarters() {
-            if (!expenses.length) return [];
-            const set = new Set();
-            expenses.forEach(e => {
-                if (e.date) set.add(getQuarter(e.date));
-            });
-            const now = getQuarter(new Date());
-            set.add(now);
-            return Array.from(set).sort();
+        // ============================================================
+        //  ВСЕГДА ПОКАЗЫВАЕМ 4 КВАРТАЛА ТЕКУЩЕГО ГОДА
+        // ============================================================
+        function getAllQuarters() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const quarters = [];
+            for (let q = 1; q <= 4; q++) {
+                quarters.push(`${year}-Q${q}`);
+            }
+            return quarters;
         }
 
         function getExpensesForQuarter(quarter) {
@@ -2060,12 +2042,11 @@
         }
 
         function getAllQuartersData() {
-            const qs = getAvailableQuarters();
+            const qs = getAllQuarters();
             return qs.map(q => {
                 const items = getExpensesForQuarter(q);
                 const total = items.reduce((s, e) => s + e.amount, 0);
                 const count = items.length;
-                // топ категория
                 const catMap = {};
                 items.forEach(e => {
                     catMap[e.category] = (catMap[e.category] || 0) + e.amount;
@@ -2080,11 +2061,21 @@
             });
         }
 
+        function getAvailableQuartersForSelect() {
+            // Показываем только те кварталы, где есть расходы + текущий, если пусто
+            const set = new Set();
+            expenses.forEach(e => {
+                if (e.date) set.add(getQuarter(e.date));
+            });
+            const now = getQuarter(new Date());
+            set.add(now);
+            return Array.from(set).sort();
+        }
+
         // ============================================================
         //  OIL REMINDER
         // ============================================================
         function calculateMileage() {
-            // Считаем пробег на основе потраченного топлива за всё время
             const fuelTotal = expenses
                 .filter(e => e.category === 'fuel')
                 .reduce((s, e) => s + e.amount, 0);
@@ -2175,7 +2166,7 @@
 
         function renderQuarterSelector() {
             const sel = document.getElementById('quarterSelect');
-            const qs = getAvailableQuarters();
+            const qs = getAvailableQuartersForSelect();
             sel.innerHTML = '';
             qs.forEach(q => {
                 const opt = document.createElement('option');
@@ -2238,23 +2229,27 @@
                 return;
             }
 
-            // Находим лучший и худший квартал
-            let best = allData.reduce((a, b) => a.total > b.total ? a : b);
-            let worst = allData.reduce((a, b) => a.total < b.total ? a : b);
+            // Находим лучший и худший (среди непустых)
+            const nonEmpty = allData.filter(d => d.total > 0);
+            let best = nonEmpty.length ? nonEmpty.reduce((a, b) => a.total > b.total ? a : b) : null;
+            let worst = nonEmpty.length ? nonEmpty.reduce((a, b) => a.total < b.total ? a : b) : null;
 
             let html = '';
             allData.forEach(d => {
-                const isBest = d.quarter === best.quarter;
-                const isWorst = d.quarter === worst.quarter && best.quarter !== worst.quarter;
+                const isEmpty = d.total === 0;
+                const isBest = best && d.quarter === best.quarter && !isEmpty;
+                const isWorst = worst && d.quarter === worst.quarter && !isEmpty && best && best.quarter !== worst
+                    .quarter;
                 let cls = '';
                 if (isBest) cls = 'best';
                 if (isWorst) cls = 'worst';
+                if (isEmpty) cls += ' empty';
                 html += `
                     <div class="quarter-stat-card ${cls}">
                         <div class="q-label">${getQuarterLabel(d.quarter)}</div>
                         <div class="q-total">${d.total.toFixed(2)} BYN</div>
                         <div class="q-count">${d.count} записей</div>
-                        <div class="q-top">🏆 ${d.topCat}</div>
+                        <div class="q-top">${isEmpty ? '—' : '🏆 ' + d.topCat}</div>
                     </div>
                 `;
             });
@@ -2262,14 +2257,19 @@
 
             // Сводка
             const totalAll = allData.reduce((s, d) => s + d.total, 0);
-            const avgAll = totalAll / allData.length;
+            const avgAll = allData.filter(d => d.total > 0).length ? totalAll / allData.filter(d => d.total > 0).length : 0;
             const summary = document.getElementById('quarterSummaryRow');
-            summary.innerHTML = `
-                <div class="stat-item"><i class="fas fa-coins"></i> Всего: <strong>${totalAll.toFixed(2)} BYN</strong></div>
-                <div class="stat-item"><i class="fas fa-calculator"></i> Среднее за квартал: <strong>${avgAll.toFixed(2)} BYN</strong></div>
-                <div class="stat-item"><i class="fas fa-arrow-up"></i> Лучший: <strong>${getQuarterLabel(best.quarter)}</strong> (${best.total.toFixed(2)} BYN)</div>
-                <div class="stat-item"><i class="fas fa-arrow-down"></i> Худший: <strong>${getQuarterLabel(worst.quarter)}</strong> (${worst.total.toFixed(2)} BYN)</div>
-            `;
+            if (totalAll === 0) {
+                summary.innerHTML =
+                    `<div class="stat-item" style="width:100%;text-align:center;color:var(--text-muted);">Нет данных за все кварталы</div>`;
+            } else {
+                summary.innerHTML = `
+                    <div class="stat-item"><i class="fas fa-coins"></i> Всего: <strong>${totalAll.toFixed(2)} BYN</strong></div>
+                    <div class="stat-item"><i class="fas fa-calculator"></i> Среднее за квартал: <strong>${avgAll.toFixed(2)} BYN</strong></div>
+                    ${best ? `<div class="stat-item"><i class="fas fa-arrow-up"></i> Лучший: <strong>${getQuarterLabel(best.quarter)}</strong> (${best.total.toFixed(2)} BYN)</div>` : ''}
+                    ${worst ? `<div class="stat-item"><i class="fas fa-arrow-down"></i> Худший: <strong>${getQuarterLabel(worst.quarter)}</strong> (${worst.total.toFixed(2)} BYN)</div>` : ''}
+                `;
+            }
 
             // График по кварталам
             renderQuarterChart(allData);
@@ -2282,8 +2282,9 @@
             const labels = allData.map(d => getQuarterLabel(d.quarter));
             const data = allData.map(d => d.total);
             const colors = allData.map((d, i) => {
+                if (d.total === 0) return 'rgba(255,255,255,0.1)';
                 const hue = (i * 60 + 200) % 360;
-                return `hsl(${hue}, 70%, 60%)`;
+                return `hsla(${hue}, 70%, 60%, 0.8)`;
             });
 
             quarterChartInstance = new Chart(ctx, {
@@ -2293,8 +2294,8 @@
                     datasets: [{
                         label: 'Расходы (BYN)',
                         data: data,
-                        backgroundColor: colors.map(c => c + 'cc'),
-                        borderColor: colors,
+                        backgroundColor: colors,
+                        borderColor: colors.map(c => c.replace('0.8', '1')),
                         borderWidth: 2,
                         borderRadius: 6,
                         barPercentage: 0.6,
@@ -2569,7 +2570,6 @@
                     }
                 }
 
-                // Масло
                 const oilStatus = getOilStatus();
                 if (oilStatus.status === 'warning') {
                     insights.push(
@@ -2749,7 +2749,6 @@
         // ============================================================
         document.getElementById('resetOilBtn').addEventListener('click', function() {
             if (confirm('Сбросить счётчик замены масла? (После замены масла)')) {
-                // Сохраняем текущий пробег как точку отсчёта
                 const currentMileage = calculateMileage();
                 const resetData = {
                     mileage: currentMileage,
@@ -2788,11 +2787,6 @@
 
             closeModal();
             renderAll();
-            const qs = getAvailableQuarters();
-            const sel = document.getElementById('quarterSelect');
-            if (!qs.includes(currentQuarter)) {
-                currentQuarter = qs[qs.length - 1] || currentQuarter;
-            }
             renderQuarterSelector();
             renderAll();
         });
@@ -2887,7 +2881,7 @@
         // ============================================================
         loadCarData();
         loadExpenses();
-        currentQuarter = getAvailableQuarters().pop() || getQuarter(new Date());
+        currentQuarter = getAvailableQuartersForSelect().pop() || getQuarter(new Date());
         renderQuarterSelector();
         renderAll();
 
@@ -2909,10 +2903,9 @@
             }
         });
 
-        console.log('🚕 Такси Расходы 2026 — полная статистика по кварталам');
+        console.log('🚕 Такси Расходы 2026 — чистое приложение, 4 квартала');
         console.log(`📊 ${expenses.length} записей, текущий квартал: ${currentQuarter}`);
         console.log(`🚗 Авто: ${carData.model || 'не указан'}`);
-        console.log(`🛢️ Интервал масла: ${carData.oilInterval || 10000} км`);
     </script>
 
 </body>
