@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Radio</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121214; /* Глубокий графитовый */
+            --surface: #1c1c1f;
+            --acid: #ccff00; /* Кислотный салатовый */
+            --text-main: #ffffff;
+            --text-muted: #6e6e76;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: 'Space Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .player {
+            width: 90%;
+            max-width: 400px;
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Настоящий эквалайзер */
+        .equalizer {
+            height: 120px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 4px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .bar {
+            flex: 1;
+            background: var(--text-muted);
+            border-radius: 2px;
+            min-height: 4px;
+            transition: height 0.05s ease;
+        }
+
+        .bar.active {
+            background: var(--acid);
+            box-shadow: 0 0 8px rgba(204, 255, 0, 0.4);
+        }
+
+        .info { text-align: center; }
+        h1 { font-size: 20px; letter-spacing: 2px; margin-bottom: 4px; }
+        .station-name { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        button {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 12px;
+            transition: all 0.2s;
+        }
+
+        button:active { transform: scale(0.9); }
+
+        /* Кислотная кнопка Play */
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            background: var(--acid);
+            color: var(--bg);
+            border-radius: 50%;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+        }
+
+        .play-btn:active {
+            box-shadow: 0 0 30px rgba(204, 255, 0, 0.6);
+            transform: scale(0.95);
+        }
+
+        /* Адаптация под светлую тему Telegram */
+        body[data-theme="light"] {
+            --bg: #f0f0f2;
+            --surface: #ffffff;
+            --text-main: #121214;
+            --text-muted: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <div class="equalizer" id="eq"></div>
+        
+        <div class="info">
+            <h1>RADIO</h1>
+            <div class="station-name" id="stationName">LOADING...</div>
+        </div>
+        
+        <div class="controls">
+            <button id="prevBtn">⏮</button>
+            <button id="playBtn" class="play-btn">▶</button>
+            <button id="nextBtn">⏭</button>
+        </div>
+    </div>
+
+    <audio id="audio" crossorigin="anonymous"></audio>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        document.body.setAttribute('data-theme', tg.colorScheme);
+        tg.onEvent('themeChanged', () => document.body.setAttribute('data-theme', tg.colorScheme));
+
+        const stations = [
+            { name: "ACID TECHNO", url: "https://stream.zeno.fm/acid-techno" },
+            { name: "EBM / DARK", url: "https://stream.zeno.fm/ebm-dark" },
+            { name: "BREAKBEAT", url: "https://stream.zeno.fm/breakbeat" }
+        ];
+        let idx = 0, isPlaying = false;
+        let audioCtx, analyser, source, dataArray;
+
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('playBtn');
+        const stationName = document.getElementById('stationName');
+        const eqContainer = document.getElementById('eq');
+
+        // Создаём столбики эквалайзера
+        const BAR_COUNT = 24;
+        for(let i=0; i<BAR_COUNT; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            eqContainer.appendChild(bar);
+        }
+        const bars = document.querySelectorAll('.bar');
+
+        function initAudioContext() {
+            if(audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 64;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            animateEq();
+        }
+
+        function animateEq() {
+            requestAnimationFrame(animateEq);
+            if(!isPlaying) return;
+            
+            analyser.getByteFrequencyData(dataArray);
+            bars.forEach((bar, i) => {
+                const value = dataArray[i] || 0;
+                const height = Math.max(4, (value / 255) * 120);
+                bar.style.height = `${height}px`;
+                
+                // Подсветка активных частот кислотным цветом
+                if(value > 150) bar.classList.add('active');
+                else bar.classList.remove('active');
+            });
+        }
+
+        function load(i) {
+            audio.src = stations[i].url;
+            stationName.textContent = stations[i].name;
+            if(isPlaying) audio.play().catch(()=>{});
+        }
+
+        playBtn.onclick = () => {
+            if(audio.paused) {
+                initAudioContext();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                audio.play();
+                playBtn.textContent = "⏸";
+                isPlaying = true;
+                tg.HapticFeedback?.impactOccurred('medium');
+            } else {
+                audio.pause();
+                playBtn.textContent = "▶";
+                isPlaying = false;
+                bars.forEach(b => { b.style.height = '4px'; b.classList.remove('active'); });
+                tg.HapticFeedback?.impactOccurred('light');
+            }
+        };
+
+        const nav = (d) => {
+            idx = (idx + d + stations.length) % stations.length;
+            load(idx);
+            tg.HapticFeedback?.selectionChanged();
+        };
+
+        document.getElementById('nextBtn').onclick = () => nav(1);
+        document.getElementById('prevBtn').onclick = () => nav(-1);
+
+        load(0);
+        tg.ready();
+    </script>
+</body>
+</html>
