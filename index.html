@@ -65,6 +65,7 @@
             -webkit-font-smoothing: antialiased;
             background-image: radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.06) 0%, transparent 50%);
+            transition: background 0.5s, color 0.5s;
         }
 
         /* ===== SCROLLBAR ===== */
@@ -118,20 +119,6 @@
                 transform: translateY(-8px);
             }
         }
-        @keyframes shimmerBorder {
-            0% {
-                border-color: var(--neon-purple);
-            }
-            33% {
-                border-color: var(--neon-pink);
-            }
-            66% {
-                border-color: var(--neon-cyan);
-            }
-            100% {
-                border-color: var(--neon-purple);
-            }
-        }
         @keyframes orbit {
             0% {
                 transform: rotate(0deg);
@@ -163,6 +150,7 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            transition: background 0.5s, border-color 0.5s;
         }
 
         .app-header .brand {
@@ -177,6 +165,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.3));
+            transition: filter 0.5s;
         }
         .app-header .brand i {
             font-size: 26px;
@@ -203,7 +192,7 @@
             border-radius: 50px;
             padding: 4px 6px 4px 16px;
             backdrop-filter: blur(10px);
-            transition: var(--transition);
+            transition: var(--transition), background 0.5s, border-color 0.5s;
         }
         .quarter-selector:hover {
             border-color: var(--neon-purple);
@@ -232,6 +221,7 @@
             background-repeat: no-repeat;
             background-position: right 4px center;
             padding-right: 24px;
+            transition: color 0.5s;
         }
         .quarter-selector select option {
             background: #1a1a30;
@@ -305,6 +295,7 @@
             white-space: nowrap;
             box-shadow: 0 0 30px rgba(34, 211, 238, 0.1);
             backdrop-filter: blur(10px);
+            transition: background 0.5s, border-color 0.5s, color 0.5s;
         }
 
         /* ===== CONTAINER ===== */
@@ -314,7 +305,7 @@
             padding: 20px 16px;
         }
 
-        /* ===== CATEGORY GRID (Быстрый выбор) ===== */
+        /* ===== CATEGORY GRID ===== */
         .category-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -340,7 +331,7 @@
             padding: 14px 8px;
             text-align: center;
             cursor: pointer;
-            transition: var(--transition);
+            transition: var(--transition), background 0.5s, border-color 0.5s;
             position: relative;
             overflow: hidden;
             animation: fadeUp 0.6s ease forwards;
@@ -398,6 +389,7 @@
             font-weight: 600;
             color: var(--text-secondary);
             letter-spacing: 0.2px;
+            transition: color 0.5s;
         }
         .cat-card .amount-badge {
             font-size: 11px;
@@ -407,6 +399,7 @@
             padding: 2px 10px;
             border-radius: 50px;
             margin-top: 2px;
+            transition: background 0.5s, color 0.5s;
         }
 
         /* цветные иконки для каждой категории */
@@ -449,7 +442,7 @@
             border: 1px solid var(--border-glass);
             border-radius: var(--radius-md);
             padding: 16px 12px;
-            transition: var(--transition);
+            transition: var(--transition), background 0.5s, border-color 0.5s;
             position: relative;
             overflow: hidden;
         }
@@ -517,7 +510,7 @@
             border: 1px solid var(--border-glass);
             border-radius: var(--radius-md);
             padding: 16px;
-            transition: var(--transition);
+            transition: var(--transition), background 0.5s, border-color 0.5s;
         }
         .chart-card:hover {
             border-color: rgba(168, 85, 247, 0.2);
@@ -550,7 +543,7 @@
             border-radius: var(--radius-md);
             padding: 16px;
             margin-bottom: 20px;
-            transition: var(--transition);
+            transition: var(--transition), background 0.5s, border-color 0.5s;
         }
         .expense-section:hover {
             border-color: rgba(168, 85, 247, 0.15);
@@ -581,6 +574,7 @@
             border-radius: 50px;
             color: var(--text-secondary);
             border: 1px solid var(--border-glass);
+            transition: background 0.5s, color 0.5s, border-color 0.5s;
         }
 
         .expense-item {
@@ -589,7 +583,7 @@
             justify-content: space-between;
             padding: 12px 0;
             border-bottom: 1px solid var(--border-glass);
-            transition: var(--transition);
+            transition: var(--transition), border-color 0.5s;
             animation: fadeUp 0.4s ease forwards;
             gap: 10px;
         }
@@ -637,10 +631,12 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: color 0.5s;
         }
         .expense-item .info .date {
             font-size: 11px;
             color: var(--text-muted);
+            transition: color 0.5s;
         }
         .expense-item .amount {
             font-size: 16px;
@@ -738,6 +734,7 @@
             overflow-y: auto;
             border-top: 1px solid var(--border-glass);
             box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.6);
+            transition: background 0.5s, border-color 0.5s;
         }
 
         .modal-header {
@@ -790,6 +787,7 @@
             font-weight: 500;
             color: var(--text-secondary);
             margin-bottom: 6px;
+            transition: color 0.5s;
         }
         .form-group label i {
             margin-right: 6px;
@@ -807,7 +805,7 @@
             color: var(--text-primary);
             font-family: var(--font);
             font-size: 15px;
-            transition: var(--transition);
+            transition: var(--transition), background 0.5s, border-color 0.5s, color 0.5s;
             outline: none;
         }
         .form-group input:focus,
@@ -891,7 +889,7 @@
             gap: 10px;
             animation: fadeUp 0.4s ease;
             pointer-events: auto;
-            transition: var(--transition);
+            transition: var(--transition), background 0.5s, border-color 0.5s, color 0.5s;
         }
         .toast i {
             color: var(--neon-cyan);
@@ -957,6 +955,138 @@
             .cat-card .name {
                 font-size: 11px;
             }
+        }
+
+        /* ===== LIGHT THEME OVERRIDES (will be applied via JS) ===== */
+        body.light-theme {
+            --bg-deep: #f6f2ff;
+            --bg-surface: rgba(0, 0, 0, 0.02);
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --border-glass: rgba(0, 0, 0, 0.08);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --text-muted: #8a8aaa;
+            background-image: radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.04) 0%, transparent 50%);
+        }
+        body.light-theme .app-header {
+            background: rgba(255, 255, 255, 0.7);
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .quarter-selector {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.light-theme .quarter-selector select {
+            color: #1a1a2e;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a4a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        }
+        body.light-theme .quarter-selector select option {
+            background: #fff;
+            color: #1a1a2e;
+        }
+        body.light-theme .btn-icon {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #4a4a6a;
+        }
+        body.light-theme .btn-icon:hover {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: var(--neon-purple);
+            color: #1a1a2e;
+        }
+        body.light-theme .export-btn {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #4a4a6a;
+        }
+        body.light-theme .export-btn:hover {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: var(--neon-cyan);
+            color: #1a1a2e;
+        }
+        body.light-theme .quarter-total-badge {
+            background: rgba(168, 85, 247, 0.10);
+            border-color: rgba(168, 85, 247, 0.2);
+            color: var(--neon-purple);
+        }
+        body.light-theme .summary-card .value {
+            background: linear-gradient(135deg, #1a1a2e, #4a4a6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        body.light-theme .cat-card .amount-badge {
+            background: rgba(0, 0, 0, 0.04);
+            color: #4a4a6a;
+        }
+        body.light-theme .cat-card .name {
+            color: #4a4a6a;
+        }
+        body.light-theme .expense-item .info .desc {
+            color: #6a6a8a;
+        }
+        body.light-theme .expense-item .info .date {
+            color: #8a8aaa;
+        }
+        body.light-theme .expense-item .delete-btn {
+            color: #8a8aaa;
+        }
+        body.light-theme .expense-item .delete-btn:hover {
+            color: var(--neon-pink);
+        }
+        body.light-theme .modal {
+            background: #fff;
+            border-top-color: rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .modal-close {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #4a4a6a;
+        }
+        body.light-theme .modal-close:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: #1a1a2e;
+        }
+        body.light-theme .form-group input,
+        body.light-theme .form-group select,
+        body.light-theme .form-group textarea {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #1a1a2e;
+        }
+        body.light-theme .form-group input:focus,
+        body.light-theme .form-group select:focus,
+        body.light-theme .form-group textarea:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12);
+        }
+        body.light-theme .toast {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #1a1a2e;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+        }
+        body.light-theme .toast i {
+            color: var(--neon-purple);
+        }
+        body.light-theme .expense-section .section-header .badge {
+            background: rgba(0, 0, 0, 0.04);
+            color: #4a4a6a;
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .chart-card .chart-title {
+            color: #4a4a6a;
+        }
+        body.light-theme .chart-card .chart-title i {
+            color: var(--neon-pink);
+        }
+        /* Для светлой темы также меняем фон хедера и прочее — уже задано выше */
+        body.light-theme .app-header .brand {
+            filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.15));
+        }
+        body.light-theme .app-header .brand i {
+            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.3));
         }
     </style>
 </head>
@@ -1261,7 +1391,6 @@
             });
             container.innerHTML = html;
 
-            // click -> open modal with preselected category
             container.querySelectorAll('.cat-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const category = this.dataset.category;
@@ -1277,7 +1406,7 @@
             renderSummary(items);
             renderCharts(items);
             renderList(items);
-            renderCategoryGrid(); // обновляем суммы в карточках
+            renderCategoryGrid();
             document.getElementById('listBadge').textContent = items.length + ' записей';
             const total = items.reduce((s, e) => s + e.amount, 0);
             document.getElementById('quarterTotalBadge').innerHTML =
@@ -1318,7 +1447,7 @@
             if (data.length === 0) {
                 labels.push('Нет данных');
                 data.push(1);
-                colors.push('#444');
+                colors.push('#888');
             }
 
             if (pieChartInstance) pieChartInstance.destroy();
@@ -1329,8 +1458,8 @@
                     datasets: [{
                         data: data,
                         backgroundColor: colors,
-                        borderColor: 'rgba(11,10,26,0.6)',
-                        borderWidth: 3,
+                        borderColor: 'rgba(255,255,255,0.3)',
+                        borderWidth: 2,
                     }]
                 },
                 options: {
@@ -1340,7 +1469,8 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: '#b8b0d8',
+                                color: getComputedStyle(document.body).getPropertyValue('--text-secondary').trim() ||
+                                    '#b8b0d8',
                                 font: { family: 'Inter', size: 10, weight: '500' },
                                 padding: 8,
                                 usePointStyle: true,
@@ -1363,7 +1493,7 @@
             if (barLabels.length === 0) {
                 barLabels.push('Нет данных');
                 barData.push(1);
-                barColors.push('#444');
+                barColors.push('#888');
             }
 
             if (barChartInstance) barChartInstance.destroy();
@@ -1391,15 +1521,17 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                color: '#6a6090',
+                                color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() ||
+                                    '#6a6090',
                                 font: { family: 'Inter', size: 10 },
                                 callback: v => v.toFixed(0),
                             },
-                            grid: { color: 'rgba(255,255,255,0.04)' }
+                            grid: { color: 'rgba(0,0,0,0.05)' }
                         },
                         x: {
                             ticks: {
-                                color: '#6a6090',
+                                color: getComputedStyle(document.body).getPropertyValue('--text-muted').trim() ||
+                                    '#6a6090',
                                 font: { family: 'Inter', size: 10 },
                             },
                             grid: { display: false }
@@ -1510,7 +1642,6 @@
         const formAmount = document.getElementById('formAmount');
         const formDesc = document.getElementById('formDesc');
 
-        // populate category select
         function populateCategorySelect(selected) {
             formCategory.innerHTML = '';
             CAT_KEYS.forEach(k => {
@@ -1627,33 +1758,25 @@
         });
 
         // ============================================================
-        //  THEME TOGGLE (сохраняем тёмную как основную, но кнопка для переключения на светлую)
+        //  THEME TOGGLE (современная светлая тема)
         // ============================================================
         let isDark = true;
         document.getElementById('themeToggle').addEventListener('click', function() {
             isDark = !isDark;
-            const root = document.documentElement;
+            const body = document.body;
             if (isDark) {
-                root.style.setProperty('--bg-deep', '#0b0a1a');
-                root.style.setProperty('--bg-surface', 'rgba(255,255,255,0.04)');
-                root.style.setProperty('--bg-glass', 'rgba(255,255,255,0.06)');
-                root.style.setProperty('--border-glass', 'rgba(255,255,255,0.10)');
-                root.style.setProperty('--text-primary', '#f0eeff');
-                root.style.setProperty('--text-secondary', '#b8b0d8');
-                root.style.setProperty('--text-muted', '#6a6090');
+                body.classList.remove('light-theme');
                 this.innerHTML = '<i class="fas fa-moon"></i>';
+                // сброс переменных (они уже в :root)
+                // перерисовка графиков с новыми цветами (цвета текста возьмутся из computed)
+                renderCharts(getExpensesForQuarter(currentQuarter));
+                showToast('🌙 Тёмная тема');
             } else {
-                root.style.setProperty('--bg-deep', '#f0ecfa');
-                root.style.setProperty('--bg-surface', 'rgba(0,0,0,0.03)');
-                root.style.setProperty('--bg-glass', 'rgba(255,255,255,0.6)');
-                root.style.setProperty('--border-glass', 'rgba(0,0,0,0.08)');
-                root.style.setProperty('--text-primary', '#1a1a30');
-                root.style.setProperty('--text-secondary', '#4a4a6a');
-                root.style.setProperty('--text-muted', '#8a8aaa');
+                body.classList.add('light-theme');
                 this.innerHTML = '<i class="fas fa-sun"></i>';
+                renderCharts(getExpensesForQuarter(currentQuarter));
+                showToast('☀️ Светлая тема');
             }
-            renderCharts(getExpensesForQuarter(currentQuarter));
-            showToast(isDark ? '🌙 Тёмная тема' : '☀️ Светлая тема');
         });
 
         // ============================================================
@@ -1691,7 +1814,7 @@
             if (e.key === 'Escape') closeModal();
         });
 
-        console.log('🚕 Такси Расходы 2026 — трендовый дизайн');
+        console.log('🚕 Такси Расходы 2026 — современный дизайн (светлая/тёмная)');
         console.log(`📊 ${expenses.length} записей, текущий квартал: ${currentQuarter}`);
     </script>
 
