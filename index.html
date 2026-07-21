@@ -957,136 +957,235 @@
             }
         }
 
-        /* ===== LIGHT THEME OVERRIDES (will be applied via JS) ===== */
+        /* ================================================================
+               LIGHT THEME — ЯРКАЯ, СОЧНАЯ, СОВРЕМЕННАЯ
+               ================================================================ */
         body.light-theme {
-            --bg-deep: #f6f2ff;
-            --bg-surface: rgba(0, 0, 0, 0.02);
-            --bg-glass: rgba(255, 255, 255, 0.7);
+            --bg-deep: #f6f0ff;
+            --bg-surface: rgba(255, 255, 255, 0.6);
+            --bg-glass: rgba(255, 255, 255, 0.85);
             --border-glass: rgba(0, 0, 0, 0.08);
             --text-primary: #1a1a2e;
-            --text-secondary: #4a4a6a;
-            --text-muted: #8a8aaa;
-            background-image: radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.04) 0%, transparent 50%);
+            --text-secondary: #4a3a6a;
+            --text-muted: #7a6a9a;
+
+            background: var(--bg-deep);
+            background-image: radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.10) 0%, transparent 60%),
+                radial-gradient(circle at 80% 70%, rgba(34, 211, 238, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(255, 61, 138, 0.05) 0%, transparent 80%);
         }
+
         body.light-theme .app-header {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px) saturate(1.8);
             border-bottom-color: rgba(0, 0, 0, 0.06);
         }
+
         body.light-theme .quarter-selector {
-            background: rgba(255, 255, 255, 0.5);
-            border-color: rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
         body.light-theme .quarter-selector select {
             color: #1a1a2e;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a4a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a3a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
         }
         body.light-theme .quarter-selector select option {
             background: #fff;
             color: #1a1a2e;
         }
+
         body.light-theme .btn-icon {
-            background: rgba(255, 255, 255, 0.5);
-            border-color: rgba(0, 0, 0, 0.08);
-            color: #4a4a6a;
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #4a3a6a;
         }
         body.light-theme .btn-icon:hover {
-            background: rgba(0, 0, 0, 0.04);
+            background: rgba(168, 85, 247, 0.10);
             border-color: var(--neon-purple);
             color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
         }
+
         body.light-theme .export-btn {
-            background: rgba(255, 255, 255, 0.5);
-            border-color: rgba(0, 0, 0, 0.08);
-            color: #4a4a6a;
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #4a3a6a;
         }
         body.light-theme .export-btn:hover {
-            background: rgba(0, 0, 0, 0.04);
+            background: rgba(34, 211, 238, 0.10);
             border-color: var(--neon-cyan);
             color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
         }
+
         body.light-theme .quarter-total-badge {
-            background: rgba(168, 85, 247, 0.10);
-            border-color: rgba(168, 85, 247, 0.2);
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.25);
             color: var(--neon-purple);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.08);
+        }
+
+        /* Карточки категорий */
+        body.light-theme .cat-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .cat-card:hover {
+            background: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 12px 40px rgba(168, 85, 247, 0.15), 0 0 30px rgba(168, 85, 247, 0.05);
+            transform: translateY(-6px) scale(1.02);
+        }
+        body.light-theme .cat-card .icon {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        body.light-theme .cat-card .name {
+            color: #4a3a6a;
+            font-weight: 700;
+        }
+        body.light-theme .cat-card .amount-badge {
+            background: rgba(0, 0, 0, 0.04);
+            color: #6a5a8a;
+            font-weight: 600;
+        }
+
+        /* Карточки сводки */
+        body.light-theme .summary-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .summary-card:hover {
+            background: #ffffff;
+            border-color: rgba(168, 85, 247, 0.20);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.10);
         }
         body.light-theme .summary-card .value {
-            background: linear-gradient(135deg, #1a1a2e, #4a4a6a);
+            background: linear-gradient(135deg, #1a1a2e, #4a3a6a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        body.light-theme .cat-card .amount-badge {
-            background: rgba(0, 0, 0, 0.04);
-            color: #4a4a6a;
+        body.light-theme .summary-card .label {
+            color: #6a5a8a;
         }
-        body.light-theme .cat-card .name {
-            color: #4a4a6a;
+        body.light-theme .summary-card .label i {
+            color: var(--neon-purple);
+        }
+
+        /* Графики */
+        body.light-theme .chart-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .chart-card:hover {
+            background: #ffffff;
+            border-color: rgba(168, 85, 247, 0.15);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.08);
+        }
+        body.light-theme .chart-card .chart-title {
+            color: #4a3a6a;
+        }
+        body.light-theme .chart-card .chart-title i {
+            color: var(--neon-pink);
+        }
+
+        /* Список расходов */
+        body.light-theme .expense-section {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        body.light-theme .expense-section:hover {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(168, 85, 247, 0.10);
+        }
+        body.light-theme .expense-item {
+            border-bottom-color: rgba(0, 0, 0, 0.04);
+        }
+        body.light-theme .expense-item:hover {
+            background: rgba(168, 85, 247, 0.03);
         }
         body.light-theme .expense-item .info .desc {
-            color: #6a6a8a;
+            color: #6a5a8a;
         }
         body.light-theme .expense-item .info .date {
-            color: #8a8aaa;
+            color: #8a7aaa;
         }
         body.light-theme .expense-item .delete-btn {
-            color: #8a8aaa;
+            color: #8a7aaa;
         }
         body.light-theme .expense-item .delete-btn:hover {
             color: var(--neon-pink);
+            background: rgba(255, 61, 138, 0.08);
         }
+        body.light-theme .expense-section .section-header .badge {
+            background: rgba(0, 0, 0, 0.04);
+            color: #4a3a6a;
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+
+        /* Модальное окно */
         body.light-theme .modal {
-            background: #fff;
-            border-top-color: rgba(0, 0, 0, 0.06);
+            background: #ffffff;
+            border-top-color: rgba(0, 0, 0, 0.04);
+            box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.08);
         }
         body.light-theme .modal-close {
             background: rgba(0, 0, 0, 0.04);
-            border-color: rgba(0, 0, 0, 0.08);
-            color: #4a4a6a;
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #4a3a6a;
         }
         body.light-theme .modal-close:hover {
             background: rgba(0, 0, 0, 0.08);
             color: #1a1a2e;
+            border-color: var(--neon-pink);
+        }
+        body.light-theme .form-group label {
+            color: #4a3a6a;
         }
         body.light-theme .form-group input,
         body.light-theme .form-group select,
         body.light-theme .form-group textarea {
             background: rgba(0, 0, 0, 0.02);
-            border-color: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.06);
             color: #1a1a2e;
         }
         body.light-theme .form-group input:focus,
         body.light-theme .form-group select:focus,
         body.light-theme .form-group textarea:focus {
             border-color: var(--neon-purple);
-            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12);
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12), 0 0 30px rgba(168, 85, 247, 0.03);
         }
+
+        /* Toast */
         body.light-theme .toast {
-            background: rgba(255, 255, 255, 0.9);
-            border-color: rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-color: rgba(0, 0, 0, 0.04);
             color: #1a1a2e;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
         }
         body.light-theme .toast i {
             color: var(--neon-purple);
         }
-        body.light-theme .expense-section .section-header .badge {
-            background: rgba(0, 0, 0, 0.04);
-            color: #4a4a6a;
-            border-color: rgba(0, 0, 0, 0.06);
-        }
-        body.light-theme .chart-card .chart-title {
-            color: #4a4a6a;
-        }
-        body.light-theme .chart-card .chart-title i {
-            color: var(--neon-pink);
-        }
-        /* Для светлой темы также меняем фон хедера и прочее — уже задано выше */
+
+        /* Бренд в хедере */
         body.light-theme .app-header .brand {
             filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.15));
         }
         body.light-theme .app-header .brand i {
-            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.3));
+            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.25));
+        }
+
+        /* Футер */
+        body.light-theme .container>div:last-child {
+            border-top-color: rgba(0, 0, 0, 0.04);
+            color: #8a7aaa;
         }
     </style>
 </head>
@@ -1236,7 +1335,7 @@
         const CATEGORIES = {
             fuel: { label: 'Бензин', icon: 'fa-gas-pump', color: '#ff3d8a' },
             insurance: { label: 'Страховка', icon: 'fa-shield', color: '#22d3ee' },
-            wash: { label: 'Мойка', icon: 'fa-car-wash', color: '#3b82f6' },
+            wash: { label: 'Мойка', icon: 'fa-spray-can', color: '#3b82f6' }, // ← исправлено!
             fszn: { label: 'ФСЗН', icon: 'fa-building', color: '#a3e635' },
             medic: { label: 'Медик/Механик', icon: 'fa-user-md', color: '#fb923c' },
             repair: { label: 'Ремонт на СТО', icon: 'fa-wrench', color: '#a855f7' },
@@ -1758,7 +1857,7 @@
         });
 
         // ============================================================
-        //  THEME TOGGLE (современная светлая тема)
+        //  THEME TOGGLE — теперь светлая тема яркая и сочная
         // ============================================================
         let isDark = true;
         document.getElementById('themeToggle').addEventListener('click', function() {
@@ -1767,15 +1866,13 @@
             if (isDark) {
                 body.classList.remove('light-theme');
                 this.innerHTML = '<i class="fas fa-moon"></i>';
-                // сброс переменных (они уже в :root)
-                // перерисовка графиков с новыми цветами (цвета текста возьмутся из computed)
                 renderCharts(getExpensesForQuarter(currentQuarter));
                 showToast('🌙 Тёмная тема');
             } else {
                 body.classList.add('light-theme');
                 this.innerHTML = '<i class="fas fa-sun"></i>';
                 renderCharts(getExpensesForQuarter(currentQuarter));
-                showToast('☀️ Светлая тема');
+                showToast('☀️ Яркая светлая тема');
             }
         });
 
@@ -1814,7 +1911,7 @@
             if (e.key === 'Escape') closeModal();
         });
 
-        console.log('🚕 Такси Расходы 2026 — современный дизайн (светлая/тёмная)');
+        console.log('🚕 Такси Расходы 2026 — светлая тема улучшена, иконка мойки исправлена');
         console.log(`📊 ${expenses.length} записей, текущий квартал: ${currentQuarter}`);
     </script>
 
