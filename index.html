@@ -140,9 +140,26 @@
         tg.onEvent('themeChanged', () => document.body.setAttribute('data-theme', tg.colorScheme));
 
         const stations = [
-            { name: "ACID TECHNO", url: "https://stream.zeno.fm/acid-techno" },
-            { name: "EBM / DARK", url: "https://stream.zeno.fm/ebm-dark" },
-            { name: "BREAKBEAT", url: "https://stream.zeno.fm/breakbeat" }
+            { 
+        name: "RADIO RECORD", 
+        url: "https://radiorecord.hostingradio.ru/rr_main96.aacp" 
+    },
+    { 
+        name: "ЕВРОПА ПЛЮС", 
+        url: "https://ep256.hostingradio.ru:8043/europaplus256.mp3" 
+    },
+    { 
+        name: "DEEP TECH HOUSE", 
+        url: "https://stream.zeno.fm/f3wvbbqmdg8uv" 
+    },
+    { 
+        name: "TECHNO BUNKER", 
+        url: "https://stream.zeno.fm/0r0xa792kwzuv" 
+    },
+    { 
+        name: "БЕЛАРУСЬ 1 (НОВОСТИ+МУЗ)", 
+        url: "https://stream.belradio.by/belarus1/playlist.m3u8" 
+    }
         ];
         let idx = 0, isPlaying = false;
         let audioCtx, analyser, source, dataArray;
