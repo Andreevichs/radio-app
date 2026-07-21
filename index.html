@@ -2,78 +2,215 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <!-- Скрываем referer чтобы станции не блокировали запросы из Telegram -->
-    <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Radio</title>
+    <title>Silk Breath</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Nunito:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg:#121214; --surface:#1c1c1f; --acid:#ccff00; --text-main:#fff; --text-muted:#6e6e76; }
-        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        body{background:var(--bg);color:var(--text-main);font-family:'Space Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
-        
-        /* Экран первого запуска для разблокировки аудио */
-        .start-overlay {
-            position: fixed; inset: 0; background: var(--bg); z-index: 100;
-            display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
-            cursor: pointer; transition: opacity 0.5s ease;
+        :root {
+            --bg-deep: #1c1926;
+            --bg-lavender: #2a2438;
+            --bg-rose: #3d2b35;
+            --accent-gold: #e6cfa1;
+            --accent-peach: #ffb7a1;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f0ece6;
+            --text-muted: rgba(240, 236, 230, 0.5);
+            --ease-silk: cubic-bezier(0.45, 0, 0.55, 1);
         }
-        .start-overlay.hidden { opacity: 0; pointer-events: none; }
-        .start-text { font-size: 14px; color: var(--acid); letter-spacing: 2px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
 
-        .player{width:90%;max-width:400px;background:var(--surface);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:32px;border:1px solid rgba(255,255,255,.05);position:relative;z-index:1}
-        .equalizer{height:120px;display:flex;align-items:flex-end;justify-content:space-between;gap:4px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05)}
-        .bar{flex:1;background:var(--text-muted);border-radius:2px;min-height:4px;transition:height .05s ease}
-        .bar.active{background:var(--acid);box-shadow:0 0 8px rgba(204,255,0,.4)}
-        .info-row{display:flex;align-items:center;justify-content:center;gap:12px;text-align:center}
-        .list-btn{background:0 0;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:4px 8px}
-        .info h1{font-size:20px;letter-spacing:2px;margin-bottom:4px}
-        .station-name{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .controls{display:flex;align-items:center;justify-content:center;gap:24px}
-        button.nav-btn{background:0 0;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:12px;transition:all .2s}
-        button.nav-btn:active{transform:scale(.9)}
-        .play-btn{width:64px;height:64px;background:var(--acid);color:var(--bg);border-radius:50%;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(204,255,0,.3);border:none;cursor:pointer}
-        .play-btn:active{box-shadow:0 0 30px rgba(204,255,0,.6);transform:scale(.95)}
-        .station-list-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:10;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;align-items:flex-end}
-        .station-list-overlay.open{opacity:1;pointer-events:auto}
-        .station-list{width:100%;max-height:70vh;background:var(--surface);border-radius:24px 24px 0 0;padding:24px;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.46,.45,.94)}
-        .station-list-overlay.open .station-list{transform:translateY(0)}
-        .station-item{padding:16px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;font-size:14px;letter-spacing:1px;color:var(--text-muted);transition:all .2s}
-        .station-item:last-child{border-bottom:none}
-        .station-item.active{color:var(--acid);padding-left:24px}
-        .station-item:active{background:rgba(255,255,255,.03)}
-        body[data-theme="light"]{--bg:#f0f0f2;--surface:#fff;--text-main:#121214;--text-muted:#999}
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-lavender), var(--bg-deep), var(--bg-rose));
+            background-size: 400% 400%;
+            animation: bgBreath 20s ease infinite;
+            color: var(--text-main);
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes bgBreath {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Частицы (звездная пыль) */
+        .particles { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+        .particle {
+            position: absolute; width: 3px; height: 3px; border-radius: 50%;
+            background: var(--accent-gold); opacity: 0;
+            transition: all 1s ease;
+        }
+
+        .app-container {
+            position: relative; z-index: 1;
+            width: 92%; max-width: 440px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 36px;
+            padding: 32px 24px;
+            display: flex; flex-direction: column; align-items: center; gap: 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        /* Живая форма дыхания (SVG Mesh) */
+        .breath-visualizer {
+            width: 200px; height: 200px;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .silk-blob {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            filter: drop-shadow(0 0 25px rgba(230, 207, 161, 0.15));
+            transition: transform 0.8s var(--ease-silk);
+        }
+
+        .silk-path {
+            fill: url(#silkGradient); opacity: 0.85;
+        }
+
+        .phase-text {
+            position: relative; z-index: 2;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px; font-weight: 600; letter-spacing: 1px;
+            color: var(--accent-gold);
+            text-align: center;
+            min-height: 36px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Прогресс кольцо */
+        .progress-ring { position: absolute; inset: -15px; width: calc(100% + 30px); height: calc(100% + 30px); transform: rotate(-90deg); }
+        .progress-circle {
+            fill: none; stroke: var(--accent-peach); stroke-width: 2; stroke-linecap: round;
+            stroke-dasharray: 660; stroke-dashoffset: 660; opacity: 0.6;
+        }
+
+        /* Секция информации */
+        .info-section { text-align: center; display: flex; flex-direction: column; gap: 6px; }
+        .timer-display { font-size: 13px; color: var(--text-muted); letter-spacing: 3px; font-weight: 300; }
+        .mood-prompt { font-size: 11px; color: var(--accent-peach); opacity: 0.8; font-style: italic; margin-top: 4px; }
+
+        /* Панель управления звуком */
+        .sound-mixer {
+            width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+            padding: 12px; background: rgba(0,0,0,0.15); border-radius: 20px;
+        }
+        .mixer-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            background: none; border: none; cursor: pointer; padding: 8px 4px; border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .mixer-btn.active { background: rgba(230, 207, 161, 0.1); }
+        .mixer-icon { font-size: 18px; filter: grayscale(1) brightness(0.7); transition: all 0.3s; }
+        .mixer-btn.active .mixer-icon { filter: grayscale(0) brightness(1); transform: scale(1.1); }
+        .mixer-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.5px; }
+        .mixer-btn.active .mixer-label { color: var(--accent-gold); }
+
+        /* Выбор техники */
+        .techniques { display: flex; gap: 6px; width: 100%; }
+        .tech-pill {
+            flex: 1; padding: 10px 4px;
+            background: rgba(255,255,255,0.04); border: 1px solid transparent;
+            border-radius: 14px; font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
+            color: var(--text-muted); cursor: pointer; text-align: center;
+            transition: all 0.3s ease;
+        }
+        .tech-pill.active {
+            background: rgba(230, 207, 161, 0.12); border-color: rgba(230, 207, 161, 0.3);
+            color: var(--accent-gold);
+        }
+
+        /* Главная кнопка */
+        .main-btn {
+            width: 100%; padding: 18px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-peach));
+            border: none; border-radius: 20px;
+            font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2px;
+            color: var(--bg-deep); text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 8px 25px rgba(230, 207, 161, 0.25);
+            transition: all 0.3s ease;
+        }
+        .main-btn:active { transform: scale(0.97); }
+        .main-btn.running {
+            background: rgba(255,255,255,0.06); color: var(--text-muted);
+            box-shadow: none; border: 1px solid var(--glass-border);
+        }
+
+        /* Статистика (сад спокойствия) */
+        .stats-bar {
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            padding-top: 8px; border-top: 1px solid var(--glass-border);
+        }
+        .stat-item { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .stat-value { color: var(--accent-gold); font-weight: 600; }
+
+        /* Светлая тема (адаптация) */
+        body[data-theme="light"] {
+            --bg-deep: #f5f0eb; --bg-lavender: #ebe4f0; --bg-rose: #f0e4e8;
+            --accent-gold: #8a7345; --accent-peach: #c4856e;
+            --glass-bg: rgba(255,255,255,0.5); --glass-border: rgba(0,0,0,0.06);
+            --text-main: #2a2438; --text-muted: rgba(42,36,56,0.5);
+        }
     </style>
 </head>
 <body>
-    <!-- Стартовый экран (обязателен для работы звука в Telegram) -->
-    <div class="start-overlay" id="startOverlay">
-        <h1 style="color:var(--acid)">RADIO</h1>
-        <div class="start-text">НАЖМИ ЧТОБЫ ЗАПУСТИТЬ</div>
-    </div>
+    <div class="particles" id="particles"></div>
 
-    <div class="station-list-overlay" id="listOverlay"><div class="station-list" id="stationList"></div></div>
-
-    <div class="player">
-        <div class="equalizer" id="eq"></div>
-        <div class="info-row">
-            <button class="list-btn" id="openListBtn">☰</button>
-            <div class="info">
-                <h1>RADIO</h1>
-                <div class="station-name" id="stationName">ВЫБЕРИ СТАНЦИЮ</div>
-            </div>
+    <div class="app-container">
+        <!-- Визуализатор -->
+        <div class="breath-visualizer">
+            <svg class="progress-ring"><circle class="progress-circle" r="105" cx="115" cy="115"/></svg>
+            <svg class="silk-blob" viewBox="0 0 200 200">
+                <defs>
+                    <radialGradient id="silkGradient" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="var(--accent-peach)" stop-opacity="0.6"/>
+                        <stop offset="100%" stop-color="var(--accent-gold)" stop-opacity="0.2"/>
+                    </radialGradient>
+                </defs>
+                <path class="silk-path" d="M100,100 m-55,0 a55,55 0 1,0 110,0 a55,55 0 1,0 -110,0"/>
+            </svg>
+            <div class="phase-text" id="phaseText">Готовность</div>
         </div>
-        <div class="controls">
-            <button class="nav-btn" id="prevBtn">⏮</button>
-            <button class="play-btn" id="playBtn">▶</button>
-            <button class="nav-btn" id="nextBtn">⏭</button>
+
+        <!-- Инфо -->
+        <div class="info-section">
+            <div class="timer-display" id="timerDisplay">ВЫБЕРИТЕ РИТМ</div>
+            <div class="mood-prompt" id="moodPrompt">Подарите себе минуту тишины</div>
+        </div>
+
+        <!-- Микшер звуков -->
+        <div class="sound-mixer">
+            <button class="mixer-btn" data-sound="rain"><span class="mixer-icon">🌧️</span><span class="mixer-label">Дождь</span></button>
+            <button class="mixer-btn" data-sound="ocean"><span class="mixer-icon">🌊</span><span class="mixer-label">Океан</span></button>
+            <button class="mixer-btn" data-sound="bowls"><span class="mixer-icon">🔔</span><span class="mixer-label">Чаши</span></button>
+            <button class="mixer-btn" data-sound="pink"><span class="mixer-icon">🌸</span><span class="mixer-label">Шум</span></button>
+        </div>
+
+        <!-- Техники -->
+        <div class="techniques">
+            <div class="tech-pill active" data-tech="478">4-7-8 Сон</div>
+            <div class="tech-pill" data-tech="box">Box Фокус</div>
+            <div class="tech-pill" data-tech="coherent">Когерент</div>
+            <div class="tech-pill" data-tech="sos">SOS</div>
+        </div>
+
+        <!-- Кнопка -->
+        <button class="main-btn" id="toggleBtn">Начать практику</button>
+
+        <!-- Статистика -->
+        <div class="stats-bar">
+            <div class="stat-item">🌱 Сегодня: <span class="stat-value" id="todayMin">0</span> мин</div>
+            <div class="stat-item">✨ Серия: <span class="stat-value" id="streakDays">0</span> дн.</div>
         </div>
     </div>
-
-    <!-- crossorigin удален для совместимости -->
-    <audio id="audio" preload="none"></audio>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -81,141 +218,250 @@
         document.body.setAttribute('data-theme', tg.colorScheme);
         tg.onEvent('themeChanged', () => document.body.setAttribute('data-theme', tg.colorScheme));
 
-        // ОБНОВЛЕННЫЙ СПИСОК: Взято лучшее из твоего gist + проверенные HTTPS зеркала
-        const stations = [
-            // 1. Из твоего списка: Русское Радио (HTTPS зеркало)
-            { name: "РУССКОЕ РАДИО", url: "https://retro.amgradio.ru/retro.aacp" },
-        ];
+        // === КОНФИГУРАЦИЯ ТЕХНИК ===
+        const TECHNIQUES = {
+            '478': [
+                { name: "Вдох", duration: 4000, scale: 1.35, haptic: "medium" },
+                { name: "Задержка", duration: 7000, scale: 1.35, haptic: "light" },
+                { name: "Выдох", duration: 8000, scale: 0.85, haptic: "soft" }
+            ],
+            'box': [
+                { name: "Вдох", duration: 4000, scale: 1.25, haptic: "medium" },
+                { name: "Пауза", duration: 4000, scale: 1.25, haptic: "light" },
+                { name: "Выдох", duration: 4000, scale: 0.9, haptic: "soft" },
+                { name: "Тишина", duration: 4000, scale: 0.9, haptic: "rigid" }
+            ],
+            'coherent': [
+                { name: "Вдох", duration: 5500, scale: 1.2, haptic: "medium" },
+                { name: "Выдох", duration: 5500, scale: 0.95, haptic: "soft" }
+            ],
+            'sos': [
+                { name: "Быстрый вдох", duration: 2000, scale: 1.15, haptic: "heavy" },
+                { name: "Резкий выдох", duration: 2000, scale: 0.95, haptic: "medium" }
+            ]
+        };
 
-        let idx = 0, isPlaying = false, audioUnlocked = false;
-        let audioCtx, analyser, source, dataArray;
-        const audio = document.getElementById('audio');
-        const playBtn = document.getElementById('playBtn');
-        const stationName = document.getElementById('stationName');
-        const eqContainer = document.getElementById('eq');
-        const listOverlay = document.getElementById('listOverlay');
-        const stationListEl = document.getElementById('stationList');
-        const startOverlay = document.getElementById('startOverlay');
+        // === СОСТОЯНИЕ ===
+        let state = {
+            tech: '478', isRunning: false, phaseIdx: 0,
+            sounds: { rain: false, ocean: false, bowls: false, pink: false },
+            sessionStart: 0, totalSessionMs: 0
+        };
+        let timers = { phase: null, progress: null, particles: null };
+        let audioCtx, soundNodes = {};
 
-        // Бары эквалайзера
-        const BAR_COUNT = 24;
-        for(let i=0; i<BAR_COUNT; i++){
-            const bar = document.createElement('div');
-            bar.className = 'bar';
-            eqContainer.appendChild(bar);
+        // === DOM ===
+        const el = {
+            blob: document.querySelector('.silk-blob'),
+            path: document.querySelector('.silk-path'),
+            phase: document.getElementById('phaseText'),
+            timer: document.getElementById('timerDisplay'),
+            mood: document.getElementById('moodPrompt'),
+            btn: document.getElementById('toggleBtn'),
+            circle: document.querySelector('.progress-circle'),
+            pills: document.querySelectorAll('.tech-pill'),
+            mixers: document.querySelectorAll('.mixer-btn'),
+            todayMin: document.getElementById('todayMin'),
+            streakDays: document.getElementById('streakDays')
+        };
+
+        const CIRCUMFERENCE = 2 * Math.PI * 105;
+        el.circle.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
+
+        // === ЧАСТИЦЫ ===
+        function initParticles() {
+            const container = document.getElementById('particles');
+            for(let i=0; i<30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random()*100 + '%';
+                p.style.top = Math.random()*100 + '%';
+                p.style.animationDelay = Math.random()*5 + 's';
+                container.appendChild(p);
+            }
         }
-        const bars = document.querySelectorAll('.bar');
+        initParticles();
 
-        // ПЕРВЫЙ ЖЕСТ: Разблокировка аудио в WebView
-        startOverlay.addEventListener('click', () => {
-            audioUnlocked = true;
-            startOverlay.classList.add('hidden');
-            initAudioContext();
-            load(0);
-            togglePlay();
-            tg.HapticFeedback?.impactOccurred('medium');
-        });
-
-        function renderList(){
-            stationListEl.innerHTML = '';
-            stations.forEach((st, i) => {
-                const item = document.createElement('div');
-                item.className = `station-item ${i === idx ? 'active' : ''}`;
-                item.textContent = st.name;
-                item.onclick = () => selectStation(i);
-                stationListEl.appendChild(item);
+        function animateParticles(inhale) {
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach((p, i) => {
+                const delay = i * 30;
+                setTimeout(() => {
+                    p.style.opacity = inhale ? 0.8 : 0.2;
+                    p.style.transform = inhale 
+                        ? `translate(${(50 - parseFloat(p.style.left))*0.5}px, ${(50 - parseFloat(p.style.top))*0.5}px) scale(1.5)` 
+                        : `translate(0,0) scale(1)`;
+                }, delay);
             });
         }
 
-        function selectStation(i){
-            idx = i;
-            load(idx);
-            if(!isPlaying && audioUnlocked) togglePlay();
-            closeList();
-            renderList();
-            tg.HapticFeedback?.selectionChanged();
-        }
-
-        function openList(){ renderList(); listOverlay.classList.add('open'); tg.HapticFeedback?.impactOccurred('light'); }
-        function closeList(){ listOverlay.classList.remove('open'); }
-        listOverlay.addEventListener('click', e => { if(e.target === listOverlay) closeList(); });
-        document.getElementById('openListBtn').onclick = openList;
-
-        function initAudioContext(){
+        // === АУДИО ДВИЖОК (Web Audio API - без файлов!) ===
+        function initAudio() {
             if(audioCtx) return;
-            try {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                analyser.fftSize = 64;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                animateEq();
-            } catch(e){ console.warn('AudioContext failed:', e); }
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
 
-        function animateEq(){
-            requestAnimationFrame(animateEq);
-            if(!isPlaying) return;
-            try {
-                analyser.getByteFrequencyData(dataArray);
-                bars.forEach((bar, i) => {
-                    const value = dataArray[i] || 0;
-                    bar.style.height = `${Math.max(4, (value/255)*120)}px`;
-                    bar.classList.toggle('active', value > 150);
-                });
-            } catch(e){
-                // Fallback анимация если CORS блокирует анализ потока
-                bars.forEach(bar => {
-                    bar.style.height = `${Math.random()*60+10}px`;
-                    bar.classList.toggle('active', Math.random()>0.7);
-                });
+        function createNoise(type) {
+            const bufferSize = 2 * audioCtx.sampleRate;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for(let i=0; i<bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                if(type === 'pink') {
+                    // Розовый шум (приближение)
+                    data[i] = (white + (data[i-1] || 0)) * 0.5; 
+                } else {
+                    data[i] = white;
+                }
+            }
+            const src = audioCtx.createBufferSource();
+            src.buffer = buffer; src.loop = true;
+            const gain = audioCtx.createGain();
+            gain.gain.value = 0;
+            src.connect(gain); gain.connect(audioCtx.destination);
+            src.start();
+            return { src, gain };
+        }
+
+        function toggleSound(type, active) {
+            initAudio();
+            if(active) {
+                if(!soundNodes[type]) soundNodes[type] = createNoise(type === 'pink' ? 'pink' : 'white');
+                // Плавное появление звука
+                soundNodes[type].gain.gain.setTargetAtTime(0.15, audioCtx.currentTime, 0.5);
+            } else if(soundNodes[type]) {
+                soundNodes[type].gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
             }
         }
 
-        function load(i){
-            audio.src = stations[i].url;
-            stationName.textContent = stations[i].name;
+        // === ЛОГИКА ДЫХАНИЯ ===
+        function startSession() {
+            state.isRunning = true;
+            state.phaseIdx = 0;
+            state.sessionStart = Date.now();
+            el.btn.textContent = "Завершить";
+            el.btn.classList.add('running');
+            el.mood.textContent = "Следуйте ритму круга";
+            runPhase();
+            tg.HapticFeedback?.impactOccurred('heavy');
         }
 
-        function togglePlay(){
-            if(!audioUnlocked) return;
+        function stopSession() {
+            state.isRunning = false;
+            clearTimeout(timers.phase);
+            cancelAnimationFrame(timers.progress);
             
-            if(audio.paused){
-                if(audioCtx?.state === 'suspended') audioCtx.resume();
-                audio.play().then(() => {
-                    playBtn.textContent = "⏸";
-                    isPlaying = true;
-                    tg.HapticFeedback?.impactOccurred('medium');
-                }).catch(err => {
-                    console.error('Play error:', err);
-                    stationName.textContent = "ОШИБКА ПОТОКА";
-                    tg.HapticFeedback?.notificationOccurred('error');
-                });
-            } else {
-                audio.pause();
-                playBtn.textContent = "▶";
-                isPlaying = false;
-                bars.forEach(b => { b.style.height='4px'; b.classList.remove('active'); });
-                tg.HapticFeedback?.impactOccurred('light');
-            }
+            // Сохраняем статистику
+            const sessionMs = Date.now() - state.sessionStart;
+            saveStats(sessionMs);
+            
+            el.btn.textContent = "Начать практику";
+            el.btn.classList.remove('running');
+            el.phase.textContent = "Готовность";
+            el.timer.textContent = "ВЫБЕРИТЕ РИТМ";
+            el.mood.textContent = getGratitude();
+            el.blob.style.transform = 'scale(1)';
+            el.circle.style.strokeDashoffset = CIRCUMFERENCE;
+            tg.HapticFeedback?.notificationOccurred('success');
         }
 
-        playBtn.onclick = togglePlay;
+        function runPhase() {
+            if(!state.isRunning) return;
+            const phases = TECHNIQUES[state.tech];
+            const phase = phases[state.phaseIdx];
+            
+            el.phase.textContent = phase.name;
+            el.blob.style.transition = `transform ${phase.duration}ms var(--ease-silk)`;
+            el.blob.style.transform = `scale(${phase.scale})`;
+            
+            // Частицы реагируют на фазу
+            animateParticles(phase.name.includes('дох') || phase.name.includes('дох'));
+            
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred(phase.haptic);
+            
+            animateProgress(phase.duration);
+            
+            timers.phase = setTimeout(() => {
+                state.phaseIdx = (state.phaseIdx + 1) % phases.length;
+                runPhase();
+            }, phase.duration);
+        }
 
-        const nav = d => { 
-            idx = (idx + d + stations.length) % stations.length; 
-            load(idx); 
-            if(isPlaying && audioUnlocked) audio.play().catch(()=>{});
-            renderList(); 
-            tg.HapticFeedback?.selectionChanged(); 
-        };
+        function animateProgress(duration) {
+            const start = performance.now();
+            el.circle.style.transition = 'none';
+            function frame(now) {
+                if(!state.isRunning) return;
+                const p = Math.min((now - start) / duration, 1);
+                el.circle.style.strokeDashoffset = CIRCUMFERENCE * (1 - p);
+                el.timer.textContent = `${Math.ceil((duration - (now-start))/1000)} сек`;
+                if(p < 1) timers.progress = requestAnimationFrame(frame);
+            }
+            timers.progress = requestAnimationFrame(frame);
+        }
 
-        document.getElementById('nextBtn').onclick = () => nav(1);
-        document.getElementById('prevBtn').onclick = () => nav(-1);
+        // === СТАТИСТИКА (LocalStorage) ===
+        function loadStats() {
+            const today = new Date().toDateString();
+            const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
+            if(data.date !== today) {
+                data.todayMs = 0;
+                data.date = today;
+                // Проверка серии
+                const yesterday = new Date(Date.now()-86400000).toDateString();
+                if(data.lastDate !== yesterday && data.lastDate !== today) data.streak = 0;
+            }
+            el.todayMin.textContent = Math.round((data.todayMs||0)/60000);
+            el.streakDays.textContent = data.streak || 0;
+        }
 
-        renderList();
+        function saveStats(ms) {
+            const today = new Date().toDateString();
+            const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
+            data.todayMs = (data.todayMs||0) + ms;
+            data.date = today;
+            if(data.lastDate !== today) data.streak = (data.streak||0) + 1;
+            data.lastDate = today;
+            localStorage.setItem('silkBreath', JSON.stringify(data));
+            loadStats();
+        }
+
+        function getGratitude() {
+            const phrases = ["Вы прекрасны", "Тишина внутри вас", "Каждый вдох — подарок", "Вы справились", "Покой всегда рядом"];
+            return phrases[Math.floor(Math.random()*phrases.length)];
+        }
+
+        // === ОБРАБОТЧИКИ ===
+        el.btn.onclick = () => state.isRunning ? stopSession() : startSession();
+        
+        el.pills.forEach(pill => pill.onclick = () => {
+            if(state.isRunning) stopSession();
+            el.pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            state.tech = pill.dataset.tech;
+            el.timer.textContent = TECHNIQUES[state.tech].map(p=>Math.round(p.duration/1000)).join(' — ');
+            tg.HapticFeedback?.selectionChanged();
+        });
+
+        el.mixers.forEach(btn => btn.onclick = () => {
+            btn.classList.toggle('active');
+            const type = btn.dataset.sound;
+            state.sounds[type] = btn.classList.contains('active');
+            toggleSound(type, state.sounds[type]);
+            tg.HapticFeedback?.impactOccurred('light');
+        });
+
+        // Idle анимация формы
+        setInterval(() => {
+            if(!state.isRunning) {
+                const r = 55 + Math.sin(Date.now()/2000)*5;
+                el.path.setAttribute('d', `M100,100 m-${r},0 a${r},${r} 0 1,0 ${r*2},0 a${r},${r} 0 1,0 -${r*2},0`);
+            }
+        }, 100);
+
+        // Инициализация
+        loadStats();
+        el.timer.textContent = TECHNIQUES['478'].map(p=>Math.round(p.duration/1000)).join(' — ');
         tg.ready();
     </script>
 </body>
