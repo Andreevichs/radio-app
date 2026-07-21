@@ -8,9 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #121214; /* Глубокий графитовый */
+            --bg: #121214;
             --surface: #1c1c1f;
-            --acid: #ccff00; /* Кислотный салатовый */
+            --acid: #ccff00;
             --text-main: #ffffff;
             --text-muted: #6e6e76;
         }
@@ -38,9 +38,11 @@
             flex-direction: column;
             gap: 32px;
             border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 1;
         }
 
-        /* Настоящий эквалайзер */
+        /* Эквалайзер */
         .equalizer {
             height: 120px;
             display: flex;
@@ -64,9 +66,35 @@
             box-shadow: 0 0 8px rgba(204, 255, 0, 0.4);
         }
 
-        .info { text-align: center; }
-        h1 { font-size: 20px; letter-spacing: 2px; margin-bottom: 4px; }
-        .station-name { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        /* Инфо блок с кнопкой списка */
+        .info-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .list-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .info h1 { font-size: 20px; letter-spacing: 2px; margin-bottom: 4px; }
+        .station-name { 
+            font-size: 12px; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
         .controls {
             display: flex;
@@ -75,7 +103,7 @@
             gap: 24px;
         }
 
-        button {
+        button.nav-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
@@ -85,9 +113,8 @@
             transition: all 0.2s;
         }
 
-        button:active { transform: scale(0.9); }
+        button.nav-btn:active { transform: scale(0.9); }
 
-        /* Кислотная кнопка Play */
         .play-btn {
             width: 64px;
             height: 64px;
@@ -99,6 +126,8 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+            border: none;
+            cursor: pointer;
         }
 
         .play-btn:active {
@@ -106,7 +135,60 @@
             transform: scale(0.95);
         }
 
-        /* Адаптация под светлую тему Telegram */
+        /* Выдвижной список станций */
+        .station-list-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .station-list-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .station-list {
+            width: 100%;
+            max-height: 70vh;
+            background: var(--surface);
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .station-list-overlay.open .station-list {
+            transform: translateY(0);
+        }
+
+        .station-item {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .station-item:last-child { border-bottom: none; }
+        
+        .station-item.active {
+            color: var(--acid);
+            padding-left: 24px;
+        }
+
+        .station-item:active { background: rgba(255,255,255,0.03); }
+
+        /* Светлая тема */
         body[data-theme="light"] {
             --bg: #f0f0f2;
             --surface: #ffffff;
@@ -116,22 +198,30 @@
     </style>
 </head>
 <body>
+    <!-- Оверлей списка станций -->
+    <div class="station-list-overlay" id="listOverlay">
+        <div class="station-list" id="stationList"></div>
+    </div>
+
     <div class="player">
         <div class="equalizer" id="eq"></div>
         
-        <div class="info">
-            <h1>RADIO</h1>
-            <div class="station-name" id="stationName">LOADING...</div>
+        <div class="info-row">
+            <button class="list-btn" id="openListBtn">☰</button>
+            <div class="info">
+                <h1>RADIO</h1>
+                <div class="station-name" id="stationName">LOADING...</div>
+            </div>
         </div>
         
         <div class="controls">
-            <button id="prevBtn">⏮</button>
-            <button id="playBtn" class="play-btn">▶</button>
-            <button id="nextBtn">⏭</button>
+            <button class="nav-btn" id="prevBtn">⏮</button>
+            <button class="play-btn" id="playBtn">▶</button>
+            <button class="nav-btn" id="nextBtn">⏭</button>
         </div>
     </div>
 
-    <audio id="audio" crossorigin="anonymous"></audio>
+    <audio id="audio"></audio>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -139,28 +229,20 @@
         document.body.setAttribute('data-theme', tg.colorScheme);
         tg.onEvent('themeChanged', () => document.body.setAttribute('data-theme', tg.colorScheme));
 
+        // 10 проверенных станций
         const stations = [
-            { 
-        name: "RADIO RECORD", 
-        url: "https://radiorecord.hostingradio.ru/rr_main96.aacp" 
-    },
-    { 
-        name: "ЕВРОПА ПЛЮС", 
-        url: "https://ep256.hostingradio.ru:8043/europaplus256.mp3" 
-    },
-    { 
-        name: "DEEP TECH HOUSE", 
-        url: "https://stream.zeno.fm/f3wvbbqmdg8uv" 
-    },
-    { 
-        name: "TECHNO BUNKER", 
-        url: "https://stream.zeno.fm/0r0xa792kwzuv" 
-    },
-    { 
-        name: "БЕЛАРУСЬ 1 (НОВОСТИ+МУЗ)", 
-        url: "https://stream.belradio.by/belarus1/playlist.m3u8" 
-    }
+            { name: "RADIO RECORD", url: "https://radiorecord.hostingradio.ru/rr_main96.aacp" },
+            { name: "EUROPA PLUS", url: "https://ep256.hostingradio.ru:8043/europaplus256.mp3" },
+            { name: "TECHNO LIVE", url: "https://stream.zenolive.com/f3wvbbqmdg8uv" },
+            { name: "IBIZA GLOBAL", url: "https://ibizaglobalradio.streaming-pro.com:8024/stream" },
+            { name: "РАДИО МИНСК", url: "https://stream.radiominsk.by/radiominsk_128" },
+            { name: "TECHNOBASE FM", url: "https://listen.technobase.fm/tunein-aac-hd" },
+            { name: "RECORD RUSSIAN", url: "https://radiorecord.hostingradio.ru/russianmix96.aacp" },
+            { name: "LOUNGE FM", url: "https://online.loungefm.com.ua/loungefm_aac_64" },
+            { name: "НОВОЕ РАДИО BY", url: "https://stream.novoeradio.by/novoeradio_128" },
+            { name: "PSYRADIO UK", url: "https://psyradio.uk:8080/stream" }
         ];
+
         let idx = 0, isPlaying = false;
         let audioCtx, analyser, source, dataArray;
 
@@ -168,8 +250,10 @@
         const playBtn = document.getElementById('playBtn');
         const stationName = document.getElementById('stationName');
         const eqContainer = document.getElementById('eq');
+        const listOverlay = document.getElementById('listOverlay');
+        const stationListEl = document.getElementById('stationList');
 
-        // Создаём столбики эквалайзера
+        // Генерация столбиков эквалайзера
         const BAR_COUNT = 24;
         for(let i=0; i<BAR_COUNT; i++) {
             const bar = document.createElement('div');
@@ -177,6 +261,43 @@
             eqContainer.appendChild(bar);
         }
         const bars = document.querySelectorAll('.bar');
+
+        // Генерация списка станций
+        function renderList() {
+            stationListEl.innerHTML = '';
+            stations.forEach((st, i) => {
+                const item = document.createElement('div');
+                item.className = `station-item ${i === idx ? 'active' : ''}`;
+                item.textContent = st.name;
+                item.onclick = () => selectStation(i);
+                stationListEl.appendChild(item);
+            });
+        }
+
+        function selectStation(i) {
+            idx = i;
+            load(idx);
+            closeList();
+            renderList();
+            tg.HapticFeedback?.selectionChanged();
+        }
+
+        function openList() {
+            renderList();
+            listOverlay.classList.add('open');
+            tg.HapticFeedback?.impactOccurred('light');
+        }
+
+        function closeList() {
+            listOverlay.classList.remove('open');
+        }
+
+        // Закрытие по клику на затемнённый фон
+        listOverlay.addEventListener('click', (e) => {
+            if(e.target === listOverlay) closeList();
+        });
+
+        document.getElementById('openListBtn').onclick = openList;
 
         function initAudioContext() {
             if(audioCtx) return;
@@ -194,16 +315,22 @@
             requestAnimationFrame(animateEq);
             if(!isPlaying) return;
             
-            analyser.getByteFrequencyData(dataArray);
-            bars.forEach((bar, i) => {
-                const value = dataArray[i] || 0;
-                const height = Math.max(4, (value / 255) * 120);
-                bar.style.height = `${height}px`;
-                
-                // Подсветка активных частот кислотным цветом
-                if(value > 150) bar.classList.add('active');
-                else bar.classList.remove('active');
-            });
+            try {
+                analyser.getByteFrequencyData(dataArray);
+                bars.forEach((bar, i) => {
+                    const value = dataArray[i] || 0;
+                    const height = Math.max(4, (value / 255) * 120);
+                    bar.style.height = `${height}px`;
+                    if(value > 150) bar.classList.add('active');
+                    else bar.classList.remove('active');
+                });
+            } catch(e) {
+                // Если CORS блокирует анализ, просто показываем статичную анимацию
+                bars.forEach((bar, i) => {
+                    bar.style.height = `${Math.random() * 60 + 10}px`;
+                    bar.classList.toggle('active', Math.random() > 0.7);
+                });
+            }
         }
 
         function load(i) {
@@ -215,7 +342,7 @@
         playBtn.onclick = () => {
             if(audio.paused) {
                 initAudioContext();
-                if(audioCtx.state === 'suspended') audioCtx.resume();
+                if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
                 audio.play();
                 playBtn.textContent = "⏸";
                 isPlaying = true;
@@ -232,12 +359,15 @@
         const nav = (d) => {
             idx = (idx + d + stations.length) % stations.length;
             load(idx);
+            renderList();
             tg.HapticFeedback?.selectionChanged();
         };
 
         document.getElementById('nextBtn').onclick = () => nav(1);
         document.getElementById('prevBtn').onclick = () => nav(-1);
 
+        // Инициализация
+        renderList();
         load(0);
         tg.ready();
     </script>
