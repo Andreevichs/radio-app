@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silk Breath</title>
+    <title>Silk Breath · Осознанное дыхание</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Nunito:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+
         :root {
             --bg-deep: #1c1926;
             --bg-lavender: #2a2438;
@@ -20,18 +22,17 @@
             --ease-silk: cubic-bezier(0.45, 0, 0.55, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
-
         body {
             background: linear-gradient(135deg, var(--bg-lavender), var(--bg-deep), var(--bg-rose));
             background-size: 400% 400%;
             animation: bgBreath 20s ease infinite;
             color: var(--text-main);
             font-family: 'Nunito', sans-serif;
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
             position: relative;
+            padding: 16px;
         }
 
         @keyframes bgBreath {
@@ -39,27 +40,29 @@
             50% { background-position: 100% 50%; }
         }
 
-        /* Частицы (звездная пыль) */
-        .particles { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+        #particles {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            overflow: hidden;
+        }
         .particle {
-            position: absolute; width: 3px; height: 3px; border-radius: 50%;
-            background: var(--accent-gold); opacity: 0;
-            transition: all 1s ease;
+            position: absolute; border-radius: 50%;
+            background: var(--accent-gold);
+            opacity: 0;
+            transition: all 1.5s var(--ease-silk);
         }
 
         .app-container {
             position: relative; z-index: 1;
-            width: 92%; max-width: 440px;
+            width: 100%; max-width: 440px;
             background: var(--glass-bg);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
             border: 1px solid var(--glass-border);
-            border-radius: 36px;
-            padding: 32px 24px;
-            display: flex; flex-direction: column; align-items: center; gap: 28px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+            border-radius: 44px;
+            padding: 28px 20px 24px;
+            display: flex; flex-direction: column; align-items: center; gap: 24px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
-        /* Живая форма дыхания (SVG Mesh) */
         .breath-visualizer {
             width: 200px; height: 200px;
             position: relative;
@@ -68,401 +71,547 @@
 
         .silk-blob {
             position: absolute; inset: 0; width: 100%; height: 100%;
-            filter: drop-shadow(0 0 25px rgba(230, 207, 161, 0.15));
+            filter: drop-shadow(0 0 35px rgba(230, 207, 161, 0.2));
             transition: transform 0.8s var(--ease-silk);
         }
 
         .silk-path {
-            fill: url(#silkGradient); opacity: 0.85;
+            fill: url(#silkGradient);
+            opacity: 0.75;
+            transition: d 0.3s ease;
         }
 
         .phase-text {
             position: relative; z-index: 2;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 28px; font-weight: 600; letter-spacing: 1px;
+            font-size: 30px; font-weight: 600; letter-spacing: 1px;
             color: var(--accent-gold);
             text-align: center;
-            min-height: 36px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            min-height: 42px;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease;
         }
 
-        /* Прогресс кольцо */
-        .progress-ring { position: absolute; inset: -15px; width: calc(100% + 30px); height: calc(100% + 30px); transform: rotate(-90deg); }
+        .progress-ring {
+            position: absolute; inset: -18px; 
+            width: calc(100% + 36px); height: calc(100% + 36px); 
+            transform: rotate(-90deg);
+            filter: drop-shadow(0 0 12px rgba(255, 183, 161, 0.2));
+        }
         .progress-circle {
-            fill: none; stroke: var(--accent-peach); stroke-width: 2; stroke-linecap: round;
-            stroke-dasharray: 660; stroke-dashoffset: 660; opacity: 0.6;
+            fill: none; stroke: var(--accent-peach); 
+            stroke-width: 2.5; stroke-linecap: round;
+            stroke-dasharray: 680; stroke-dashoffset: 680; 
+            opacity: 0.6;
+            transition: stroke-dashoffset 0.1s linear;
         }
 
-        /* Секция информации */
-        .info-section { text-align: center; display: flex; flex-direction: column; gap: 6px; }
-        .timer-display { font-size: 13px; color: var(--text-muted); letter-spacing: 3px; font-weight: 300; }
-        .mood-prompt { font-size: 11px; color: var(--accent-peach); opacity: 0.8; font-style: italic; margin-top: 4px; }
+        .info-section { text-align: center; display: flex; flex-direction: column; gap: 4px; }
+        .timer-display { font-size: 14px; color: var(--text-muted); letter-spacing: 4px; font-weight: 300; }
+        .mood-prompt { font-size: 12px; color: var(--accent-peach); opacity: 0.7; font-style: italic; margin-top: 2px; }
 
-        /* Панель управления звуком */
         .sound-mixer {
-            width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-            padding: 12px; background: rgba(0,0,0,0.15); border-radius: 20px;
+            width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+            padding: 10px 8px; background: rgba(0,0,0,0.2); border-radius: 24px;
         }
         .mixer-btn {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            background: none; border: none; cursor: pointer; padding: 8px 4px; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            background: none; border: none; cursor: pointer; padding: 6px 4px; border-radius: 14px;
             transition: all 0.3s ease;
+            position: relative;
         }
-        .mixer-btn.active { background: rgba(230, 207, 161, 0.1); }
-        .mixer-icon { font-size: 18px; filter: grayscale(1) brightness(0.7); transition: all 0.3s; }
-        .mixer-btn.active .mixer-icon { filter: grayscale(0) brightness(1); transform: scale(1.1); }
-        .mixer-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.5px; }
+        .mixer-btn.active { background: rgba(230, 207, 161, 0.12); }
+        .mixer-icon { font-size: 20px; filter: grayscale(1) brightness(0.5); transition: all 0.3s; }
+        .mixer-btn.active .mixer-icon { filter: grayscale(0) brightness(1); transform: scale(1.15); }
+        .mixer-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.3px; }
         .mixer-btn.active .mixer-label { color: var(--accent-gold); }
 
-        /* Выбор техники */
-        .techniques { display: flex; gap: 6px; width: 100%; }
+        .techniques {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%;
+        }
         .tech-pill {
-            flex: 1; padding: 10px 4px;
-            background: rgba(255,255,255,0.04); border: 1px solid transparent;
-            border-radius: 14px; font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
+            padding: 10px 2px;
+            background: rgba(255,255,255,0.03); border: 1px solid transparent;
+            border-radius: 16px; font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
             color: var(--text-muted); cursor: pointer; text-align: center;
             transition: all 0.3s ease;
         }
         .tech-pill.active {
-            background: rgba(230, 207, 161, 0.12); border-color: rgba(230, 207, 161, 0.3);
+            background: rgba(230, 207, 161, 0.10); border-color: rgba(230, 207, 161, 0.25);
             color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(230, 207, 161, 0.05);
         }
 
-        /* Главная кнопка */
         .main-btn {
             width: 100%; padding: 18px;
             background: linear-gradient(135deg, var(--accent-gold), var(--accent-peach));
-            border: none; border-radius: 20px;
-            font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2px;
+            border: none; border-radius: 24px;
+            font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2.5px;
             color: var(--bg-deep); text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 8px 25px rgba(230, 207, 161, 0.25);
+            box-shadow: 0 8px 30px rgba(230, 207, 161, 0.25);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+        .main-btn::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        .main-btn:hover::after { transform: translateX(100%); }
         .main-btn:active { transform: scale(0.97); }
         .main-btn.running {
             background: rgba(255,255,255,0.06); color: var(--text-muted);
             box-shadow: none; border: 1px solid var(--glass-border);
         }
+        .main-btn.running::after { display: none; }
 
-        /* Статистика (сад спокойствия) */
         .stats-bar {
             width: 100%; display: flex; justify-content: space-between; align-items: center;
-            padding-top: 8px; border-top: 1px solid var(--glass-border);
+            padding-top: 6px; border-top: 1px solid var(--glass-border);
         }
         .stat-item { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-        .stat-value { color: var(--accent-gold); font-weight: 600; }
+        .stat-value { color: var(--accent-gold); font-weight: 700; }
 
-        /* Светлая тема (адаптация) */
         body[data-theme="light"] {
             --bg-deep: #f5f0eb; --bg-lavender: #ebe4f0; --bg-rose: #f0e4e8;
             --accent-gold: #8a7345; --accent-peach: #c4856e;
             --glass-bg: rgba(255,255,255,0.5); --glass-border: rgba(0,0,0,0.06);
             --text-main: #2a2438; --text-muted: rgba(42,36,56,0.5);
         }
+
+        @media (max-width: 400px) {
+            .app-container { padding: 20px 16px; gap: 20px; }
+            .breath-visualizer { width: 160px; height: 160px; }
+            .phase-text { font-size: 24px; }
+            .tech-pill { font-size: 9px; padding: 8px 2px; }
+        }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
+
+    <div id="particles"></div>
 
     <div class="app-container">
-        <!-- Визуализатор -->
         <div class="breath-visualizer">
-            <svg class="progress-ring"><circle class="progress-circle" r="105" cx="115" cy="115"/></svg>
+            <svg class="progress-ring">
+                <circle class="progress-circle" r="108" cx="116" cy="116"/>
+            </svg>
             <svg class="silk-blob" viewBox="0 0 200 200">
                 <defs>
                     <radialGradient id="silkGradient" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="var(--accent-peach)" stop-opacity="0.6"/>
-                        <stop offset="100%" stop-color="var(--accent-gold)" stop-opacity="0.2"/>
+                        <stop offset="0%" stop-color="var(--accent-peach)" stop-opacity="0.5"/>
+                        <stop offset="60%" stop-color="var(--accent-gold)" stop-opacity="0.15"/>
+                        <stop offset="100%" stop-color="var(--accent-peach)" stop-opacity="0"/>
                     </radialGradient>
                 </defs>
-                <path class="silk-path" d="M100,100 m-55,0 a55,55 0 1,0 110,0 a55,55 0 1,0 -110,0"/>
+                <path class="silk-path" d="M100,100 m-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0"/>
             </svg>
             <div class="phase-text" id="phaseText">Готовность</div>
         </div>
 
-        <!-- Инфо -->
         <div class="info-section">
             <div class="timer-display" id="timerDisplay">ВЫБЕРИТЕ РИТМ</div>
             <div class="mood-prompt" id="moodPrompt">Подарите себе минуту тишины</div>
         </div>
 
-        <!-- Микшер звуков -->
         <div class="sound-mixer">
             <button class="mixer-btn" data-sound="rain"><span class="mixer-icon">🌧️</span><span class="mixer-label">Дождь</span></button>
             <button class="mixer-btn" data-sound="ocean"><span class="mixer-icon">🌊</span><span class="mixer-label">Океан</span></button>
             <button class="mixer-btn" data-sound="bowls"><span class="mixer-icon">🔔</span><span class="mixer-label">Чаши</span></button>
-            <button class="mixer-btn" data-sound="pink"><span class="mixer-icon">🌸</span><span class="mixer-label">Шум</span></button>
+            <button class="mixer-btn" data-sound="pink"><span class="mixer-icon">🌸</span><span class="mixer-label">Роз. шум</span></button>
         </div>
 
-        <!-- Техники -->
         <div class="techniques">
-            <div class="tech-pill active" data-tech="478">4-7-8 Сон</div>
-            <div class="tech-pill" data-tech="box">Box Фокус</div>
+            <div class="tech-pill active" data-tech="478">4-7-8</div>
+            <div class="tech-pill" data-tech="box">Квадрат</div>
             <div class="tech-pill" data-tech="coherent">Когерент</div>
             <div class="tech-pill" data-tech="sos">SOS</div>
         </div>
 
-        <!-- Кнопка -->
         <button class="main-btn" id="toggleBtn">Начать практику</button>
 
-        <!-- Статистика -->
         <div class="stats-bar">
             <div class="stat-item">🌱 Сегодня: <span class="stat-value" id="todayMin">0</span> мин</div>
             <div class="stat-item">✨ Серия: <span class="stat-value" id="streakDays">0</span> дн.</div>
+            <div class="stat-item">🧘 Всего: <span class="stat-value" id="totalSessions">0</span></div>
         </div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        document.body.setAttribute('data-theme', tg.colorScheme);
-        tg.onEvent('themeChanged', () => document.body.setAttribute('data-theme', tg.colorScheme));
+        (function() {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            document.body.setAttribute('data-theme', tg.colorScheme);
+            tg.onEvent('themeChanged', () => document.body.setAttribute('data-theme', tg.colorScheme));
 
-        // === КОНФИГУРАЦИЯ ТЕХНИК ===
-        const TECHNIQUES = {
-            '478': [
-                { name: "Вдох", duration: 4000, scale: 1.35, haptic: "medium" },
-                { name: "Задержка", duration: 7000, scale: 1.35, haptic: "light" },
-                { name: "Выдох", duration: 8000, scale: 0.85, haptic: "soft" }
-            ],
-            'box': [
-                { name: "Вдох", duration: 4000, scale: 1.25, haptic: "medium" },
-                { name: "Пауза", duration: 4000, scale: 1.25, haptic: "light" },
-                { name: "Выдох", duration: 4000, scale: 0.9, haptic: "soft" },
-                { name: "Тишина", duration: 4000, scale: 0.9, haptic: "rigid" }
-            ],
-            'coherent': [
-                { name: "Вдох", duration: 5500, scale: 1.2, haptic: "medium" },
-                { name: "Выдох", duration: 5500, scale: 0.95, haptic: "soft" }
-            ],
-            'sos': [
-                { name: "Быстрый вдох", duration: 2000, scale: 1.15, haptic: "heavy" },
-                { name: "Резкий выдох", duration: 2000, scale: 0.95, haptic: "medium" }
-            ]
-        };
+            const TECHNIQUES = {
+                '478': [
+                    { name: "Вдох", duration: 4000, scale: 1.4, haptic: "medium" },
+                    { name: "Задержка", duration: 7000, scale: 1.4, haptic: "light" },
+                    { name: "Выдох", duration: 8000, scale: 0.8, haptic: "soft" }
+                ],
+                'box': [
+                    { name: "Вдох", duration: 4000, scale: 1.3, haptic: "medium" },
+                    { name: "Пауза", duration: 4000, scale: 1.3, haptic: "light" },
+                    { name: "Выдох", duration: 4000, scale: 0.85, haptic: "soft" },
+                    { name: "Тишина", duration: 4000, scale: 0.85, haptic: "rigid" }
+                ],
+                'coherent': [
+                    { name: "Вдох", duration: 5500, scale: 1.25, haptic: "medium" },
+                    { name: "Выдох", duration: 5500, scale: 0.9, haptic: "soft" }
+                ],
+                'sos': [
+                    { name: "Вдох", duration: 2000, scale: 1.2, haptic: "heavy" },
+                    { name: "Выдох", duration: 2000, scale: 0.9, haptic: "medium" }
+                ]
+            };
 
-        // === СОСТОЯНИЕ ===
-        let state = {
-            tech: '478', isRunning: false, phaseIdx: 0,
-            sounds: { rain: false, ocean: false, bowls: false, pink: false },
-            sessionStart: 0, totalSessionMs: 0
-        };
-        let timers = { phase: null, progress: null, particles: null };
-        let audioCtx, soundNodes = {};
+            const state = {
+                tech: '478',
+                isRunning: false,
+                phaseIdx: 0,
+                sounds: { rain: false, ocean: false, bowls: false, pink: false },
+                sessionStart: 0,
+                totalSessions: 0,
+            };
 
-        // === DOM ===
-        const el = {
-            blob: document.querySelector('.silk-blob'),
-            path: document.querySelector('.silk-path'),
-            phase: document.getElementById('phaseText'),
-            timer: document.getElementById('timerDisplay'),
-            mood: document.getElementById('moodPrompt'),
-            btn: document.getElementById('toggleBtn'),
-            circle: document.querySelector('.progress-circle'),
-            pills: document.querySelectorAll('.tech-pill'),
-            mixers: document.querySelectorAll('.mixer-btn'),
-            todayMin: document.getElementById('todayMin'),
-            streakDays: document.getElementById('streakDays')
-        };
+            let timers = { phase: null, progress: null };
+            let audioCtx = null;
+            let soundNodes = {};
 
-        const CIRCUMFERENCE = 2 * Math.PI * 105;
-        el.circle.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
+            const el = {
+                blob: document.querySelector('.silk-blob'),
+                path: document.querySelector('.silk-path'),
+                phase: document.getElementById('phaseText'),
+                timer: document.getElementById('timerDisplay'),
+                mood: document.getElementById('moodPrompt'),
+                btn: document.getElementById('toggleBtn'),
+                circle: document.querySelector('.progress-circle'),
+                pills: document.querySelectorAll('.tech-pill'),
+                mixers: document.querySelectorAll('.mixer-btn'),
+                todayMin: document.getElementById('todayMin'),
+                streakDays: document.getElementById('streakDays'),
+                totalSessions: document.getElementById('totalSessions')
+            };
 
-        // === ЧАСТИЦЫ ===
-        function initParticles() {
-            const container = document.getElementById('particles');
-            for(let i=0; i<30; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = Math.random()*100 + '%';
-                p.style.top = Math.random()*100 + '%';
-                p.style.animationDelay = Math.random()*5 + 's';
-                container.appendChild(p);
-            }
-        }
-        initParticles();
+            const CIRCUMFERENCE = 2 * Math.PI * 108;
+            el.circle.style.strokeDasharray = `${CIRCUMFERENCE} ${CIRCUMFERENCE}`;
 
-        function animateParticles(inhale) {
-            const particles = document.querySelectorAll('.particle');
-            particles.forEach((p, i) => {
-                const delay = i * 30;
-                setTimeout(() => {
-                    p.style.opacity = inhale ? 0.8 : 0.2;
-                    p.style.transform = inhale 
-                        ? `translate(${(50 - parseFloat(p.style.left))*0.5}px, ${(50 - parseFloat(p.style.top))*0.5}px) scale(1.5)` 
-                        : `translate(0,0) scale(1)`;
-                }, delay);
-            });
-        }
-
-        // === АУДИО ДВИЖОК (Web Audio API - без файлов!) ===
-        function initAudio() {
-            if(audioCtx) return;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-
-        function createNoise(type) {
-            const bufferSize = 2 * audioCtx.sampleRate;
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for(let i=0; i<bufferSize; i++) {
-                const white = Math.random() * 2 - 1;
-                if(type === 'pink') {
-                    // Розовый шум (приближение)
-                    data[i] = (white + (data[i-1] || 0)) * 0.5; 
-                } else {
-                    data[i] = white;
+            // ===== ЧАСТИЦЫ =====
+            function initParticles() {
+                const container = document.getElementById('particles');
+                const colors = ['#e6cfa1', '#ffb7a1', '#f0ece6', '#d4b8a0'];
+                for (let i = 0; i < 45; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    const size = 2 + Math.random() * 4;
+                    p.style.width = size + 'px';
+                    p.style.height = size + 'px';
+                    p.style.left = Math.random() * 100 + '%';
+                    p.style.top = Math.random() * 100 + '%';
+                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    p.style.boxShadow = `0 0 ${size*2}px ${p.style.background}`;
+                    p.style.animationDelay = Math.random() * 8 + 's';
+                    container.appendChild(p);
                 }
             }
-            const src = audioCtx.createBufferSource();
-            src.buffer = buffer; src.loop = true;
-            const gain = audioCtx.createGain();
-            gain.gain.value = 0;
-            src.connect(gain); gain.connect(audioCtx.destination);
-            src.start();
-            return { src, gain };
-        }
+            initParticles();
 
-        function toggleSound(type, active) {
-            initAudio();
-            if(active) {
-                if(!soundNodes[type]) soundNodes[type] = createNoise(type === 'pink' ? 'pink' : 'white');
-                // Плавное появление звука
-                soundNodes[type].gain.gain.setTargetAtTime(0.15, audioCtx.currentTime, 0.5);
-            } else if(soundNodes[type]) {
-                soundNodes[type].gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.5);
+            function animateParticles(inhale) {
+                const particles = document.querySelectorAll('.particle');
+                particles.forEach((p, i) => {
+                    const delay = i * 15;
+                    setTimeout(() => {
+                        const angle = Math.random() * 2 * Math.PI;
+                        const dist = inhale ? 20 + Math.random() * 30 : 0;
+                        p.style.opacity = inhale ? 0.9 : 0.2;
+                        p.style.transform = inhale 
+                            ? `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(${1 + Math.random()*0.5})`
+                            : 'translate(0,0) scale(1)';
+                    }, delay);
+                });
             }
-        }
 
-        // === ЛОГИКА ДЫХАНИЯ ===
-        function startSession() {
-            state.isRunning = true;
-            state.phaseIdx = 0;
-            state.sessionStart = Date.now();
-            el.btn.textContent = "Завершить";
-            el.btn.classList.add('running');
-            el.mood.textContent = "Следуйте ритму круга";
-            runPhase();
-            tg.HapticFeedback?.impactOccurred('heavy');
-        }
+            // ===== АУДИО (уникальные звуки) =====
+            function initAudio() {
+                if (audioCtx) return;
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
 
-        function stopSession() {
-            state.isRunning = false;
-            clearTimeout(timers.phase);
-            cancelAnimationFrame(timers.progress);
-            
-            // Сохраняем статистику
-            const sessionMs = Date.now() - state.sessionStart;
-            saveStats(sessionMs);
-            
-            el.btn.textContent = "Начать практику";
-            el.btn.classList.remove('running');
-            el.phase.textContent = "Готовность";
-            el.timer.textContent = "ВЫБЕРИТЕ РИТМ";
-            el.mood.textContent = getGratitude();
-            el.blob.style.transform = 'scale(1)';
-            el.circle.style.strokeDashoffset = CIRCUMFERENCE;
-            tg.HapticFeedback?.notificationOccurred('success');
-        }
+            function createSound(type) {
+                const bufferSize = 4 * audioCtx.sampleRate;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                
+                for (let i = 0; i < bufferSize; i++) {
+                    const t = i / audioCtx.sampleRate;
+                    let sample = 0;
+                    
+                    switch(type) {
+                        case 'rain': {
+                            // Дождь: множество случайных импульсов
+                            const drops = Math.floor(Math.random() * 100);
+                            sample = (Math.random() * 2 - 1) * 0.3;
+                            if (i % 200 < 10) {
+                                sample += (Math.random() * 2 - 1) * 0.8;
+                            }
+                            sample *= 0.5 + 0.5 * Math.sin(t * 20);
+                            break;
+                        }
+                        case 'ocean': {
+                            // Океан: сочетание волн и шума
+                            const wave1 = Math.sin(t * 0.5) * 0.3;
+                            const wave2 = Math.sin(t * 0.3 + 1) * 0.2;
+                            const wave3 = Math.sin(t * 0.7 + 2) * 0.15;
+                            const noise = (Math.random() * 2 - 1) * 0.2;
+                            sample = wave1 + wave2 + wave3 + noise;
+                            break;
+                        }
+                        case 'bowls': {
+                            // Чаши: тональные звуки с обертонами
+                            const freq1 = 220 + Math.sin(t * 0.1) * 10;
+                            const freq2 = 330 + Math.sin(t * 0.15) * 5;
+                            const freq3 = 440 + Math.sin(t * 0.05) * 20;
+                            sample = Math.sin(t * freq1 * 2 * Math.PI) * 0.3;
+                            sample += Math.sin(t * freq2 * 2 * Math.PI) * 0.2;
+                            sample += Math.sin(t * freq3 * 2 * Math.PI) * 0.1;
+                            sample *= Math.exp(-t * 0.01);
+                            // Добавляем мягкий шум
+                            sample += (Math.random() * 2 - 1) * 0.05;
+                            break;
+                        }
+                        case 'pink': {
+                            // Розовый шум
+                            const white = Math.random() * 2 - 1;
+                            const pink = (white + (data[i-1] || 0)) * 0.5;
+                            sample = pink * 0.6;
+                            break;
+                        }
+                        default: {
+                            sample = Math.random() * 2 - 1;
+                        }
+                    }
+                    data[i] = Math.max(-1, Math.min(1, sample));
+                }
 
-        function runPhase() {
-            if(!state.isRunning) return;
-            const phases = TECHNIQUES[state.tech];
-            const phase = phases[state.phaseIdx];
-            
-            el.phase.textContent = phase.name;
-            el.blob.style.transition = `transform ${phase.duration}ms var(--ease-silk)`;
-            el.blob.style.transform = `scale(${phase.scale})`;
-            
-            // Частицы реагируют на фазу
-            animateParticles(phase.name.includes('дох') || phase.name.includes('дох'));
-            
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred(phase.haptic);
-            
-            animateProgress(phase.duration);
-            
-            timers.phase = setTimeout(() => {
-                state.phaseIdx = (state.phaseIdx + 1) % phases.length;
+                const src = audioCtx.createBufferSource();
+                src.buffer = buffer;
+                src.loop = true;
+                
+                const gain = audioCtx.createGain();
+                gain.gain.value = 0;
+                
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = type === 'pink' ? 1000 : 2000;
+                
+                const panner = audioCtx.createStereoPanner();
+                panner.pan.value = (Math.random() - 0.5) * 0.3;
+                
+                src.connect(filter);
+                filter.connect(gain);
+                gain.connect(panner);
+                panner.connect(audioCtx.destination);
+                src.start();
+                
+                return { src, gain, filter, panner };
+            }
+
+            function toggleSound(type, active) {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                if (active) {
+                    if (!soundNodes[type]) {
+                        soundNodes[type] = createSound(type);
+                    }
+                    // Плавное появление
+                    soundNodes[type].gain.gain.setTargetAtTime(0.08, audioCtx.currentTime, 0.5);
+                } else if (soundNodes[type]) {
+                    soundNodes[type].gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.3);
+                    // Не удаляем, чтобы можно было быстро включить обратно
+                }
+            }
+
+            // ===== ЛОГИКА ДЫХАНИЯ =====
+            function startSession() {
+                state.isRunning = true;
+                state.phaseIdx = 0;
+                state.sessionStart = Date.now();
+                state.totalSessions += 1;
+                el.btn.textContent = "Завершить";
+                el.btn.classList.add('running');
+                el.mood.textContent = "Следуйте за кругом";
+                tg.HapticFeedback?.impactOccurred('heavy');
                 runPhase();
-            }, phase.duration);
-        }
-
-        function animateProgress(duration) {
-            const start = performance.now();
-            el.circle.style.transition = 'none';
-            function frame(now) {
-                if(!state.isRunning) return;
-                const p = Math.min((now - start) / duration, 1);
-                el.circle.style.strokeDashoffset = CIRCUMFERENCE * (1 - p);
-                el.timer.textContent = `${Math.ceil((duration - (now-start))/1000)} сек`;
-                if(p < 1) timers.progress = requestAnimationFrame(frame);
             }
-            timers.progress = requestAnimationFrame(frame);
-        }
 
-        // === СТАТИСТИКА (LocalStorage) ===
-        function loadStats() {
-            const today = new Date().toDateString();
-            const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
-            if(data.date !== today) {
-                data.todayMs = 0;
+            function stopSession() {
+                state.isRunning = false;
+                clearTimeout(timers.phase);
+                cancelAnimationFrame(timers.progress);
+
+                const sessionMs = Date.now() - state.sessionStart;
+                saveStats(sessionMs);
+
+                el.btn.textContent = "Начать практику";
+                el.btn.classList.remove('running');
+                el.phase.textContent = "Готовность";
+                el.timer.textContent = "ВЫБЕРИТЕ РИТМ";
+                el.mood.textContent = getGratitude();
+                el.blob.style.transform = 'scale(1)';
+                el.circle.style.strokeDashoffset = CIRCUMFERENCE;
+                tg.HapticFeedback?.notificationOccurred('success');
+                
+                document.querySelectorAll('.particle').forEach(p => {
+                    p.style.transform = 'translate(0,0) scale(1)';
+                    p.style.opacity = 0.2;
+                });
+            }
+
+            function runPhase() {
+                if (!state.isRunning) return;
+                const phases = TECHNIQUES[state.tech];
+                const phase = phases[state.phaseIdx];
+
+                el.phase.textContent = phase.name;
+                el.blob.style.transition = `transform ${phase.duration}ms var(--ease-silk)`;
+                el.blob.style.transform = `scale(${phase.scale})`;
+
+                animateParticles(phase.name.includes('дох'));
+
+                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred(phase.haptic);
+
+                animateProgress(phase.duration);
+
+                timers.phase = setTimeout(() => {
+                    state.phaseIdx = (state.phaseIdx + 1) % phases.length;
+                    runPhase();
+                }, phase.duration);
+            }
+
+            function animateProgress(duration) {
+                const start = performance.now();
+                el.circle.style.transition = 'none';
+                function frame(now) {
+                    if (!state.isRunning) return;
+                    const p = Math.min((now - start) / duration, 1);
+                    el.circle.style.strokeDashoffset = CIRCUMFERENCE * (1 - p);
+                    const left = Math.ceil((duration - (now - start)) / 1000);
+                    el.timer.textContent = `${Math.max(0, left)} сек`;
+                    if (p < 1) timers.progress = requestAnimationFrame(frame);
+                }
+                timers.progress = requestAnimationFrame(frame);
+            }
+
+            // ===== СТАТИСТИКА =====
+            function loadStats() {
+                const today = new Date().toDateString();
+                const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
+                if (data.date !== today) {
+                    data.todayMs = 0;
+                    data.date = today;
+                    const yesterday = new Date(Date.now() - 86400000).toDateString();
+                    if (data.lastDate !== yesterday && data.lastDate !== today) data.streak = 0;
+                }
+                el.todayMin.textContent = Math.round((data.todayMs || 0) / 60000);
+                el.streakDays.textContent = data.streak || 0;
+                el.totalSessions.textContent = data.totalSessions || 0;
+                state.totalSessions = data.totalSessions || 0;
+            }
+
+            function saveStats(ms) {
+                const today = new Date().toDateString();
+                const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
+                data.todayMs = (data.todayMs || 0) + ms;
                 data.date = today;
-                // Проверка серии
-                const yesterday = new Date(Date.now()-86400000).toDateString();
-                if(data.lastDate !== yesterday && data.lastDate !== today) data.streak = 0;
+                data.totalSessions = (data.totalSessions || 0) + 1;
+                if (data.lastDate !== today) {
+                    data.streak = (data.streak || 0) + 1;
+                }
+                data.lastDate = today;
+                localStorage.setItem('silkBreath', JSON.stringify(data));
+                loadStats();
             }
-            el.todayMin.textContent = Math.round((data.todayMs||0)/60000);
-            el.streakDays.textContent = data.streak || 0;
-        }
 
-        function saveStats(ms) {
-            const today = new Date().toDateString();
-            const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
-            data.todayMs = (data.todayMs||0) + ms;
-            data.date = today;
-            if(data.lastDate !== today) data.streak = (data.streak||0) + 1;
-            data.lastDate = today;
-            localStorage.setItem('silkBreath', JSON.stringify(data));
+            function getGratitude() {
+                const phrases = [
+                    "Вы прекрасны ✨", 
+                    "Тишина внутри вас 🌙", 
+                    "Каждый вдох — подарок 🎁", 
+                    "Вы справились 🌟", 
+                    "Покой всегда рядом 🌊",
+                    "Сила в вашем дыхании 💪",
+                    "Вы — свет 🌞"
+                ];
+                return phrases[Math.floor(Math.random() * phrases.length)];
+            }
+
+            // ===== ИДЛЕ-АНИМАЦИЯ =====
+            let idleAngle = 0;
+            function idleAnimation() {
+                if (!state.isRunning) {
+                    const r = 50 + Math.sin(idleAngle) * 4;
+                    el.path.setAttribute('d', 
+                        `M100,100 m-${r},0 a${r},${r} 0 1,0 ${r*2},0 a${r},${r} 0 1,0 -${r*2},0`
+                    );
+                    idleAngle += 0.02;
+                }
+                requestAnimationFrame(idleAnimation);
+            }
+            idleAnimation();
+
+            // ===== ОБРАБОТЧИКИ =====
+            el.btn.onclick = () => state.isRunning ? stopSession() : startSession();
+
+            el.pills.forEach(pill => {
+                pill.onclick = () => {
+                    if (state.isRunning) stopSession();
+                    el.pills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    state.tech = pill.dataset.tech;
+                    const phases = TECHNIQUES[state.tech];
+                    el.timer.textContent = phases.map(p => Math.round(p.duration / 1000)).join(' — ');
+                    tg.HapticFeedback?.selectionChanged();
+                };
+            });
+
+            el.mixers.forEach(btn => {
+                btn.onclick = () => {
+                    btn.classList.toggle('active');
+                    const type = btn.dataset.sound;
+                    state.sounds[type] = btn.classList.contains('active');
+                    toggleSound(type, state.sounds[type]);
+                    tg.HapticFeedback?.impactOccurred('light');
+                };
+            });
+
+            // ===== ДВОЙНОЙ ТАП =====
+            let lastTap = 0;
+            document.querySelector('.app-container').addEventListener('dblclick', () => {
+                if (!state.isRunning) {
+                    const now = Date.now();
+                    if (now - lastTap < 500) return;
+                    lastTap = now;
+                    el.mood.textContent = "✨ Тишина обновлена ✨";
+                    document.querySelectorAll('.particle').forEach(p => {
+                        p.style.transform = 'translate(0,0) scale(1)';
+                        p.style.opacity = 0.8;
+                        setTimeout(() => p.style.opacity = 0.2, 1500);
+                    });
+                    tg.HapticFeedback?.impactOccurred('soft');
+                }
+            });
+
+            // ===== ИНИЦИАЛИЗАЦИЯ =====
             loadStats();
-        }
+            const initialPhases = TECHNIQUES['478'];
+            el.timer.textContent = initialPhases.map(p => Math.round(p.duration / 1000)).join(' — ');
+            tg.ready();
 
-        function getGratitude() {
-            const phrases = ["Вы прекрасны", "Тишина внутри вас", "Каждый вдох — подарок", "Вы справились", "Покой всегда рядом"];
-            return phrases[Math.floor(Math.random()*phrases.length)];
-        }
-
-        // === ОБРАБОТЧИКИ ===
-        el.btn.onclick = () => state.isRunning ? stopSession() : startSession();
-        
-        el.pills.forEach(pill => pill.onclick = () => {
-            if(state.isRunning) stopSession();
-            el.pills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            state.tech = pill.dataset.tech;
-            el.timer.textContent = TECHNIQUES[state.tech].map(p=>Math.round(p.duration/1000)).join(' — ');
-            tg.HapticFeedback?.selectionChanged();
-        });
-
-        el.mixers.forEach(btn => btn.onclick = () => {
-            btn.classList.toggle('active');
-            const type = btn.dataset.sound;
-            state.sounds[type] = btn.classList.contains('active');
-            toggleSound(type, state.sounds[type]);
-            tg.HapticFeedback?.impactOccurred('light');
-        });
-
-        // Idle анимация формы
-        setInterval(() => {
-            if(!state.isRunning) {
-                const r = 55 + Math.sin(Date.now()/2000)*5;
-                el.path.setAttribute('d', `M100,100 m-${r},0 a${r},${r} 0 1,0 ${r*2},0 a${r},${r} 0 1,0 -${r*2},0`);
-            }
-        }, 100);
-
-        // Инициализация
-        loadStats();
-        el.timer.textContent = TECHNIQUES['478'].map(p=>Math.round(p.duration/1000)).join(' — ');
-        tg.ready();
+        })();
     </script>
 </body>
 </html>
