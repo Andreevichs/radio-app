@@ -3,197 +3,545 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Silk Breath · Осознанное дыхание</title>
+    <title>Silk Breath · Кислотное дыхание</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Nunito:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none; 
+        }
 
         :root {
-            --bg-deep: #1c1926;
-            --bg-lavender: #2a2438;
-            --bg-rose: #3d2b35;
-            --accent-gold: #e6cfa1;
-            --accent-peach: #ffb7a1;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f0ece6;
-            --text-muted: rgba(240, 236, 230, 0.5);
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: rgba(20, 20, 20, 0.8);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --border-glass: rgba(255, 255, 255, 0.06);
+            
+            /* Кислотные цвета */
+            --acid-primary: #00ff88;
+            --acid-secondary: #00ffcc;
+            --acid-glow: rgba(0, 255, 136, 0.3);
+            --acid-dim: rgba(0, 255, 136, 0.1);
+            
+            --text-primary: #f0f0f0;
+            --text-secondary: rgba(255, 255, 255, 0.5);
+            --text-muted: rgba(255, 255, 255, 0.3);
+            
             --ease-silk: cubic-bezier(0.45, 0, 0.55, 1);
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg-lavender), var(--bg-deep), var(--bg-rose));
-            background-size: 400% 400%;
-            animation: bgBreath 20s ease infinite;
-            color: var(--text-main);
-            font-family: 'Nunito', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
             min-height: 100dvh;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
             position: relative;
             padding: 16px;
         }
 
-        @keyframes bgBreath {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        /* Фоновый градиент с кислотным свечением */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Анимированные линии фона */
+        .bg-lines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-line {
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 136, 0.05), transparent);
+            animation: lineFloat 15s ease-in-out infinite;
+        }
+        @keyframes lineFloat {
+            0%, 100% { transform: translateY(-100%); opacity: 0; }
+            50% { transform: translateY(100%); opacity: 1; }
         }
 
         #particles {
-            position: fixed; inset: 0; pointer-events: none; z-index: 0;
-            overflow: hidden;
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
         }
         .particle {
-            position: absolute; border-radius: 50%;
-            background: var(--accent-gold);
+            position: absolute;
+            border-radius: 50%;
+            background: var(--acid-primary);
             opacity: 0;
             transition: all 1.5s var(--ease-silk);
+            box-shadow: 0 0 10px var(--acid-glow);
         }
 
         .app-container {
-            position: relative; z-index: 1;
-            width: 100%; max-width: 440px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-            border: 1px solid var(--glass-border);
-            border-radius: 44px;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--border-glass);
+            border-radius: 32px;
             padding: 28px 20px 24px;
-            display: flex; flex-direction: column; align-items: center; gap: 24px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                0 0 60px rgba(0, 255, 136, 0.05);
+            max-height: 98vh;
+            overflow-y: auto;
         }
 
+        .app-container::-webkit-scrollbar { width: 3px; }
+        .app-container::-webkit-scrollbar-track { background: transparent; }
+        .app-container::-webkit-scrollbar-thumb { 
+            background: var(--acid-primary); 
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--acid-glow);
+        }
+
+        /* ===== ВИЗУАЛИЗАТОР ===== */
         .breath-visualizer {
-            width: 200px; height: 200px;
+            width: 180px;
+            height: 180px;
             position: relative;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .silk-blob {
-            position: absolute; inset: 0; width: 100%; height: 100%;
-            filter: drop-shadow(0 0 35px rgba(230, 207, 161, 0.2));
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 40px var(--acid-glow));
             transition: transform 0.8s var(--ease-silk);
         }
 
         .silk-path {
             fill: url(#silkGradient);
-            opacity: 0.75;
+            opacity: 0.6;
             transition: d 0.3s ease;
         }
 
         .phase-text {
-            position: relative; z-index: 2;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 30px; font-weight: 600; letter-spacing: 1px;
-            color: var(--accent-gold);
+            position: relative;
+            z-index: 2;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--acid-primary);
             text-align: center;
-            min-height: 42px;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.4);
-            transition: opacity 0.3s ease;
+            min-height: 38px;
+            text-shadow: 0 0 30px var(--acid-glow);
         }
 
         .progress-ring {
-            position: absolute; inset: -18px; 
-            width: calc(100% + 36px); height: calc(100% + 36px); 
+            position: absolute;
+            inset: -18px;
+            width: calc(100% + 36px);
+            height: calc(100% + 36px);
             transform: rotate(-90deg);
-            filter: drop-shadow(0 0 12px rgba(255, 183, 161, 0.2));
+            filter: drop-shadow(0 0 15px var(--acid-glow));
         }
         .progress-circle {
-            fill: none; stroke: var(--accent-peach); 
-            stroke-width: 2.5; stroke-linecap: round;
-            stroke-dasharray: 680; stroke-dashoffset: 680; 
-            opacity: 0.6;
+            fill: none;
+            stroke: var(--acid-primary);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-dasharray: 680;
+            stroke-dashoffset: 680;
+            opacity: 0.4;
             transition: stroke-dashoffset 0.1s linear;
         }
 
-        .info-section { text-align: center; display: flex; flex-direction: column; gap: 4px; }
-        .timer-display { font-size: 14px; color: var(--text-muted); letter-spacing: 4px; font-weight: 300; }
-        .mood-prompt { font-size: 12px; color: var(--accent-peach); opacity: 0.7; font-style: italic; margin-top: 2px; }
+        /* ===== ИНФО ===== */
+        .info-section { 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px; 
+        }
+        .timer-display { 
+            font-size: 14px; 
+            color: var(--text-secondary); 
+            letter-spacing: 4px; 
+            font-weight: 300; 
+        }
+        .mood-prompt { 
+            font-size: 12px; 
+            color: var(--acid-primary); 
+            opacity: 0.5; 
+            font-style: italic; 
+            font-weight: 300;
+        }
 
+        /* ===== МИКШЕР ЗВУКОВ ===== */
         .sound-mixer {
-            width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
-            padding: 10px 8px; background: rgba(0,0,0,0.2); border-radius: 24px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            padding: 10px 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
         .mixer-btn {
-            display: flex; flex-direction: column; align-items: center; gap: 2px;
-            background: none; border: none; cursor: pointer; padding: 6px 4px; border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 4px;
+            border-radius: 14px;
             transition: all 0.3s ease;
             position: relative;
         }
-        .mixer-btn.active { background: rgba(230, 207, 161, 0.12); }
-        .mixer-icon { font-size: 20px; filter: grayscale(1) brightness(0.5); transition: all 0.3s; }
-        .mixer-btn.active .mixer-icon { filter: grayscale(0) brightness(1); transform: scale(1.15); }
-        .mixer-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.3px; }
-        .mixer-btn.active .mixer-label { color: var(--accent-gold); }
+        .mixer-btn.active { 
+            background: var(--acid-dim);
+            box-shadow: 0 0 20px var(--acid-glow);
+        }
+        .mixer-icon { 
+            font-size: 20px; 
+            filter: grayscale(1) brightness(0.3); 
+            transition: all 0.3s; 
+        }
+        .mixer-btn.active .mixer-icon { 
+            filter: grayscale(0) brightness(1); 
+            transform: scale(1.15);
+        }
+        .mixer-label { 
+            font-size: 9px; 
+            color: var(--text-muted); 
+            letter-spacing: 0.5px;
+            font-weight: 300;
+        }
+        .mixer-btn.active .mixer-label { 
+            color: var(--acid-primary); 
+        }
 
+        /* ===== ТЕХНИКИ ===== */
         .techniques {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            width: 100%;
         }
         .tech-pill {
             padding: 10px 2px;
-            background: rgba(255,255,255,0.03); border: 1px solid transparent;
-            border-radius: 16px; font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
-            color: var(--text-muted); cursor: pointer; text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
             transition: all 0.3s ease;
+            font-family: 'Space Grotesk', sans-serif;
         }
         .tech-pill.active {
-            background: rgba(230, 207, 161, 0.10); border-color: rgba(230, 207, 161, 0.25);
-            color: var(--accent-gold);
-            box-shadow: 0 0 20px rgba(230, 207, 161, 0.05);
+            background: var(--acid-dim);
+            border-color: var(--acid-primary);
+            color: var(--acid-primary);
+            box-shadow: 0 0 30px var(--acid-glow);
         }
 
+        /* ===== КНОПКА ===== */
         .main-btn {
-            width: 100%; padding: 18px;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-peach));
-            border: none; border-radius: 24px;
-            font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2.5px;
-            color: var(--bg-deep); text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 8px 30px rgba(230, 207, 161, 0.25);
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--acid-primary), var(--acid-secondary));
+            border: none;
+            border-radius: 20px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #0a0a0a;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 8px 30px var(--acid-glow);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
         .main-btn::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transform: translateX(-100%);
             transition: transform 0.6s ease;
         }
         .main-btn:hover::after { transform: translateX(100%); }
         .main-btn:active { transform: scale(0.97); }
         .main-btn.running {
-            background: rgba(255,255,255,0.06); color: var(--text-muted);
-            box-shadow: none; border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .main-btn.running::after { display: none; }
 
+        /* ===== СТАТИСТИКА ===== */
         .stats-bar {
-            width: 100%; display: flex; justify-content: space-between; align-items: center;
-            padding-top: 6px; border-top: 1px solid var(--glass-border);
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .stat-item { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-        .stat-value { color: var(--accent-gold); font-weight: 700; }
+        .stat-item {
+            font-size: 10px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            text-align: center;
+            font-weight: 300;
+        }
+        .stat-value { 
+            color: var(--acid-primary); 
+            font-weight: 700; 
+            font-size: 14px;
+            text-shadow: 0 0 20px var(--acid-glow);
+        }
 
-        body[data-theme="light"] {
-            --bg-deep: #f5f0eb; --bg-lavender: #ebe4f0; --bg-rose: #f0e4e8;
-            --accent-gold: #8a7345; --accent-peach: #c4856e;
-            --glass-bg: rgba(255,255,255,0.5); --glass-border: rgba(0,0,0,0.06);
-            --text-main: #2a2438; --text-muted: rgba(42,36,56,0.5);
+        /* ===== ОТЧЕТЫ ===== */
+        .reports-section {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 18px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
+
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: default;
+            font-weight: 300;
+        }
+        .day-cell.has-session {
+            background: var(--acid-dim);
+            border-color: var(--acid-primary);
+            box-shadow: 0 0 20px var(--acid-glow);
+        }
+        .day-cell.today {
+            border-color: var(--acid-primary);
+            box-shadow: 0 0 30px var(--acid-glow);
+        }
+        .day-cell .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--acid-primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 8px;
+            white-space: nowrap;
+            margin-bottom: 4px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+        .day-cell:hover .tooltip { display: block; }
+
+        /* ===== ДОСТИЖЕНИЯ ===== */
+        .achievements {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 4px 0;
+        }
+        .achievement {
+            font-size: 22px;
+            opacity: 0.15;
+            transition: all 0.5s ease;
+            filter: grayscale(1) brightness(0.3);
+            cursor: default;
+            position: relative;
+        }
+        .achievement.unlocked {
+            opacity: 1;
+            filter: grayscale(0) brightness(1);
+            animation: achievementPop 0.5s var(--ease-silk);
+            text-shadow: 0 0 30px var(--acid-glow);
+        }
+        @keyframes achievementPop {
+            0% { transform: scale(0) rotate(-30deg); }
+            50% { transform: scale(1.4) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* ===== МОДАЛЬНОЕ ОКНО ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 28px;
+            padding: 32px 24px;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 60px var(--acid-glow);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content::-webkit-scrollbar { width: 3px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--acid-primary); border-radius: 10px; }
+        
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .modal-close:hover { color: var(--acid-primary); }
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--acid-primary);
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 30px var(--acid-glow);
+        }
+        .modal-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+        .modal-stat-label { color: var(--text-secondary); font-weight: 300; }
+        .modal-stat-value { color: var(--text-primary); font-weight: 600; }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 14px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        .btn-secondary:hover {
+            background: var(--acid-dim);
+            color: var(--acid-primary);
+            border-color: var(--acid-primary);
+            box-shadow: 0 0 20px var(--acid-glow);
+        }
+
+        /* ===== СКРОЛЛБАР ===== */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--acid-primary); border-radius: 10px; }
 
         @media (max-width: 400px) {
-            .app-container { padding: 20px 16px; gap: 20px; }
-            .breath-visualizer { width: 160px; height: 160px; }
-            .phase-text { font-size: 24px; }
+            .app-container { padding: 20px 16px; gap: 16px; }
+            .breath-visualizer { width: 150px; height: 150px; }
+            .phase-text { font-size: 22px; }
             .tech-pill { font-size: 9px; padding: 8px 2px; }
+            .reports-section { padding: 12px; }
+            .report-grid { gap: 3px; }
+            .day-cell { font-size: 8px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Фоновые линии -->
+    <div class="bg-lines" id="bgLines"></div>
+
+    <!-- Частицы -->
     <div id="particles"></div>
 
     <div class="app-container">
+        <!-- Визуализатор -->
         <div class="breath-visualizer">
             <svg class="progress-ring">
                 <circle class="progress-circle" r="108" cx="116" cy="116"/>
@@ -201,9 +549,9 @@
             <svg class="silk-blob" viewBox="0 0 200 200">
                 <defs>
                     <radialGradient id="silkGradient" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="var(--accent-peach)" stop-opacity="0.5"/>
-                        <stop offset="60%" stop-color="var(--accent-gold)" stop-opacity="0.15"/>
-                        <stop offset="100%" stop-color="var(--accent-peach)" stop-opacity="0"/>
+                        <stop offset="0%" stop-color="#00ff88" stop-opacity="0.4"/>
+                        <stop offset="60%" stop-color="#00ffcc" stop-opacity="0.1"/>
+                        <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
                     </radialGradient>
                 </defs>
                 <path class="silk-path" d="M100,100 m-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0"/>
@@ -211,18 +559,21 @@
             <div class="phase-text" id="phaseText">Готовность</div>
         </div>
 
+        <!-- Инфо -->
         <div class="info-section">
             <div class="timer-display" id="timerDisplay">ВЫБЕРИТЕ РИТМ</div>
             <div class="mood-prompt" id="moodPrompt">Подарите себе минуту тишины</div>
         </div>
 
+        <!-- Звуки -->
         <div class="sound-mixer">
             <button class="mixer-btn" data-sound="rain"><span class="mixer-icon">🌧️</span><span class="mixer-label">Дождь</span></button>
             <button class="mixer-btn" data-sound="ocean"><span class="mixer-icon">🌊</span><span class="mixer-label">Океан</span></button>
             <button class="mixer-btn" data-sound="bowls"><span class="mixer-icon">🔔</span><span class="mixer-label">Чаши</span></button>
-            <button class="mixer-btn" data-sound="pink"><span class="mixer-icon">🌸</span><span class="mixer-label">Роз. шум</span></button>
+            <button class="mixer-btn" data-sound="pink"><span class="mixer-icon">🌸</span><span class="mixer-label">Шум</span></button>
         </div>
 
+        <!-- Техники -->
         <div class="techniques">
             <div class="tech-pill active" data-tech="478">4-7-8</div>
             <div class="tech-pill" data-tech="box">Квадрат</div>
@@ -230,12 +581,50 @@
             <div class="tech-pill" data-tech="sos">SOS</div>
         </div>
 
+        <!-- Кнопка -->
         <button class="main-btn" id="toggleBtn">Начать практику</button>
 
+        <!-- Достижения -->
+        <div class="achievements" id="achievements">
+            <span class="achievement" data-achievement="first" title="Первая практика">🌱</span>
+            <span class="achievement" data-achievement="7days" title="7 дней подряд">🌟</span>
+            <span class="achievement" data-achievement="30days" title="30 дней подряд">🏆</span>
+            <span class="achievement" data-achievement="100sessions" title="100 сессий">💎</span>
+            <span class="achievement" data-achievement="10min" title="10+ минут практики">🔥</span>
+        </div>
+
+        <!-- Отчеты -->
+        <div class="reports-section">
+            <div class="reports-header">
+                <span>◈ АКТИВНОСТЬ</span>
+                <button class="btn-secondary" id="showFullReport">Детально</button>
+            </div>
+            <div class="report-grid" id="reportGrid"></div>
+        </div>
+
+        <!-- Статистика -->
         <div class="stats-bar">
-            <div class="stat-item">🌱 Сегодня: <span class="stat-value" id="todayMin">0</span> мин</div>
-            <div class="stat-item">✨ Серия: <span class="stat-value" id="streakDays">0</span> дн.</div>
-            <div class="stat-item">🧘 Всего: <span class="stat-value" id="totalSessions">0</span></div>
+            <div class="stat-item">
+                <span>Сегодня</span>
+                <span class="stat-value" id="todayMin">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Серия</span>
+                <span class="stat-value" id="streakDays">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Всего</span>
+                <span class="stat-value" id="totalSessions">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">✕</button>
+            <div class="modal-title">◈ ДЕТАЛЬНЫЙ ОТЧЕТ</div>
+            <div id="reportContent"></div>
         </div>
     </div>
 
@@ -243,8 +632,19 @@
         (function() {
             const tg = window.Telegram.WebApp;
             tg.expand();
-            document.body.setAttribute('data-theme', tg.colorScheme);
-            tg.onEvent('themeChanged', () => document.body.setAttribute('data-theme', tg.colorScheme));
+            
+            // Фоновые линии
+            (function createBgLines() {
+                const container = document.getElementById('bgLines');
+                for (let i = 0; i < 8; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'bg-line';
+                    line.style.left = (10 + i * 12) + '%';
+                    line.style.animationDelay = (i * 2) + 's';
+                    line.style.height = (50 + Math.random() * 50) + '%';
+                    container.appendChild(line);
+                }
+            })();
 
             const TECHNIQUES = {
                 '478': [
@@ -274,7 +674,6 @@
                 phaseIdx: 0,
                 sounds: { rain: false, ocean: false, bowls: false, pink: false },
                 sessionStart: 0,
-                totalSessions: 0,
             };
 
             let timers = { phase: null, progress: null };
@@ -293,7 +692,11 @@
                 mixers: document.querySelectorAll('.mixer-btn'),
                 todayMin: document.getElementById('todayMin'),
                 streakDays: document.getElementById('streakDays'),
-                totalSessions: document.getElementById('totalSessions')
+                totalSessions: document.getElementById('totalSessions'),
+                reportGrid: document.getElementById('reportGrid'),
+                achievements: document.getElementById('achievements'),
+                modal: document.getElementById('reportModal'),
+                reportContent: document.getElementById('reportContent'),
             };
 
             const CIRCUMFERENCE = 2 * Math.PI * 108;
@@ -302,18 +705,16 @@
             // ===== ЧАСТИЦЫ =====
             function initParticles() {
                 const container = document.getElementById('particles');
-                const colors = ['#e6cfa1', '#ffb7a1', '#f0ece6', '#d4b8a0'];
-                for (let i = 0; i < 45; i++) {
+                for (let i = 0; i < 40; i++) {
                     const p = document.createElement('div');
                     p.className = 'particle';
-                    const size = 2 + Math.random() * 4;
+                    const size = 2 + Math.random() * 3;
                     p.style.width = size + 'px';
                     p.style.height = size + 'px';
                     p.style.left = Math.random() * 100 + '%';
                     p.style.top = Math.random() * 100 + '%';
-                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    p.style.boxShadow = `0 0 ${size*2}px ${p.style.background}`;
-                    p.style.animationDelay = Math.random() * 8 + 's';
+                    p.style.background = Math.random() > 0.5 ? '#00ff88' : '#00ffcc';
+                    p.style.boxShadow = `0 0 ${size*3}px rgba(0, 255, 136, 0.3)`;
                     container.appendChild(p);
                 }
             }
@@ -322,19 +723,18 @@
             function animateParticles(inhale) {
                 const particles = document.querySelectorAll('.particle');
                 particles.forEach((p, i) => {
-                    const delay = i * 15;
                     setTimeout(() => {
                         const angle = Math.random() * 2 * Math.PI;
-                        const dist = inhale ? 20 + Math.random() * 30 : 0;
-                        p.style.opacity = inhale ? 0.9 : 0.2;
+                        const dist = inhale ? 25 + Math.random() * 35 : 0;
+                        p.style.opacity = inhale ? 0.9 : 0.1;
                         p.style.transform = inhale 
-                            ? `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(${1 + Math.random()*0.5})`
+                            ? `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(${1 + Math.random()*0.8})`
                             : 'translate(0,0) scale(1)';
-                    }, delay);
+                    }, i * 10);
                 });
             }
 
-            // ===== АУДИО (уникальные звуки) =====
+            // ===== АУДИО =====
             function initAudio() {
                 if (audioCtx) return;
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -351,46 +751,31 @@
                     
                     switch(type) {
                         case 'rain': {
-                            // Дождь: множество случайных импульсов
-                            const drops = Math.floor(Math.random() * 100);
                             sample = (Math.random() * 2 - 1) * 0.3;
-                            if (i % 200 < 10) {
-                                sample += (Math.random() * 2 - 1) * 0.8;
-                            }
+                            if (i % 200 < 10) sample += (Math.random() * 2 - 1) * 0.8;
                             sample *= 0.5 + 0.5 * Math.sin(t * 20);
                             break;
                         }
                         case 'ocean': {
-                            // Океан: сочетание волн и шума
                             const wave1 = Math.sin(t * 0.5) * 0.3;
                             const wave2 = Math.sin(t * 0.3 + 1) * 0.2;
                             const wave3 = Math.sin(t * 0.7 + 2) * 0.15;
-                            const noise = (Math.random() * 2 - 1) * 0.2;
-                            sample = wave1 + wave2 + wave3 + noise;
+                            sample = wave1 + wave2 + wave3 + (Math.random() * 2 - 1) * 0.2;
                             break;
                         }
                         case 'bowls': {
-                            // Чаши: тональные звуки с обертонами
                             const freq1 = 220 + Math.sin(t * 0.1) * 10;
                             const freq2 = 330 + Math.sin(t * 0.15) * 5;
-                            const freq3 = 440 + Math.sin(t * 0.05) * 20;
                             sample = Math.sin(t * freq1 * 2 * Math.PI) * 0.3;
                             sample += Math.sin(t * freq2 * 2 * Math.PI) * 0.2;
-                            sample += Math.sin(t * freq3 * 2 * Math.PI) * 0.1;
                             sample *= Math.exp(-t * 0.01);
-                            // Добавляем мягкий шум
                             sample += (Math.random() * 2 - 1) * 0.05;
                             break;
                         }
                         case 'pink': {
-                            // Розовый шум
                             const white = Math.random() * 2 - 1;
-                            const pink = (white + (data[i-1] || 0)) * 0.5;
-                            sample = pink * 0.6;
+                            sample = (white + (data[i-1] || 0)) * 0.5 * 0.6;
                             break;
-                        }
-                        default: {
-                            sample = Math.random() * 2 - 1;
                         }
                     }
                     data[i] = Math.max(-1, Math.min(1, sample));
@@ -405,7 +790,7 @@
                 
                 const filter = audioCtx.createBiquadFilter();
                 filter.type = 'lowpass';
-                filter.frequency.value = type === 'pink' ? 1000 : 2000;
+                filter.frequency.value = 1500;
                 
                 const panner = audioCtx.createStereoPanner();
                 panner.pan.value = (Math.random() - 0.5) * 0.3;
@@ -424,14 +809,10 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
 
                 if (active) {
-                    if (!soundNodes[type]) {
-                        soundNodes[type] = createSound(type);
-                    }
-                    // Плавное появление
+                    if (!soundNodes[type]) soundNodes[type] = createSound(type);
                     soundNodes[type].gain.gain.setTargetAtTime(0.08, audioCtx.currentTime, 0.5);
                 } else if (soundNodes[type]) {
                     soundNodes[type].gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.3);
-                    // Не удаляем, чтобы можно было быстро включить обратно
                 }
             }
 
@@ -440,7 +821,6 @@
                 state.isRunning = true;
                 state.phaseIdx = 0;
                 state.sessionStart = Date.now();
-                state.totalSessions += 1;
                 el.btn.textContent = "Завершить";
                 el.btn.classList.add('running');
                 el.mood.textContent = "Следуйте за кругом";
@@ -467,8 +847,11 @@
                 
                 document.querySelectorAll('.particle').forEach(p => {
                     p.style.transform = 'translate(0,0) scale(1)';
-                    p.style.opacity = 0.2;
+                    p.style.opacity = 0.1;
                 });
+
+                updateReports();
+                checkAchievements();
             }
 
             function runPhase() {
@@ -507,44 +890,160 @@
             }
 
             // ===== СТАТИСТИКА =====
-            function loadStats() {
+            function getStats() {
+                return JSON.parse(localStorage.getItem('silkBreath') || '{}');
+            }
+
+            function saveStats(ms) {
                 const today = new Date().toDateString();
-                const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
+                const data = getStats();
+                data.todayMs = (data.todayMs || 0) + ms;
+                data.date = today;
+                data.totalSessions = (data.totalSessions || 0) + 1;
+                data.totalMinutes = (data.totalMinutes || 0) + Math.round(ms / 60000);
+                
+                if (!data.history) data.history = {};
+                data.history[today] = (data.history[today] || 0) + ms;
+                
+                const dates = Object.keys(data.history).sort();
+                if (dates.length > 30) {
+                    const toRemove = dates.slice(0, dates.length - 30);
+                    toRemove.forEach(d => delete data.history[d]);
+                }
+                
+                if (data.lastDate !== today) data.streak = (data.streak || 0) + 1;
+                data.lastDate = today;
+                
+                localStorage.setItem('silkBreath', JSON.stringify(data));
+                loadStats();
+            }
+
+            function loadStats() {
+                const data = getStats();
+                const today = new Date().toDateString();
+                
                 if (data.date !== today) {
                     data.todayMs = 0;
                     data.date = today;
                     const yesterday = new Date(Date.now() - 86400000).toDateString();
                     if (data.lastDate !== yesterday && data.lastDate !== today) data.streak = 0;
                 }
+                
                 el.todayMin.textContent = Math.round((data.todayMs || 0) / 60000);
                 el.streakDays.textContent = data.streak || 0;
                 el.totalSessions.textContent = data.totalSessions || 0;
-                state.totalSessions = data.totalSessions || 0;
+                
+                updateReports();
+                checkAchievements();
             }
 
-            function saveStats(ms) {
-                const today = new Date().toDateString();
-                const data = JSON.parse(localStorage.getItem('silkBreath') || '{}');
-                data.todayMs = (data.todayMs || 0) + ms;
-                data.date = today;
-                data.totalSessions = (data.totalSessions || 0) + 1;
-                if (data.lastDate !== today) {
-                    data.streak = (data.streak || 0) + 1;
+            function updateReports() {
+                const data = getStats();
+                const grid = el.reportGrid;
+                grid.innerHTML = '';
+                
+                const today = new Date();
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toDateString();
+                    const day = date.getDate();
+                    const isToday = i === 0;
+                    const hasSession = data.history && data.history[dateStr] && data.history[dateStr] > 0;
+                    
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    if (hasSession) cell.classList.add('has-session');
+                    if (isToday) cell.classList.add('today');
+                    
+                    const minutes = hasSession ? Math.round(data.history[dateStr] / 60000) : 0;
+                    cell.textContent = day;
+                    
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.textContent = hasSession ? `${minutes} мин` : '—';
+                    cell.appendChild(tooltip);
+                    
+                    grid.appendChild(cell);
                 }
-                data.lastDate = today;
-                localStorage.setItem('silkBreath', JSON.stringify(data));
-                loadStats();
+            }
+
+            // ===== ДОСТИЖЕНИЯ =====
+            function checkAchievements() {
+                const data = getStats();
+                const achievements = {
+                    'first': data.totalSessions >= 1,
+                    '7days': data.streak >= 7,
+                    '30days': data.streak >= 30,
+                    '100sessions': data.totalSessions >= 100,
+                    '10min': data.totalMinutes >= 10,
+                };
+                
+                document.querySelectorAll('.achievement').forEach(el => {
+                    const key = el.dataset.achievement;
+                    if (achievements[key]) {
+                        el.classList.add('unlocked');
+                    } else {
+                        el.classList.remove('unlocked');
+                    }
+                });
+            }
+
+            // ===== ОТЧЕТ =====
+            function showFullReport() {
+                const data = getStats();
+                const content = el.reportContent;
+                
+                let html = `
+                    <div class="modal-stat">
+                        <span class="modal-stat-label">Всего сессий</span>
+                        <span class="modal-stat-value">${data.totalSessions || 0}</span>
+                    </div>
+                    <div class="modal-stat">
+                        <span class="modal-stat-label">Всего минут</span>
+                        <span class="modal-stat-value">${data.totalMinutes || 0}</span>
+                    </div>
+                    <div class="modal-stat">
+                        <span class="modal-stat-label">Текущая серия</span>
+                        <span class="modal-stat-value">${data.streak || 0} дней</span>
+                    </div>
+                    <div class="modal-stat">
+                        <span class="modal-stat-label">Сегодня</span>
+                        <span class="modal-stat-value">${Math.round((data.todayMs || 0) / 60000)} мин</span>
+                    </div>
+                    <div style="margin-top:16px;font-size:11px;color:var(--text-secondary);font-weight:300;">
+                        ◈ ПОСЛЕДНИЕ 7 ДНЕЙ
+                    </div>
+                `;
+                
+                const today = new Date();
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toDateString();
+                    const minutes = data.history && data.history[dateStr] ? Math.round(data.history[dateStr] / 60000) : 0;
+                    const dayName = date.toLocaleDateString('ru', { weekday: 'short' });
+                    html += `
+                        <div class="modal-stat" style="font-size:12px;">
+                            <span class="modal-stat-label">${dayName} ${date.getDate()}</span>
+                            <span class="modal-stat-value">${minutes > 0 ? minutes + ' мин' : '—'}</span>
+                        </div>
+                    `;
+                }
+                
+                content.innerHTML = html;
+                el.modal.classList.add('active');
             }
 
             function getGratitude() {
                 const phrases = [
-                    "Вы прекрасны ✨", 
-                    "Тишина внутри вас 🌙", 
-                    "Каждый вдох — подарок 🎁", 
-                    "Вы справились 🌟", 
-                    "Покой всегда рядом 🌊",
-                    "Сила в вашем дыхании 💪",
-                    "Вы — свет 🌞"
+                    "Кислород — это жизнь ⚡",
+                    "Вы — свет в темноте 🌟",
+                    "Дышите глубже 🌊",
+                    "Сила в тишине 💪",
+                    "Высшая точка спокойствия 🎯",
+                    "Энергия течёт сквозь вас ⚡",
+                    "Вы — мастер дыхания 🧘"
                 ];
                 return phrases[Math.floor(Math.random() * phrases.length)];
             }
@@ -553,11 +1052,11 @@
             let idleAngle = 0;
             function idleAnimation() {
                 if (!state.isRunning) {
-                    const r = 50 + Math.sin(idleAngle) * 4;
+                    const r = 50 + Math.sin(idleAngle) * 3;
                     el.path.setAttribute('d', 
                         `M100,100 m-${r},0 a${r},${r} 0 1,0 ${r*2},0 a${r},${r} 0 1,0 -${r*2},0`
                     );
-                    idleAngle += 0.02;
+                    idleAngle += 0.025;
                 }
                 requestAnimationFrame(idleAnimation);
             }
@@ -588,18 +1087,24 @@
                 };
             });
 
-            // ===== ДВОЙНОЙ ТАП =====
+            document.getElementById('showFullReport').onclick = showFullReport;
+            document.getElementById('closeModal').onclick = () => el.modal.classList.remove('active');
+            el.modal.onclick = (e) => {
+                if (e.target === el.modal) el.modal.classList.remove('active');
+            };
+
+            // Двойной тап
             let lastTap = 0;
             document.querySelector('.app-container').addEventListener('dblclick', () => {
                 if (!state.isRunning) {
                     const now = Date.now();
                     if (now - lastTap < 500) return;
                     lastTap = now;
-                    el.mood.textContent = "✨ Тишина обновлена ✨";
+                    el.mood.textContent = "⚡ Кислород обновлён ⚡";
                     document.querySelectorAll('.particle').forEach(p => {
                         p.style.transform = 'translate(0,0) scale(1)';
                         p.style.opacity = 0.8;
-                        setTimeout(() => p.style.opacity = 0.2, 1500);
+                        setTimeout(() => p.style.opacity = 0.1, 1500);
                     });
                     tg.HapticFeedback?.impactOccurred('soft');
                 }
@@ -611,6 +1116,9 @@
             el.timer.textContent = initialPhases.map(p => Math.round(p.duration / 1000)).join(' — ');
             tg.ready();
 
+            console.log('⚡ Silk Breath · Кислотный стиль');
+            console.log('🌿 Дизайн: чёрный + кислотный неон');
+            console.log('✨ Шрифт: Space Grotesk');
         })();
     </script>
 </body>
