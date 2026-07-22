@@ -3798,7 +3798,7 @@
         //  SERVICE WORKER REGISTRATION
         // ============================================================
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').then(() => {
+            navigator.serviceWorker.register('/taxi-app/sw.js').then(() => {
                 console.log('✅ Service Worker зарегистрирован');
             }).catch(() => {
                 console.log('ℹ️ Service Worker не доступен');
